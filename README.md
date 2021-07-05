@@ -1,5 +1,5 @@
-configman
-=========
+configmanners
+=============
 
 [![Travis](https://travis-ci.org/mozilla/configman.png?branch=master)](https://travis-ci.org/mozilla/configman)
 
