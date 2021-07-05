@@ -26,14 +26,14 @@ except ImportError:
     pass
 else:
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def stringIO_context_wrapper(a_stringIO_instance):
         @contextlib.contextmanager
         def stringIS_context_manager():
             yield a_stringIO_instance
         return stringIS_context_manager
 
-    #==========================================================================
+    # ==========================================================================
     class TestCase(unittest.TestCase):
         def _some_namespaces(self):
             """set up some namespaces"""
@@ -65,11 +65,12 @@ else:
             n.x.add_option('password', 'secret "message"', 'the password')
             return n
 
-        #----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
         def test_for_configobj_basics(self):
             """test basic use of for_configobj"""
             tmp_filename = os.path.join(tempfile.gettempdir(), 'test.ini')
-            open(tmp_filename, 'w').write("""
+            with open(tmp_filename, 'w') as f:
+                f.write("""
 # comment
 name=Peter
 awesome=
@@ -101,10 +102,11 @@ foo=bar  # other comment
                 if os.path.isfile(tmp_filename):
                     os.remove(tmp_filename)
 
-        #----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
         def test_for_configobj_basics_2(self):
             tmp_filename = os.path.join(tempfile.gettempdir(), 'test.ini')
-            open(tmp_filename, 'w').write("""
+            with open(tmp_filename, 'w') as f:
+                f.write("""
 # comment
 name=Peter
 awesome=
@@ -118,7 +120,7 @@ foo=bar  # other comment
                 c = ConfigurationManager(
                     [],
                     use_admin_controls=True,
-                    #use_config_files=False,
+                    # use_config_files=False,
                     use_auto_help=False,
                     argv_source=[]
                 )
@@ -143,7 +145,7 @@ foo=bar  # other comment
                 if os.path.isfile(tmp_filename):
                     os.remove(tmp_filename)
 
-        #----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
         # this test will be added back in the future
         def donttest_for_configobj_basics_3(self):
             n = Namespace()
@@ -152,7 +154,8 @@ foo=bar  # other comment
             n.namespace('othersection')
             n.othersection.add_option('foo', default=23)
             tmp_filename = os.path.join(tempfile.gettempdir(), 'test.ini')
-            open(tmp_filename, 'w').write("""
+            with open(tmp_filename, 'w') as f:
+                f.write("""
 # comment
 name=Peter
 awesome=
@@ -173,7 +176,7 @@ bad_option=bar  # other comment
                 if os.path.isfile(tmp_filename):
                     os.remove(tmp_filename)
 
-        #----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
         def test_write_ini(self):
             n = self._some_namespaces()
             c = ConfigurationManager(
@@ -182,7 +185,7 @@ bad_option=bar  # other comment
                     "c.fred": "just like George Jetson",
                 }],
                 use_admin_controls=True,
-                #use_config_files=False,
+                # use_config_files=False,
                 use_auto_help=False,
                 argv_source=[]
             )
@@ -219,7 +222,7 @@ bad_option=bar  # other comment
             out.close()
             self.assertEqual(expected.strip(), received.strip())
 
-        #----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
         def test_write_ini_with_reference_value_froms(
             self
         ):
@@ -309,7 +312,7 @@ bad_option=bar  # other comment
             out.close()
             self.assertEqual(expected.strip(), received.strip())
 
-        #----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
         def test_write_ini_with_custom_converters(self):
 
             def dict_encoder(dict_):
@@ -340,7 +343,7 @@ bad_option=bar  # other comment
 
             self.assertEqual(expected.strip(), received.strip())
 
-        #----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
         def test_configobj_includes_inside_sections(self):
             include_file_name = ''
             ini_file_name = ''
@@ -396,7 +399,7 @@ bad_option=bar  # other comment
                 if os.path.isfile(ini_file_name):
                     os.remove(ini_file_name)
 
-        #----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
         def test_configobj_includes_outside_a_section(self):
             include_file_name = ''
             ini_file_name = ''
@@ -448,7 +451,7 @@ bad_option=bar  # other comment
                 if os.path.isfile(ini_file_name):
                     os.remove(ini_file_name)
 
-        #----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
         def test_configobj_relative_includes(self):
             include_file_name = ''
             ini_file_name = ''
@@ -503,7 +506,7 @@ bad_option=bar  # other comment
                         'dbname': 'some_database',
                         'dbuser': 'dwight',
                         'dbpassword': 'secrets',
-                        }
+                    }
                 }
                 self.assertEqual(o.get_values(1, True), expected_dict)
             finally:
@@ -516,7 +519,7 @@ bad_option=bar  # other comment
                 if os.path.isdir(ini_repo_dir):
                     os.rmdir(ini_repo_dir)
 
-        #----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
         def test_configobj_relative_paths(self):
             include_file_name = ''
             ini_file_name = ''

@@ -32,19 +32,19 @@ from configman.value_sources.source_exceptions import (
 )
 
 
-#==============================================================================
+# ==============================================================================
 class T1(RequiredConfig):
     required_config = Namespace()
     required_config.add_option('a', default=11)
 
 
-#==============================================================================
+# ==============================================================================
 class T2(RequiredConfig):
     required_config = Namespace()
     required_config.add_option('b', default=22)
 
 
-#==============================================================================
+# ==============================================================================
 class T3(RequiredConfig):
     required_config = Namespace()
     required_config.add_option('c', default=33)
@@ -52,7 +52,7 @@ class T3(RequiredConfig):
     required_config.ccc.add_option('x', default=99)
 
 
-#==============================================================================
+# ==============================================================================
 class AClass(RequiredConfig):
     required_config = Namespace()
     required_config.namespace('zzz')
@@ -70,7 +70,7 @@ class AClass(RequiredConfig):
     )
 
 
-#==============================================================================
+# ==============================================================================
 class BClass(RequiredConfig):
     required_config = Namespace()
     required_config.namespace('ooo')
@@ -82,14 +82,14 @@ class BClass(RequiredConfig):
     )
 
 
-#==============================================================================
+# ==============================================================================
 class TestCase(unittest.TestCase):
 
     def shortDescription(self):
         # so we can see the path to the failing test
         return None
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_empty_ConfigurationManager_constructor(self):
         # because the default option argument defaults to using sys.argv we
         # have to mock that
@@ -100,7 +100,7 @@ class TestCase(unittest.TestCase):
         )
         self.assertEqual(c.option_definitions, config_manager.Namespace())
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_get_config_1(self):
         n = config_manager.Namespace()
         n.add_option('a', 1, 'the a')
@@ -117,7 +117,7 @@ class TestCase(unittest.TestCase):
         e.b = 17
         self.assertEqual(d, e)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_get_config_2(self):
         n = config_manager.Namespace()
         n.add_option('a', 1, 'the a')
@@ -142,7 +142,7 @@ class TestCase(unittest.TestCase):
         e.c.z = 99
         self.assertEqual(d, e)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def _some_namespaces(self):
         """set up some namespaces"""
         n = config_manager.Namespace(doc='top')
@@ -164,7 +164,7 @@ class TestCase(unittest.TestCase):
         n.x.add_option('password', 'secret', 'the password')
         return n
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_overlay_config_4(self):
         """test overlay dict w/flat source dict"""
         n = config_manager.Namespace()
@@ -191,7 +191,7 @@ class TestCase(unittest.TestCase):
         self.assertEqual(c.option_definitions.c.extra.default, 2.89)
         self.assertEqual(c.option_definitions.c.extra.value, 2.89)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_overlay_config_4a(self):
         """test overlay dict w/deep source dict"""
         n = config_manager.Namespace()
@@ -218,7 +218,7 @@ class TestCase(unittest.TestCase):
         self.assertEqual(c.option_definitions.c.extra.default, 2.89)
         self.assertEqual(c.option_definitions.c.extra.value, 2.89)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_overlay_config_5(self):
         """test namespace definition w/getopt"""
         n = config_manager.Namespace()
@@ -241,7 +241,7 @@ class TestCase(unittest.TestCase):
         self.assertEqual(c.option_definitions.c.name, 'c')
         self.assertEqual(c.option_definitions.c.value, True)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_overlay_config_6(self):
         """test namespace definition w/getopt"""
         n = config_manager.Namespace()
@@ -266,7 +266,7 @@ class TestCase(unittest.TestCase):
         self.assertEqual(c.option_definitions.c.extra.default, '11.0')
         self.assertEqual(c.option_definitions.c.extra.value, 11.0)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_overlay_config_6a(self):
         """test namespace w/getopt w/short form"""
         n = config_manager.Namespace()
@@ -291,7 +291,7 @@ class TestCase(unittest.TestCase):
         self.assertEqual(c.option_definitions.c.extra.default, '11.0')
         self.assertEqual(c.option_definitions.c.extra.value, 11.0)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_overlay_config_7(self):
         """test namespace definition flat file"""
         n = config_manager.Namespace()
@@ -331,7 +331,7 @@ class TestCase(unittest.TestCase):
         self.assertEqual(c.option_definitions.c.string.default, 'wilma')
         self.assertEqual(c.option_definitions.c.string.value, 'wilma')
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_overlay_config_8(self):
         """test namespace definition ini file"""
         n = config_manager.Namespace()
@@ -375,7 +375,7 @@ c.string = wilma
         self.assertEqual(c.option_definitions.c.string.default, 'wilma')
         self.assertEqual(c.option_definitions.c.string.value, 'wilma')
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_overlay_config_9(self):
         """test namespace definition ini file"""
         n = config_manager.Namespace()
@@ -440,7 +440,7 @@ c.string =   from ini
         self.assertEqual(c.option_definitions.c.string.default, 'from ini')
         self.assertEqual(c.option_definitions.c.string.value, 'from ini')
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_overlay_config_10(self):
         """test namespace definition ini file"""
         n = config_manager.Namespace()
@@ -494,7 +494,7 @@ c.string =   from ini
         self.assertEqual(c.option_definitions.c.string.default, 'from ini')
         self.assertEqual(c.option_definitions.c.string.value, 'from ini')
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_overlay_config_11(self):
         """test overlay dict w/deep source dict and reference value links"""
         n = config_manager.Namespace()
@@ -540,7 +540,7 @@ c.string =   from ini
         self.assertEqual(c.option_definitions.c.extra.value, 2.89)
         self.assertEqual(c.option_definitions.c.a.value, 2)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_overlay_config_12(self):
         """test overlay dict w/deep source dict and reference value links
         with dynamic class loading"""
@@ -601,7 +601,7 @@ c.string =   from ini
         self.assertEqual(c.option_definitions.c.zzz.fff.ooo.a.default, 2)
         self.assertEqual(c.option_definitions.c.zzz.fff.ooo.a.value, 2)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_mapping_types_1(self):
         n = config_manager.Namespace()
         n.add_option(
@@ -649,7 +649,7 @@ c.string =   from ini
         self.assertEqual(d.c.a, 2)
         self.assertEqual(d.c.b, 17)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_get_option_names(self):
         n = config_manager.Namespace()
         n.add_option('a', 1, 'the a')
@@ -676,7 +676,7 @@ c.string =   from ini
         names = sorted([x for x in c.option_definitions.keys_breadth_first()])
         self.assertEqual(names, e)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_get_option(self):
         n = config_manager.Namespace()
         n.add_option('a', 1, 'the a')
@@ -704,7 +704,7 @@ c.string =   from ini
         self.assertEqual(c._get_option('d.wilma'), n.d.wilma)
         self.assertEqual(c._get_option('d.x.size'), n.d.x.size)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_output_summary(self):
         """test_output_summary: the output from help"""
         n = config_manager.Namespace()
@@ -750,7 +750,7 @@ c.string =   from ini
             )
             point = options.find(end)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_output_summary_with_argument_1(self):
         """test_output_summary: the output from help where one item is a
         non-switch argument with no default value - the help output should
@@ -779,7 +779,7 @@ c.string =   from ini
         self.assertTrue('[OPTIONS]... ' in r)
         self.assertTrue('application' in r)  # yeah, we want to see option
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_output_summary_with_argument_2(self):
         """test_output_summary: the output from help where one item is a
         non-switch argument with no default value - but the non-switch
@@ -821,7 +821,7 @@ c.string =   from ini
         self.assertTrue('object' in r)  # yeah, we want original str value
         self.assertFalse('[ object' in r)  # but not as listed as optional
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_output_summary_with_argument_3(self):
         """test_output_summary: the output from help where one item is a
         non-switch argument with no default value"""
@@ -851,7 +851,7 @@ c.string =   from ini
         self.assertTrue('[ application' in r)  # listed as optional
         self.assertFalse('[ somevalue' in r)  # by name not by value
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_output_summary_with_secret(self):
         """test the output_summary with a certain field that isn't called
         "password" or anything alike but it shouldn't be exposed anyway."""
@@ -879,7 +879,7 @@ c.string =   from ini
         self.assertTrue('--secret' in r)
         self.assertFalse('I hate people' in r)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_output_summary_with_secret_exposed(self):
         """test the output_summary with a certain field that isn't called
         "password" or anything alike but it shouldn't be exposed anyway."""
@@ -907,7 +907,7 @@ c.string =   from ini
         self.assertTrue('--secret' in r)
         self.assertTrue('I hate people' in r)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_output_summary_header(self):
         """a config with an app_name, app_version and app_description is
         printed on the output summary.
@@ -946,14 +946,14 @@ c.string =   from ini
         self.assertTrue('Application: foobar 1.0\n' in output)
         self.assertTrue("This ain't your mama's app\n\n" in output)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_eval_as_converter(self):
         """does eval work as a to string converter on an Option object?"""
         n = config_manager.Namespace()
         n.add_option('aaa', doc='the a', default='', short_form='a')
         self.assertEqual(n.aaa.value, '')
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_RequiredConfig_get_required_config(self):
 
         class Foo:
@@ -977,7 +977,7 @@ c.string =   from ini
 
         self.assertRaises(AssertionError, c.config_assert, ({},))
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_app_name_from_app_obj(self):
         class MyApp(config_manager.RequiredConfig):
             app_name = 'fred'
@@ -1004,7 +1004,7 @@ c.string =   from ini
         self.assertEqual(c.app_version, MyApp.app_version)
         self.assertEqual(c.app_description, MyApp.app_description)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_help_out(self):
         class MyApp(config_manager.RequiredConfig):
             app_name = 'fred'
@@ -1071,7 +1071,7 @@ c.string =   from ini
         finally:
             sys.exit = old_sys_exit
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_write_gets_called(self):
         class MyApp(config_manager.RequiredConfig):
             app_name = 'fred'
@@ -1118,7 +1118,7 @@ c.string =   from ini
         finally:
             sys.exit = old_sys_exit
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_get_options(self):
         class MyApp(config_manager.RequiredConfig):
             app_name = 'fred'
@@ -1168,7 +1168,7 @@ c.string =   from ini
             self.assertEqual(expected_name, result_option.name)
             self.assertEqual(expected_default, result_option.default)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_log_config(self):
         class MyApp(config_manager.RequiredConfig):
             app_name = 'fred'
@@ -1223,7 +1223,7 @@ c.string =   from ini
         for expected, received in zip(e, fl.log):
             self.assertEqual(expected, received)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_extra_commandline_parameters(self):
         class MyApp(config_manager.RequiredConfig):
             app_name = 'fred'
@@ -1266,7 +1266,7 @@ c.string =   from ini
                     'argument 3']
         self.assertEqual(c.args, expected)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_print_conf_called(self):
         class MyApp(config_manager.RequiredConfig):
             app_name = 'fred'
@@ -1311,7 +1311,7 @@ c.string =   from ini
                                          'argument 3'])
         self.assertEqual(c.print_conf_called, True)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_non_compliant_app_object(self):
         # the MyApp class doesn't define required config
         class MyApp():
@@ -1344,7 +1344,7 @@ c.string =   from ini
         conf = c.get_config()
         self.assertEqual(list(conf.keys()), ['admin', 'application'])
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_print_conf(self):
         n = config_manager.Namespace()
 
@@ -1378,7 +1378,7 @@ c.string =   from ini
                          'argument 3'],
             config_pathname='fred')
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_dump_conf(self):
         n = config_manager.Namespace()
 
@@ -1404,7 +1404,7 @@ c.string =   from ini
             config_pathname='fred'
         )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_dump_conf_bad_extension(self):
         n = config_manager.Namespace()
 
@@ -1426,7 +1426,7 @@ c.string =   from ini
         )
         self.assertFalse(os.path.exists('/tmp/fred.xxx'))
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_print_conf_some_options_excluded(self):
         n = config_manager.Namespace()
         n.add_option(
@@ -1461,7 +1461,7 @@ c.string =   from ini
         self.assertTrue('gender' in printed)
         self.assertTrue('salary' not in printed)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_print_conf_with_secrets(self):
         # the main purpose of this test is to indirectly test the method
         # ConfigurationManager.write_conf
@@ -1499,7 +1499,7 @@ c.string =   from ini
         self.assertTrue('salary' in printed)
         self.assertTrue('*' * 16 in printed)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_print_conf_with_secrets_exposed(self):
         # the main purpose of this test is to indirectly test the method
         # ConfigurationManager.write_conf
@@ -1540,7 +1540,7 @@ c.string =   from ini
         self.assertTrue('salary' in printed)
         self.assertTrue('*' * 16 not in printed)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_dump_conf_some_options_excluded(self):
         n = config_manager.Namespace()
         n.add_option('gender',
@@ -1572,7 +1572,7 @@ c.string =   from ini
             if os.path.isfile('foo.conf'):
                 os.remove('foo.conf')
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_do_aggregations(self):
         def aggregation_test(all_config, local_namespace, args):
             self.assertTrue('password' in all_config)
@@ -1629,7 +1629,7 @@ c.string =   from ini
                          'wilma married fred using password @$*$&26Ht '
                          'but divorced because of arg2.')
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_context(self):
 
         class AggregatedValue(object):
@@ -1704,7 +1704,7 @@ c.string =   from ini
             )
         self.assertTrue(statement.value is None)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_failing_aggregate_error_bubbling(self):
         """Reproduces and assures this issue
         https://github.com/mozilla/configman/issues/21
@@ -1750,7 +1750,7 @@ c.string =   from ini
         contextmanager_ = c.context()
         self.assertRaises(SomeException, contextmanager_.__enter__)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_namespaces_with_conflicting_class_converters(self):
         rc = Namespace()
         rc.namespace('source')
@@ -1809,7 +1809,7 @@ c.string =   from ini
         self.assertEqual(conf.destination.a, 11)
         self.assertEqual(conf.destination.cls, T1)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def _common_app_namespace_setup(self):
         class MyApp(config_manager.RequiredConfig):
             app_name = 'fred'
@@ -1829,7 +1829,7 @@ c.string =   from ini
         )
         return n
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_admin_conf_missing_file_ioerror(self):
         """if you specify an `--admin.conf=...` file that doesn't exist it
         should not let you get away with it.
@@ -1844,10 +1844,11 @@ c.string =   from ini
         )
 
         # but check we can still do it if the file exists
-        open('x.ini', 'w').write(
-            '[toplevel]\n'
-            'password=something\n'
-        )
+        with open('x.ini', 'w') as f:
+            f.write(
+                '[toplevel]\n'
+                'password=something\n'
+            )
         try:
             c = config_manager.ConfigurationManager(
                 (n,),
@@ -1858,7 +1859,7 @@ c.string =   from ini
         finally:
             os.remove('x.ini')
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_bad_options(self):
         """tests _check_for_mismatches"""
         rc = Namespace()
@@ -1980,7 +1981,7 @@ c.string =   from ini
             argv_source=['--alpha']
         )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_acquisition(self):
         """define a common key in two sub-namespaces.  Then offer only a value
         from the base namespace.  Both sub-namespace Options should have the
@@ -2010,7 +2011,7 @@ c.string =   from ini
         self.assertEqual(c.source.cls, T2)
         self.assertEqual(c.destination.cls, T2)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_admin_conf_all_handlers_fail(self):
         """no handler found produces empty message"""
         n = self._common_app_namespace_setup()
@@ -2031,15 +2032,16 @@ c.string =   from ini
         finally:
             os.remove('x.fred')
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_admin_conf_fail_message_gets_through(self):
         """make sure AllHandlersFailedException message gets through"""
         n = self._common_app_namespace_setup()
 
         # make a config file that fails to load in its proper handler
-        open('x.ini', 'w').write(
-            'this makes no sense as an ini file'
-        )
+        with open('x.ini', 'w') as f:
+            f.write(
+                'this makes no sense as an ini file'
+            )
         try:
             config_manager.ConfigurationManager(
                 (n,),
@@ -2051,7 +2053,7 @@ c.string =   from ini
         finally:
             os.remove('x.ini')
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_get_option_definitions(self):
         n = self._common_app_namespace_setup()
         n.add_option('silly', default=1)
@@ -2071,17 +2073,18 @@ c.string =   from ini
             )
         self.assertEqual(len(opts), 10)  # there must be exactly 10 options
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     @mock.patch('configman.config_manager.warnings')
     def test_warn_on_one_excess_options(self, mocked_warnings):
         assert 'configobj' in sys.modules.keys()
 
         n = self._common_app_namespace_setup()
         n.add_option('foo')
-        open('x.ini', 'w').write(
-            'foo=FOO\n'
-            'bar=BAR\n'
-        )
+        with open('x.ini', 'w') as f:
+            f.write(
+                'foo=FOO\n'
+                'bar=BAR\n'
+            )
         try:
             config_manager.ConfigurationManager(
                 (n,),
@@ -2093,18 +2096,19 @@ c.string =   from ini
         finally:
             os.remove('x.ini')
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     @mock.patch('configman.config_manager.warnings')
     def test_warn_on_multiple_excess_options(self, mocked_warnings):
         assert 'configobj' in sys.modules.keys()
 
         n = self._common_app_namespace_setup()
         n.add_option('foo')
-        open('x.ini', 'w').write(
-            'foo=FOO\n'
-            'bar=BAR\n'
-            'baz=BAZ\n'
-        )
+        with open('x.ini', 'w') as f:
+            f.write(
+                'foo=FOO\n'
+                'bar=BAR\n'
+                'baz=BAZ\n'
+            )
         try:
             config_manager.ConfigurationManager(
                 (n,),
@@ -2116,7 +2120,7 @@ c.string =   from ini
         finally:
             os.remove('x.ini')
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_overlay_bug(self):
         # for Options that already exist and have been seen by the overlay
         # process, make sure that expanding a class doesn't just overwrite
@@ -2145,7 +2149,7 @@ c.string =   from ini
         cn = cm.get_config()
         self.assertEqual(cn.fred, 99)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_overlay_reference_value_from_bug(self):
         # for Options that already exist and have been seen by the overlay
         # process, make sure that expanding a class doesn't just overwrite
@@ -2178,7 +2182,7 @@ c.string =   from ini
         cn = cm.get_config()
         self.assertEqual(cn.fred, 99)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_overlay_reference_value_from_bug_2(self):
         # for Options that already exist and have been seen by the overlay
         # process, make sure that expanding a class doesn't just overwrite
@@ -2225,7 +2229,7 @@ c.string =   from ini
         self.assertEqual(cn.fred, 21)
         self.assertEqual(cn.a.fred, 21)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_expansion_new_req_as_dict_bug(self):
         # when a class is expanded and that class has required config that is
         # of Mapping that is not a Namespace or DotDict, adding those
@@ -2258,7 +2262,7 @@ c.string =   from ini
         self.assertTrue(cn.beta)
         self.assertEqual(cn.gamma, 'hello')
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_value_source_object_hook_1(self):
         """the definition source defines only keys with underscores.
         the value sources may have hyphens instead of underscores.
@@ -2313,7 +2317,7 @@ c.string =   from ini
         self.assertTrue(cn.other_class is B)
         self.assertTrue(cn.some_class is A)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_value_source_object_hook_2(self):
         """the object hook system can be used to post process the value sources
         as they're used in configman.  Define a mapping that insures that all
@@ -2387,7 +2391,7 @@ c.string =   from ini
         self.assertTrue(cn.other_class is B)
         self.assertTrue(cn.some_class is A)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_bare_configuration_call(self):
         from configman import configuration
 
@@ -2473,7 +2477,7 @@ c.string =   from ini
             'but divorced because of arg2.'
         )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_configmanger_set_has_changed_successfully(self):
 
         n = config_manager.Namespace()
