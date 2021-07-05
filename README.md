@@ -9,9 +9,20 @@ General tool for setting up configuration options per namespaces.
 Supports reading and writing configs generally from and into config
 files.
 
+_This is the K Lars Lohn fork. Since I am no longer associated Mozilla, I have no 
+ ownership/control/privileges on the moribund Mozilla repo. I don't think Mozilla
+ uses it anywhere anymore. As it it critical to my personal software work, I intend
+to continue to maintain and modify it for my own purposes.  However, I do not intend 
+on publishing this as a 'pip' installable module._
 
-Running tests
+_I am likely to rename this project to: "configmanners"_
+
+Running tests (moribund)
 -------------
+
+_K Lars Lohn comment: I suspect that none of this original testing stuff is viable any more.
+I have no intention of modernizing these procedures. If somebody else has, I'll accept PRs.
+Until such time, I have no qualms about doing without._
 
 We use [nose](http://code.google.com/p/python-nose/) to run all the
 unit tests and [tox](http://tox.testrun.org/latest/) to test multiple
@@ -30,8 +41,11 @@ you might consider just using `nosetests`:
     nosetests configman.tests.test_config_manager:TestCase.test_write_flat
 
 
-Making a release
+Making a release  (moribund)
 ----------------
+
+_K Lars Lohn comment: I have no intention of releasing this product.  If someone
+wants to update, I'll accept PRs. Meanwhile, I just don't care._
 
 Because our `.travis.yml` has all the necessary information to automatically
 make a release, all you need to do is to push a commit onto master.
