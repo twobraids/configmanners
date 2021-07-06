@@ -100,7 +100,7 @@ class TestCase(unittest.TestCase):
         self.assertTrue('__doc__' in list(v.keys()))
         self.assertTrue(v.__doc__.startswith('This is a test'))
 
-        from collections import Mapping
+        from collections.abc import Mapping
         self.assertTrue(v.collections.abc.Mapping is Mapping)
         from types import ModuleType
         self.assertTrue(isinstance(v.collections, ModuleType))
