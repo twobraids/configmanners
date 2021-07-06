@@ -184,12 +184,12 @@ class TestCase(unittest.TestCase):
                                    config_manager.Option))
         self.assertEqual(c.option_definitions.a.value, 2)
         self.assertEqual(c.option_definitions.a.sourced_from, 'the_g_mapping')
-        
+
         self.assertEqual(c.option_definitions.b.value, 17)
         self.assertEqual(c.option_definitions.b.sourced_from, 'default value')
         self.assertEqual(c.option_definitions.b.default, 17)
         self.assertEqual(c.option_definitions.b.name, 'b')
-        
+
         self.assertEqual(c.option_definitions.c.extra.name, 'extra')
         self.assertEqual(c.option_definitions.c.extra.doc, 'the x')
         self.assertEqual(c.option_definitions.c.extra.default, 2.89)
@@ -216,12 +216,12 @@ class TestCase(unittest.TestCase):
                                    config_manager.Option))
         self.assertEqual(c.option_definitions.a.value, 2)
         self.assertEqual(c.option_definitions.a.sourced_from, 'the_g_mapping')
-        
+
         self.assertEqual(c.option_definitions.b.value, 17)
         self.assertEqual(c.option_definitions.b.sourced_from, 'default value')
         self.assertEqual(c.option_definitions.b.default, 17)
         self.assertEqual(c.option_definitions.b.name, 'b')
-        
+
         self.assertEqual(c.option_definitions.c.extra.name, 'extra')
         self.assertEqual(c.option_definitions.c.extra.doc, 'the x')
         self.assertEqual(c.option_definitions.c.extra.default, 2.89)
@@ -246,12 +246,12 @@ class TestCase(unittest.TestCase):
                                    config_manager.Option))
         self.assertEqual(c.option_definitions.a.value, 2)
         self.assertEqual(c.option_definitions.a.sourced_from, 'getopt')
-        
+
         self.assertEqual(c.option_definitions.b.value, 17)
         self.assertEqual(c.option_definitions.b.sourced_from, 'default value')
         self.assertEqual(c.option_definitions.b.default, 17)
         self.assertEqual(c.option_definitions.b.name, 'b')
-        
+
         self.assertEqual(c.option_definitions.c.name, 'c')
         self.assertEqual(c.option_definitions.c.value, True)
         self.assertEqual(c.option_definitions.c.sourced_from, 'getopt')
@@ -274,12 +274,12 @@ class TestCase(unittest.TestCase):
         self.assertEqual(type(c.option_definitions.b), config_manager.Option)
         self.assertEqual(c.option_definitions.a.value, 2)
         self.assertEqual(c.option_definitions.a.sourced_from, 'getopt')
-        
+
         self.assertEqual(c.option_definitions.b.value, 17)
         self.assertEqual(c.option_definitions.b.sourced_from, 'default value')
         self.assertEqual(c.option_definitions.b.default, 17)
         self.assertEqual(c.option_definitions.b.name, 'b')
-        
+
         self.assertEqual(c.option_definitions.c.extra.name, 'extra')
         self.assertEqual(c.option_definitions.c.extra.doc, 'the x')
         self.assertEqual(c.option_definitions.c.extra.default, '11.0')
@@ -304,12 +304,12 @@ class TestCase(unittest.TestCase):
         self.assertEqual(type(c.option_definitions.b), config_manager.Option)
         self.assertEqual(c.option_definitions.a.value, 2)
         self.assertEqual(c.option_definitions.a.sourced_from, 'getopt')
-        
+
         self.assertEqual(c.option_definitions.b.value, 17)
         self.assertEqual(c.option_definitions.b.sourced_from, 'default value')
         self.assertEqual(c.option_definitions.b.default, 17)
         self.assertEqual(c.option_definitions.b.name, 'b')
-        
+
         self.assertEqual(c.option_definitions.c.extra.name, 'extra')
         self.assertEqual(c.option_definitions.c.extra.doc, 'the x')
         self.assertEqual(c.option_definitions.c.extra.default, '11.0')
@@ -345,18 +345,18 @@ class TestCase(unittest.TestCase):
         self.assertEqual(type(c.option_definitions.b), config_manager.Option)
         self.assertEqual(c.option_definitions.a.value, 22)
         self.assertEqual(c.option_definitions.a.sourced_from, 'configman.tests.test_config_manager.dummy_open')
-        
+
         self.assertEqual(c.option_definitions.b.value, 33)
         self.assertEqual(c.option_definitions.b.default, '33')
         self.assertEqual(c.option_definitions.b.name, 'b')
         self.assertEqual(c.option_definitions.b.sourced_from, 'configman.tests.test_config_manager.dummy_open')
-        
+
         self.assertEqual(c.option_definitions.c.extra.name, 'extra')
         self.assertEqual(c.option_definitions.c.extra.doc, 'the x')
         self.assertEqual(c.option_definitions.c.extra.default, '2.0')
         self.assertEqual(c.option_definitions.c.extra.value, 2.0)
         self.assertEqual(c.option_definitions.c.extra.sourced_from, 'configman.tests.test_config_manager.dummy_open')
-        
+
         self.assertEqual(c.option_definitions.c.string.name, 'string')
         self.assertEqual(c.option_definitions.c.string.doc, 'str')
         self.assertEqual(c.option_definitions.c.string.default, 'wilma')
@@ -394,22 +394,22 @@ c.string = wilma
         self.assertEqual(c.option_definitions.other.t.name, 't')
         self.assertEqual(c.option_definitions.other.t.value, 'tea')
         self.assertEqual(c.option_definitions.other.t.sourced_from, 'configman.tests.test_config_manager.strio')
-        
+
         self.assertEqual(type(c.option_definitions.d.b), config_manager.Option)
         self.assertEqual(c.option_definitions.d.a.value, 22)
         self.assertEqual(c.option_definitions.d.a.sourced_from, 'configman.tests.test_config_manager.strio')
-        
+
         self.assertEqual(c.option_definitions.d.b.value, 33)
         self.assertEqual(c.option_definitions.d.b.default, '33')
         self.assertEqual(c.option_definitions.d.b.name, 'b')
         self.assertEqual(c.option_definitions.d.b.sourced_from, 'configman.tests.test_config_manager.strio')
-        
+
         self.assertEqual(c.option_definitions.c.extra.name, 'extra')
         self.assertEqual(c.option_definitions.c.extra.doc, 'the x')
         self.assertEqual(c.option_definitions.c.extra.default, '2.0')
         self.assertEqual(c.option_definitions.c.extra.value, 2.0)
         self.assertEqual(c.option_definitions.c.extra.sourced_from, 'configman.tests.test_config_manager.strio')
-        
+
         self.assertEqual(c.option_definitions.c.string.name, 'string')
         self.assertEqual(c.option_definitions.c.string.doc, 'str')
         self.assertEqual(c.option_definitions.c.string.default, 'wilma')
@@ -468,16 +468,16 @@ c.string =   from ini
         self.assertEqual(c.option_definitions.other.t.name, 't')
         self.assertEqual(c.option_definitions.other.t.value, 'TTT')
         self.assertEqual(c.option_definitions.other.t.sourced_from, 'getopt')
-        
+
         self.assertEqual(type(c.option_definitions.d.b), config_manager.Option)
         self.assertEqual(c.option_definitions.d.a.value, 22)
         self.assertEqual(c.option_definitions.d.a.sourced_from, 'configman.tests.test_config_manager.strio')
-        
+
         self.assertEqual(c.option_definitions.d.b.value, 17)
         self.assertEqual(c.option_definitions.d.b.default, 17)
         self.assertEqual(c.option_definitions.d.b.name, 'b')
         self.assertEqual(c.option_definitions.d.b.sourced_from, 'default value')
-        
+
         self.assertEqual(c.option_definitions.c.extra.name, 'extra')
         self.assertEqual(c.option_definitions.c.extra.doc, 'the x')
         self.assertEqual(c.option_definitions.c.extra.default, '11.0')
@@ -535,7 +535,7 @@ c.string =   from ini
         self.assertEqual(type(c.option_definitions.d.b), config_manager.Option)
         self.assertEqual(c.option_definitions.d.a.value, 22)
         self.assertEqual(c.option_definitions.d.a.sourced_from, 'configman.tests.test_config_manager.strio')
-        
+
         self.assertEqual(c.option_definitions.d.b.value, 17)
         self.assertEqual(c.option_definitions.d.b.default, 17)
         self.assertEqual(c.option_definitions.d.b.name, 'b')
@@ -546,7 +546,7 @@ c.string =   from ini
         self.assertEqual(c.option_definitions.c.extra.default, '11.0')
         self.assertEqual(c.option_definitions.c.extra.value, 11.0)
         self.assertEqual(c.option_definitions.c.extra.sourced_from, 'getopt')
-        
+
         self.assertEqual(c.option_definitions.c.string.name, 'string')
         self.assertEqual(c.option_definitions.c.string.doc, 'str')
         self.assertEqual(c.option_definitions.c.string.default, 'from ini')
@@ -591,18 +591,18 @@ c.string =   from ini
         ))
         self.assertEqual(c.option_definitions.a.value, 2)
         self.assertEqual(c.option_definitions.a.sourced_from, "reference_value - 'xxx.yyy.a'")
-        
+
         self.assertEqual(c.option_definitions.b.value, 17)
         self.assertEqual(c.option_definitions.b.default, 17)
         self.assertEqual(c.option_definitions.b.name, 'b')
         self.assertEqual(c.option_definitions.b.sourced_from, "default value")
-        
+
         self.assertEqual(c.option_definitions.c.extra.name, 'extra')
         self.assertEqual(c.option_definitions.c.extra.doc, 'the x')
         self.assertEqual(c.option_definitions.c.extra.default, 2.89)
         self.assertEqual(c.option_definitions.c.extra.value, 2.89)
         self.assertEqual(c.option_definitions.c.extra.sourced_from, "reference_value - 'xxx.yyy.extra'")
-        
+
         self.assertEqual(c.option_definitions.c.a.value, 2)
         self.assertEqual(c.option_definitions.c.a.sourced_from, "reference_value - 'xxx.yyy.a'")
 
@@ -654,7 +654,7 @@ c.string =   from ini
         ))
         self.assertEqual(c.option_definitions.a.value, 2)
         self.assertEqual(c.option_definitions.a.sourced_from, "reference_value - 'xxx.yyy.a'")
-        
+
         self.assertEqual(c.option_definitions.b.value, 21)
         self.assertEqual(c.option_definitions.b.default, 21)
         self.assertEqual(c.option_definitions.b.name, 'b')
@@ -665,7 +665,7 @@ c.string =   from ini
         self.assertEqual(c.option_definitions.c.extra.default, 2.89)
         self.assertEqual(c.option_definitions.c.extra.value, 2.89)
         self.assertEqual(c.option_definitions.c.extra.sourced_from, "reference_value - 'xxx.yyy.extra'")
-        
+
         self.assertEqual(c.option_definitions.c.a.default, 399)
         self.assertEqual(c.option_definitions.c.a.value, 399)
         self.assertEqual(c.option_definitions.c.a.sourced_from, "second mapping")
@@ -673,7 +673,7 @@ c.string =   from ini
         self.assertEqual(c.option_definitions.c.zzz.fff.a.value, 2)
         self.assertEqual(c.option_definitions.c.zzz.fff.a.default, 2)
         self.assertEqual(c.option_definitions.c.zzz.fff.a.sourced_from, "reference_value - 'xxx.yyy.a'")
-                
+
         self.assertEqual(c.option_definitions.c.zzz.fff.ooo.a.default, 2)
         self.assertEqual(c.option_definitions.c.zzz.fff.ooo.a.value, 2)
         self.assertEqual(c.option_definitions.c.zzz.fff.ooo.a.sourced_from, "reference_value - 'xxx.yyy.a'")
@@ -1234,6 +1234,7 @@ c.string =   from ini
             ('admin.dump_conf', 'dump_conf', ''),
             ('admin.conf', 'conf', None),
             ('admin.strict', 'strict', False),
+            ('admin.why', 'why', False),
             ('application', 'application', MyApp),
             ('password', 'password', 'fred'),
             ('sub.name', 'name', 'ethel')
@@ -2152,7 +2153,7 @@ c.string =   from ini
             self.assertTrue(
                 isinstance(cm.option_definitions[an_opt], Option)
             )
-        self.assertEqual(len(opts), 10)  # there must be exactly 10 options
+        self.assertEqual(len(opts), 11)  # there must be exactly 11 options
 
     # --------------------------------------------------------------------------
     @mock.patch('configman.config_manager.warnings')

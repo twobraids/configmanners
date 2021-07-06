@@ -29,12 +29,12 @@ from configman.converters import (
 
 from configman.def_sources.for_argparse import ArgumentParser
 from configman.value_sources.for_argparse import (
-    #issubclass_with_no_type_error,
+    # issubclass_with_no_type_error,
     ValueSource,
 )
 
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 def quote_stripping_list_of_ints(a_string):
     quoteless = a_string.strip('\'"')
     return list_converter(
@@ -44,10 +44,10 @@ def quote_stripping_list_of_ints(a_string):
     )
 
 
-#==============================================================================
+# ==============================================================================
 class TestCaseForValSourceArgparse(TestCase):
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def setup_value_source(self, type_of_value_source=ValueSource):
         conf_manager = Mock()
         conf_manager.argv_source = []
@@ -65,7 +65,7 @@ class TestCaseForValSourceArgparse(TestCase):
         vs = type_of_value_source(arg, conf_manager)
         return vs
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def setup_configman_namespace(self):
         n = Namespace()
         n.add_option(
@@ -97,7 +97,7 @@ class TestCaseForValSourceArgparse(TestCase):
         )
         return n
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_basic_01_defaults(self):
         option_definitions = self.setup_configman_namespace()
         cm = ConfigurationManager(
@@ -116,13 +116,14 @@ class TestCaseForValSourceArgparse(TestCase):
             "admin.print_conf": None,
             "admin.dump_conf": '',
             "admin.strict": False,
+            "admin.why": False,
             "admin.expose_secrets": False
         }
 
         for k in config.keys_breadth_first():
             self.assertEqual(config[k], expected[k])
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_basic_02_change_all(self):
         option_definitions = self.setup_configman_namespace()
         cm = ConfigurationManager(
@@ -146,13 +147,14 @@ class TestCaseForValSourceArgparse(TestCase):
             "admin.print_conf": None,
             "admin.dump_conf": '',
             "admin.strict": False,
+            "admin.why": False,
             "admin.expose_secrets": False
         }
 
         for k in config.keys_breadth_first():
             self.assertEqual(config[k], expected[k])
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_basic_03_with_some_admin(self):
         option_definitions = self.setup_configman_namespace()
         cm = ConfigurationManager(
@@ -177,13 +179,14 @@ class TestCaseForValSourceArgparse(TestCase):
             "admin.print_conf": None,
             "admin.dump_conf": '',
             "admin.strict": True,
+            "admin.why": False,
             "admin.expose_secrets": True
         }
 
         for k in config.keys_breadth_first():
             self.assertEqual(config[k], expected[k])
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_basic_04_argparse_doesnt_dominate(self):
         option_definitions = self.setup_configman_namespace()
         other_value_source = {
@@ -210,13 +213,14 @@ class TestCaseForValSourceArgparse(TestCase):
             "admin.print_conf": None,
             "admin.dump_conf": '',
             "admin.strict": True,
+            "admin.why": False,
             "admin.expose_secrets": True
         }
 
         for k in config.keys_breadth_first():
             self.assertEqual(config[k], expected[k])
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_basic_05_argparse_overrides_when_appropriate(self):
         option_definitions = self.setup_configman_namespace()
         other_value_source = {
@@ -244,13 +248,14 @@ class TestCaseForValSourceArgparse(TestCase):
             "admin.print_conf": None,
             "admin.dump_conf": '',
             "admin.strict": True,
+            "admin.why": False,
             "admin.expose_secrets": True
         }
 
         for k in config.keys_breadth_first():
             self.assertEqual(config[k], expected[k])
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_basic_06_argparse_class_expansion(self):
         option_definitions = self.setup_configman_namespace()
         other_value_source = {
@@ -286,6 +291,7 @@ class TestCaseForValSourceArgparse(TestCase):
             "admin.dump_conf": '',
             "admin.strict": True,
             "admin.expose_secrets": True,
+            "admin.why": False,
             "a_class": class_converter(
                 "configman.tests.test_val_for_modules.Beta"
             ),
@@ -295,7 +301,7 @@ class TestCaseForValSourceArgparse(TestCase):
         for k in config.keys_breadth_first():
             self.assertEqual(config[k], expected[k])
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_basic_07_argparse_multilevel_class_expansion(self):
         option_definitions = self.setup_configman_namespace()
         other_value_source = {
@@ -331,6 +337,7 @@ class TestCaseForValSourceArgparse(TestCase):
             "admin.dump_conf": '',
             "admin.strict": False,
             "admin.expose_secrets": True,
+            "admin.why": False,
             "a_class": class_converter(
                 "configman.tests.test_val_for_modules.Delta"
             ),

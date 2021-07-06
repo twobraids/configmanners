@@ -23,7 +23,7 @@ from configman.dotdict import DotDict
 
 expected_value = {
     "test_expansion_subparsers_1":
-"""usage: highwater [-h] [--admin.print_conf ADMIN.PRINT_CONF]
+    """usage: highwater [-h] [--admin.print_conf ADMIN.PRINT_CONF]
                  [--admin.dump_conf ADMIN.DUMP_CONF] [--admin.strict]
                  [--admin.expose_secrets] [--admin.conf ADMIN.CONF] [--foo]
                  [--egg EGG]
@@ -46,6 +46,8 @@ optional arguments:
   --admin.expose_secrets
                         should options marked secret get written out or
                         hidden?
+  --admin.why           echo the configuration with annotations of each value's
+                        source
   --admin.conf ADMIN.CONF
                         the pathname of the config file (path/filename)
   --foo                 foo help
@@ -53,7 +55,7 @@ optional arguments:
 """,
 
     "test_expansion_subparsers_2":
-"""usage: highwater a [-h] [--admin.print_conf ADMIN.PRINT_CONF]
+    """usage: highwater a [-h] [--admin.print_conf ADMIN.PRINT_CONF]
                    [--admin.dump_conf ADMIN.DUMP_CONF] [--admin.strict]
                    [--admin.expose_secrets] [--admin.conf ADMIN.CONF]
                    [--fff FFF]
@@ -74,12 +76,14 @@ optional arguments:
   --admin.expose_secrets
                         should options marked secret get written out or
                         hidden?
+  --admin.why           echo the configuration with annotations of each value's
+                        source
   --admin.conf ADMIN.CONF
                         the pathname of the config file (path/filename)
   --fff FFF             a fff help
 """,
     "test_expansion_subparsers_3":
-"""usage: highwater b [-h] [--admin.print_conf ADMIN.PRINT_CONF]
+    """usage: highwater b [-h] [--admin.print_conf ADMIN.PRINT_CONF]
                    [--admin.dump_conf ADMIN.DUMP_CONF] [--admin.strict]
                    [--admin.expose_secrets] [--admin.conf ADMIN.CONF]
                    [--baz {X,Y,Z}] [--fff {X,Y,Z}]
@@ -96,39 +100,41 @@ optional arguments:
   --admin.expose_secrets
                         should options marked secret get written out or
                         hidden?
+  --admin.why           echo the configuration with annotations of each value's
+                        source
   --admin.conf ADMIN.CONF
                         the pathname of the config file (path/filename)
   --baz {X,Y,Z}         baz help
   --fff {X,Y,Z}         b fff help
 """,
     "test_expansion_subparsers_4":
-"""usage: highwater [--admin.print_conf ADMIN.PRINT_CONF]
+    """usage: highwater [--admin.print_conf ADMIN.PRINT_CONF]
                  [--admin.dump_conf ADMIN.DUMP_CONF] [--admin.strict]
-                 [--admin.expose_secrets] [--admin.conf ADMIN.CONF] [--foo]
+                 [--admin.expose_secrets] [--admin.why] [--admin.conf ADMIN.CONF] [--foo]
                  [--egg EGG]
                  {a,b} ...
 highwater: error: argument sub_command: invalid choice: 'c' (choose from 'a', 'b')
 """,
     "test_expansion_subparsers_5":
-"""usage: highwater a [-h] [--admin.print_conf ADMIN.PRINT_CONF]
+    """usage: highwater a [-h] [--admin.print_conf ADMIN.PRINT_CONF]
                    [--admin.dump_conf ADMIN.DUMP_CONF] [--admin.strict]
-                   [--admin.expose_secrets] [--admin.conf ADMIN.CONF]
+                   [--admin.expose_secrets] [--admin.why] [--admin.conf ADMIN.CONF]
                    [--fff FFF]
                    bar
 highwater a: error: too few arguments
 """,
     "test_expansion_subparsers_6":
-"""usage: highwater [-h] [--admin.print_conf ADMIN.PRINT_CONF]
+    """usage: highwater [-h] [--admin.print_conf ADMIN.PRINT_CONF]
                  [--admin.dump_conf ADMIN.DUMP_CONF] [--admin.strict]
-                 [--admin.expose_secrets] [--admin.conf ADMIN.CONF] [--foo]
+                 [--admin.expose_secrets] [--admin.why] [--admin.conf ADMIN.CONF] [--foo]
                  [--egg EGG]
                  {a,b} ...
 highwater: error: unrecognized arguments: --baz Y
 """,
     "test_expansion_subparsers_7":
-"""usage: highwater [-h] [--admin.print_conf ADMIN.PRINT_CONF]
+    """usage: highwater [-h] [--admin.print_conf ADMIN.PRINT_CONF]
                  [--admin.dump_conf ADMIN.DUMP_CONF] [--admin.strict]
-                 [--admin.expose_secrets] [--admin.conf ADMIN.CONF] [--foo]
+                 [--admin.expose_secrets] [--admin.why] [--admin.conf ADMIN.CONF] [--foo]
                  [--egg EGG]
                  {a,b} ...
 highwater: error: unrecognized arguments: 16
@@ -144,6 +150,7 @@ highwater: error: unrecognized arguments: 16
         'admin.dump_conf': '',
         'admin.strict': False,
         'admin.expose_secrets': False,
+        'admin.why': False,
         'admin.conf': './highwater.ini',
     }),
     "test_expansion_subparsers_defaults_values_2":
@@ -157,6 +164,7 @@ highwater: error: unrecognized arguments: 16
         'admin.dump_conf': '',
         'admin.strict': False,
         'admin.expose_secrets': False,
+        'admin.why': False,
         'admin.conf': './highwater.ini',
     }),
     "test_expansion_subparsers_defaults_values_3":
@@ -170,15 +178,16 @@ highwater: error: unrecognized arguments: 16
         'admin.dump_conf': '',
         'admin.strict': False,
         'admin.expose_secrets': False,
+        'admin.why': False,
         'admin.conf': './highwater.ini',
     }),
 }
 
 
-#==============================================================================
+# ==============================================================================
 class TestCaseForDefSourceArgparse(TestCase):
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def setup_argparse(self):
         parser = ArgumentParser(prog='hell')
         parser.add_argument(
@@ -244,7 +253,7 @@ class TestCaseForDefSourceArgparse(TestCase):
         )
         return parser
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_parser_setup(self):
         parser = self.setup_argparse()
         config = parser.parse_args(args=[])
@@ -257,7 +266,7 @@ class TestCaseForDefSourceArgparse(TestCase):
         self.assertEqual(config.collection, [])
         self.assertEqual(config.const_collection, [])
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_parser_1(self):
         parser = self.setup_argparse()
         config = parser.parse_args(args=['-s', '3', ])
@@ -270,7 +279,7 @@ class TestCaseForDefSourceArgparse(TestCase):
         self.assertEqual(config.collection, [])
         self.assertEqual(config.const_collection, [])
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_parser_2(self):
         parser = self.setup_argparse()
         config = parser.parse_args(args=['-c', ])
@@ -283,7 +292,7 @@ class TestCaseForDefSourceArgparse(TestCase):
         self.assertEqual(config.collection, [])
         self.assertEqual(config.const_collection, [])
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_parser_3(self):
         parser = self.setup_argparse()
         config = parser.parse_args(args=['-t', ])
@@ -296,7 +305,7 @@ class TestCaseForDefSourceArgparse(TestCase):
         self.assertEqual(config.collection, [])
         self.assertEqual(config.const_collection, [])
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_parser_4(self):
         parser = self.setup_argparse()
         config = parser.parse_args(args=['-f', ])
@@ -309,7 +318,7 @@ class TestCaseForDefSourceArgparse(TestCase):
         self.assertEqual(config.collection, [])
         self.assertEqual(config.const_collection, [])
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_parser_5(self):
         parser = self.setup_argparse()
         config = parser.parse_args(args=['-a', '1'])
@@ -322,7 +331,7 @@ class TestCaseForDefSourceArgparse(TestCase):
         self.assertEqual(config.collection, ['1'])
         self.assertEqual(config.const_collection, [])
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_parser_6(self):
         parser = self.setup_argparse()
         config = parser.parse_args(args=['-a', '1', '-a', '2'])
@@ -335,7 +344,7 @@ class TestCaseForDefSourceArgparse(TestCase):
         self.assertEqual(config.collection, ['1', '2'])
         self.assertEqual(config.const_collection, [])
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_parser_7(self):
         parser = self.setup_argparse()
         config = parser.parse_args(args=['-A', ])
@@ -348,7 +357,7 @@ class TestCaseForDefSourceArgparse(TestCase):
         self.assertEqual(config.collection, [])
         self.assertEqual(config.const_collection, ['value-1-to-append'])
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_parser_8(self):
         parser = self.setup_argparse()
         config = parser.parse_args(args=['-B', ])
@@ -361,7 +370,7 @@ class TestCaseForDefSourceArgparse(TestCase):
         self.assertEqual(config.collection, [])
         self.assertEqual(config.const_collection, ['value-2-to-append'])
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_parser_9(self):
         parser = self.setup_argparse()
         config = parser.parse_args(args=['-A', '-B'])
@@ -377,7 +386,7 @@ class TestCaseForDefSourceArgparse(TestCase):
             ['value-1-to-append', 'value-2-to-append']
         )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_parser_10(self):
         parser = self.setup_argparse()
         config = parser.parse_args(args=[
@@ -393,7 +402,7 @@ class TestCaseForDefSourceArgparse(TestCase):
             ['value-1-to-append', 'value-2-to-append']
         )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def setup_subparser(self):
         parser = ArgumentParser(prog='highwater')
         parser.add_argument('--foo', action='store_true', help='foo help', dest='foo')
@@ -408,7 +417,7 @@ class TestCaseForDefSourceArgparse(TestCase):
 
         return parser
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     @patch('sys.stdout', new_callable=StringIO)
     def impl_for_subparser_stdout_with_exit(self, args, expected, mock_stdout):
         parser = self.setup_subparser()
@@ -423,10 +432,10 @@ class TestCaseForDefSourceArgparse(TestCase):
             self.assertEqual(
                 sorted(expected),
                 sorted(x),
-                'case: %s failed - %s != %s' % (args,  expected,  x)
+                'case: %s failed - %s != %s' % (args, expected, x)
             )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     @patch('sys.stdout', new_callable=StringIO)
     def impl_for_subparser_stdout(self, args, expected, mock_stdout):
         parser = self.setup_subparser()
@@ -435,10 +444,10 @@ class TestCaseForDefSourceArgparse(TestCase):
         self.assertEqual(
             sorted(expected),
             sorted(x),
-            'case: %s failed - %s != %s' % (args,  expected,  x)
+            'case: %s failed - %s != %s' % (args, expected, x)
         )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     @patch('sys.stderr', new_callable=StringIO)
     def impl_for_subparser_stderr_with_exit(self, args, expected, mock_stderr):
         parser = self.setup_subparser()
@@ -453,10 +462,10 @@ class TestCaseForDefSourceArgparse(TestCase):
             self.assertEqual(
                 sorted(expected),
                 sorted(x),
-                'case: %s failed - %s != %s' % (args,  expected,  x)
+                'case: %s failed - %s != %s' % (args, expected, x)
             )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     @patch('sys.stderr', new_callable=StringIO)
     def impl_for_subparser_stderr(self, args, expected, mock_stderr):
         parser = self.setup_subparser()
@@ -465,10 +474,10 @@ class TestCaseForDefSourceArgparse(TestCase):
         self.assertEqual(
             sorted(expected),
             sorted(x),
-            'case: %s failed - %s != %s' % (args,  expected,  x)
+            'case: %s failed - %s != %s' % (args, expected, x)
         )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_expansion_subparsers_stdout_with_exit(self):
         tests = (
             (['--help'], expected_value['test_expansion_subparsers_1']),
@@ -478,7 +487,7 @@ class TestCaseForDefSourceArgparse(TestCase):
         for args, expected in tests:
             self.impl_for_subparser_stdout_with_exit(args, expected)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_expansion_subparsers_stderr_with_exit(self):
         tests = (
             (['c'], expected_value['test_expansion_subparsers_4']),
@@ -489,7 +498,7 @@ class TestCaseForDefSourceArgparse(TestCase):
         for args, expected in tests:
             self.impl_for_subparser_stderr_with_exit(args, expected)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_expansion_subparsers_values(self):
         tests = (
             (['a', '16'], expected_value['test_expansion_subparsers_defaults_values_1']),

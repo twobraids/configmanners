@@ -135,8 +135,8 @@ class ConfigurationManager(object):
         if definition_source is None:
             definition_source_list = []
         elif (
-            isinstance(definition_source, collections.abc.Sequence) and
-            not isinstance(definition_source, (six.binary_type, six.text_type))
+            isinstance(definition_source, collections.abc.Sequence)
+            and not isinstance(definition_source, (six.binary_type, six.text_type))
         ):
             definition_source_list = list(definition_source)
         else:
@@ -221,6 +221,7 @@ class ConfigurationManager(object):
             'admin.print_conf',
             'admin.strict',
             'admin.expose_secrets',
+            'admin.why',
         ]
         self.options_banned_from_help = options_banned_from_help
 
@@ -253,8 +254,8 @@ class ConfigurationManager(object):
             # line prior to processing the rest of the command line options.
             config_filename = config_filename_from_commandline(self)
             if (
-                config_filename
-                and ConfigFileFutureProxy in values_source_list
+                config_filename and
+                ConfigFileFutureProxy in values_source_list
             ):
                 self.option_definitions.admin.conf.default = config_filename
 
@@ -310,6 +311,10 @@ class ConfigurationManager(object):
 
         if use_admin_controls and self._get_option('admin.dump_conf').value:
             self.dump_conf()
+            admin_tasks_done = True
+
+        if use_admin_controls and self._get_option('admin.why').value:
+            self.log_config()
             admin_tasks_done = True
 
         if quit_after_admin and admin_tasks_done:
@@ -369,8 +374,8 @@ class ConfigurationManager(object):
                     # there's no option, assume the user must set this
                     print(an_option.name, end='', file=output_stream)
                 elif (
-                    inspect.isclass(an_option.value)
-                    or inspect.ismodule(an_option.value)
+                    inspect.isclass(an_option.value) or
+                    inspect.ismodule(an_option.value)
                 ):
                     # this is already set and it could have expanded, most
                     # likely this is a case where a sub-command has been
@@ -414,8 +419,8 @@ class ConfigurationManager(object):
                 default = option.value
             if default is not None:
                 if (
-                    (option.secret or 'password' in name.lower()) and
-                    not self.option_definitions.admin.expose_secrets.default
+                    (option.secret or 'password' in name.lower())
+                    and not self.option_definitions.admin.expose_secrets.default
                 ):
                     default = '*********'
                 if name not in ('help',):
@@ -511,9 +516,9 @@ class ConfigurationManager(object):
             for a_key in option_defs.keys_breadth_first():
                 an_option = option_defs[a_key]
                 if (
-                    (not a_key.startswith('admin'))
-                    and isinstance(an_option, Option)
-                    and an_option.secret
+                    (not a_key.startswith('admin')) and
+                    isinstance(an_option, Option) and
+                    an_option.secret
                 ):
                     # force the option to be a string of *
                     option_defs[a_key].value = '*' * 16
@@ -522,12 +527,18 @@ class ConfigurationManager(object):
         dispatch_request_to_write(config_file_type, option_defs, opener)
 
     # --------------------------------------------------------------------------
-    def log_config(self, logger):
+    def log_config(self, logger=None):
         """write out the current configuration to a log-like object.
 
         parameters:
             logger - a object that implements a method called 'info' with the
                      same semantics as the call to 'logger.info'"""
+
+        if not logger:
+            class FakeLogger:
+                def info(self, pattern, *args):
+                    print(pattern % args)
+            logger = FakeLogger()
 
         logger.info("app_name: %s", self.app_name)
         logger.info("app_version: %s", self.app_version)
@@ -538,8 +549,8 @@ class ConfigurationManager(object):
         config.sort()
         for key, val, source in config:
             if (
-                self.option_definitions[key].secret
-                or 'password' in key.lower()
+                self.option_definitions[key].secret or
+                'password' in key.lower()
             ):
                 logger.info('%s: *********', key)
             else:
@@ -947,6 +958,11 @@ class ConfigurationManager(object):
             name='expose_secrets',
             default=False,
             doc='should options marked secret get written out or hidden?'
+        )
+        admin.add_option(
+            name='why',
+            default=False,
+            doc="echo the configuration with annotations of each value's source"
         )
         # only offer the config file admin options if they've been requested in
         # the values source list
