@@ -217,6 +217,7 @@ class Aggregation(object):
             self.function = function
         self.value = None
         self.secret = secret
+        self.identity = repr(function)
 
     # --------------------------------------------------------------------------
     def aggregate(self, all_options, local_namespace, args):
@@ -226,6 +227,10 @@ class Aggregation(object):
     def __eq__(self, other):
         if isinstance(other, Aggregation):
             return (
-                self.name == other.name and
-                self.function == other.function
+                self.name == other.name
+                and self.function == other.function
             )
+
+    # --------------------------------------------------------------------------
+    def sourced_from(self):
+        return self.identity
