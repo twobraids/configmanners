@@ -26,18 +26,18 @@ from configman.value_sources.for_modules import OrderableObj, OrderableTuple, \
 from configman.converters import class_converter
 
 
-#==============================================================================
+# ==============================================================================
 class Alpha(RequiredConfig):
     required_config = Namespace()
     required_config.add_option('a', doc='a', default=17)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __init__(self, config):
         self.config = config
         self.a = config.a
 
 
-#==============================================================================
+# ==============================================================================
 class Beta(RequiredConfig):
     required_config = Namespace()
     required_config.add_option(
@@ -46,13 +46,13 @@ class Beta(RequiredConfig):
         default=23
     )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __init__(self, config):
         self.config = config
         self.b = config.b
 
 
-#==============================================================================
+# ==============================================================================
 class Delta(RequiredConfig):
     required_config = Namespace()
     required_config.add_option(
@@ -68,11 +68,11 @@ class Delta(RequiredConfig):
     )
 
 
-#==========================================================================
+# ==========================================================================
 class TestCase(unittest.TestCase):
     maxDiff = None
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_basic_import(self):
         config_manager = Mock()
         vs = ValueSource('configman.tests.values_for_module_tests_1')
@@ -101,11 +101,11 @@ class TestCase(unittest.TestCase):
         self.assertTrue(v.__doc__.startswith('This is a test'))
 
         from collections import Mapping
-        self.assertTrue(v.collections.Mapping is Mapping)
+        self.assertTrue(v.collections.abc.Mapping is Mapping)
         from types import ModuleType
         self.assertTrue(isinstance(v.collections, ModuleType))
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_failure_1(self):
         """complete failure, the module does not exist"""
         self.assertRaises(
@@ -114,7 +114,7 @@ class TestCase(unittest.TestCase):
             'configman.tests.values_4_module_tests_1'
         )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_failure_2(self):
         """wrong format, don't use os style paths, use dotted forms"""
         self.assertRaises(
@@ -123,7 +123,7 @@ class TestCase(unittest.TestCase):
             'configman/tests/test_val_for_modules.py'
         )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_as_overlay(self):
         rc = Namespace()
         rc.add_option(
@@ -160,15 +160,15 @@ class TestCase(unittest.TestCase):
 
         self.assertEqual(config.a, 99)
         self.assertEqual(config.b, 'now is the time')
-        self.assertEqual(config.n.x,  datetime(1960, 5, 4, 15, 10))
-        self.assertEqual(config.n.y,  timedelta(1))
+        self.assertEqual(config.n.x, datetime(1960, 5, 4, 15, 10))
+        self.assertEqual(config.n.y, timedelta(1))
         self.assertEqual(config.n.z, date(1960, 5, 4))
         from configman.tests.values_for_module_tests_3 import Alpha
         self.assertEqual(config.dynamic_load, Alpha)
         self.assertEqual(config.host, 'localhost')
         self.assertEqual(config.port, 5432)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_as_overlay_bad_symbols_with_strict(self):
         rc = Namespace()
         rc.add_option(
@@ -206,7 +206,7 @@ class TestCase(unittest.TestCase):
             argv_source=['--admin.strict'],
         )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_write_simple(self):
         rc = Namespace()
         rc.add_option(
@@ -259,7 +259,7 @@ class TestCase(unittest.TestCase):
         self.assertEqual(l['n'].y, timedelta(3))
         self.assertEqual(l['n'].z, date(2001, 1, 1))
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_write_with_imported_module(self):
         import os
         from configman.tests.values_for_module_tests_1 import Alpha, foo, a
@@ -329,7 +329,7 @@ xxx.yyy = 18
             expected = six.binary_type(expected)
         self.assertEqual(generated_python_module_text, expected)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_write_with_imported_module_with_internal_mappings(self):
         import os
         from configman.tests.values_for_module_tests_1 import Alpha, foo
@@ -438,7 +438,7 @@ xxx.yyy = {
 """
         self.assertEqual(generated_python_module_text, expected)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_write_with_imported_module_with_regex(self):
         required_config = Namespace()
         required_config.add_option(
@@ -463,6 +463,16 @@ xxx.yyy = {
         generated_python_module_text = s.getvalue()
         expected = """# generated Python configman file
 
+from re import Pattern
+
+
+# the following symbols will be ignored by configman when
+# this module is used as a value source.  This will
+# suppress the mismatch warning since these symbols are
+# values for options, not option names themselves.
+ignore_symbol_list = [
+    "Pattern",
+]
 
 
 # just an identifier re
@@ -470,7 +480,7 @@ identifier = "[a-zA-Z][a-zA-Z0-9]*"
 """
         self.assertEqual(generated_python_module_text, expected)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_write_skip_aggregations(self):
         required_config = Namespace()
         required_config.add_option(
@@ -492,7 +502,7 @@ identifier = "[a-zA-Z][a-zA-Z0-9]*"
 
         s = StringIO()
 
-        @contextlib.contextmanager
+        @ contextlib.contextmanager
         def s_opener():
             yield s
 
@@ -510,7 +520,7 @@ minimal_version_for_understanding_refusal = {
 """
         self.assertEqual(generated_python_module_text, expected)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_orderable_obj(self):
         d = {
             "a": 1,
@@ -518,10 +528,10 @@ minimal_version_for_understanding_refusal = {
             None: 3
         }
         sorted_list = [y.value for y in sorted([OrderableObj(x) for x in
-                       d.keys()])]
+                                                d.keys()])]
         self.assertEqual(sorted_list, [None, 3, 'a'])
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_orderable_tuple(self):
         a = [
             (print, 'foo'),

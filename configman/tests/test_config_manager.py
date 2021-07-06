@@ -1564,9 +1564,10 @@ c.string =   from ini
                 config_pathname='fred'
             )
 
-            printed = open('foo.conf').read()
-            self.assertTrue('gender' in printed)
-            self.assertTrue('salary' not in printed)
+            with open('foo.conf') as f:
+                printed = f.read()
+                self.assertTrue('gender' in printed)
+                self.assertTrue('salary' not in printed)
 
         finally:
             if os.path.isfile('foo.conf'):

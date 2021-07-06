@@ -11,13 +11,13 @@ from configman.orderedset import OrderedSet
 from configman.memoize import memoize
 
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 def iteritems_breadth_first(a_mapping, include_dicts=False):
     """a generator that returns all the keys in a set of nested
     Mapping instances.  The keys take the form X.Y.Z"""
     subordinate_mappings = []
     for key, value in six.iteritems(a_mapping):
-        if isinstance(value, collections.Mapping):
+        if isinstance(value, collections.abc.Mapping):
             subordinate_mappings.append((key, value))
             if include_dicts:
                 yield key, value
@@ -28,7 +28,7 @@ def iteritems_breadth_first(a_mapping, include_dicts=False):
             yield '%s.%s' % (key, sub_key), value
 
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 def configman_keys(a_mapping):
     """return a DotDict that is a copy of the provided mapping with keys
     transformed into a configman compatible form:
@@ -50,8 +50,8 @@ def configman_keys(a_mapping):
     return configmanized_keys_dict
 
 
-#==============================================================================
-class DotDict(collections.MutableMapping):
+# ==============================================================================
+class DotDict(collections.abc.MutableMapping):
     """This class is a mapping that stores its items within the __dict__
     of a regular class.  This means that items can be access with either
     the regular square bracket notation or dot notation of class instance
@@ -93,7 +93,7 @@ class DotDict(collections.MutableMapping):
             print('nope, this will never happen')
     """
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __init__(self, initializer=None):
         """the constructor allows for initialization from another mapping.
 
@@ -101,25 +101,25 @@ class DotDict(collections.MutableMapping):
             initializer - a mapping of keys and values to be added to this
                           mapping."""
         self.__dict__['_key_order'] = OrderedSet()
-        if isinstance(initializer, collections.Mapping):
+        if isinstance(initializer, collections.abc.Mapping):
             for key, value in iteritems_breadth_first(
                 initializer,
                 include_dicts=True
             ):
-                if isinstance(value, collections.Mapping):
+                if isinstance(value, collections.abc.Mapping):
                     self[key] = self.__class__(value)
                 else:
                     self[key] = value
         elif initializer is not None:
             raise TypeError('can only initialize with a Mapping')
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __setattr__(self, key, value):
         """this function saves keys into the mapping's __dict__."""
         self._key_order.add(key)
         self.__dict__[key] = value
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __getattr__(self, key):
         """this function is called when the key wasn't found in self.__dict__.
         all that is left to do is raise the KeyError."""
@@ -133,7 +133,7 @@ class DotDict(collections.MutableMapping):
             raise AttributeError(key)
         raise KeyError(key)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __delattr__(self, key):
         try:
             self._key_order.discard(key)
@@ -143,7 +143,7 @@ class DotDict(collections.MutableMapping):
             pass
         super(DotDict, self).__delattr__(key)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __getitem__(self, key):
         """define the square bracket operator to refer to the object's __dict__
         for fetching values.  It accepts keys in the form X.Y.Z"""
@@ -156,7 +156,7 @@ class DotDict(collections.MutableMapping):
             current = getattr(current, k)
         return current
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __setitem__(self, key, value):
         """define the square bracket operator to refer to the object's __dict__
         for setting values."""
@@ -165,7 +165,7 @@ class DotDict(collections.MutableMapping):
         else:
             setattr(self, key, value)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __delitem__(self, key):
         """define the square bracket operator to refer to the object's __dict__
         for deleting values.
@@ -190,7 +190,7 @@ class DotDict(collections.MutableMapping):
             current = getattr(current, k)
         current.__delattr__(key_split[-1])
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __iter__(self):
         """redirect the default iterator to iterate over the object's __dict__
         making sure that it ignores the special '_' keys.  We want those items
@@ -198,12 +198,12 @@ class DotDict(collections.MutableMapping):
         with the clients of this class deep within configman"""
         return iter(self._key_order)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __len__(self):
         """makes the len function also ignore the '_' keys"""
         return len(self._key_order)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def keys_breadth_first(self, include_dicts=False):
         """a generator that returns all the keys in a set of nested
         DotDict instances.  The keys take the form X.Y.Z"""
@@ -219,7 +219,7 @@ class DotDict(collections.MutableMapping):
             for key in self[a_namespace].keys_breadth_first(include_dicts):
                 yield '%s.%s' % (a_namespace, key)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def assign(self, key, value):
         """an alternative method for assigning values to nested DotDict
         instances.  It accepts keys in the form of X.Y.Z.  If any nested
@@ -235,7 +235,7 @@ class DotDict(collections.MutableMapping):
                 cur_dict = cur_dict[k]
         cur_dict[key_split[-1]] = value
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def parent(self, key):
         """when given a key of the form X.Y.Z, this method will return the
         parent DotDict of the 'Z' key."""
@@ -250,13 +250,13 @@ class DotDict(collections.MutableMapping):
         for key in self.keys_breadth_first(False):
             value = self[key]
             indent = '\t' * key.count('.')
-            if isinstance(value, collections.Mapping):
+            if isinstance(value, collections.abc.Mapping):
                 value = str(value)  # recurse!
             print('{0}{1}: {2}'.format(indent, key, repr(value)), file=out)
         return out.getvalue().strip()
 
 
-#==============================================================================
+# ==============================================================================
 class DotDictWithAcquisition(DotDict):
     """This mapping, a derivative of DotDict, has special semantics when
     nested with mappings of the same type.
@@ -310,7 +310,7 @@ class DotDictWithAcquisition(DotDict):
     and 'a' is defined in the base, it is perfectly allowable.
     """
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __getitem__(self, key):
         """define the square bracket operator to refer to the object's __dict__
         for fetching values.  It accepts keys in the form 'x.y.z'"""
@@ -328,7 +328,7 @@ class DotDictWithAcquisition(DotDict):
                 current = temp_dict
         return current
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __setattr__(self, key, value):
         """this function saves keys into the mapping's __dict__.  If the
         item being added is another instance of DotDict, it makes a weakref
@@ -338,7 +338,7 @@ class DotDictWithAcquisition(DotDict):
             value.__dict__['_parent'] = weakref.proxy(self)
         super(DotDictWithAcquisition, self).__setattr__(key, value)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __getattr__(self, key):
         """if a key is not found in the __dict__ using the regular python
         attribute reference algorithm, this function will try to get it from
@@ -363,7 +363,7 @@ class DotDictWithAcquisition(DotDict):
             raise KeyError(key)
 
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 def create_key_translating_dot_dict(
     new_class_name,
     translation_tuples,
@@ -381,35 +381,35 @@ def create_key_translating_dot_dict(
                              (original_substring, substitution_string)
         base_class - the baseclass on which this new class is to be based
     """
-    #==========================================================================
+    # ==========================================================================
     class DotDictWithKeyTranslations(base_class):
 
         def __init__(self, *args, **kwargs):
             self.__dict__['_translation_tuples'] = translation_tuples
             super(DotDictWithKeyTranslations, self).__init__(*args, **kwargs)
 
-        #----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
         @memoize()
         def _translate_key(self, key):
             for original, replacement in self._translation_tuples:
                 key = key.replace(original, replacement)
             return key
 
-        #----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
         def assign(self, key, value):
             super(DotDictWithKeyTranslations, self).assign(
                 self._translate_key(key),
                 value
             )
 
-        #----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
         def __setattr__(self, key, value):
             super(DotDictWithKeyTranslations, self).__setattr__(
                 self._translate_key(key),
                 value
             )
 
-        #----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
         def __getattr__(self, key):
             alt_key = self._translate_key(key)
             if alt_key == key:
@@ -419,7 +419,7 @@ def create_key_translating_dot_dict(
             except KeyError:
                 raise KeyError(key)
 
-        #----------------------------------------------------------------------
+        # ----------------------------------------------------------------------
         def __delattr__(self, key):
             super(DotDictWithKeyTranslations, self).__delattr__(
                 self._translate_key(key)

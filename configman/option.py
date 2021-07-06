@@ -17,9 +17,9 @@ from configman.config_exceptions import (
 )
 
 
-#==============================================================================
+# ==============================================================================
 class Option(object):
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __init__(
         self,
         name,
@@ -68,7 +68,7 @@ class Option(object):
         self.has_changed = has_changed
         self.foreign_data = foreign_data
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __str__(self):
         """return an instance of Option's value as a string.
 
@@ -81,22 +81,18 @@ class Option(object):
         except TypeError:
             return to_str(self.value)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __eq__(self, other):
         if isinstance(other, Option):
             return (
                 self.name == other.name
-                and
-                self.default == other.default
-                and
-                self.doc == other.doc
-                and
-                self.short_form == other.short_form
-                and
-                self.value == other.value
+                and self.default == other.default
+                and self.doc == other.doc
+                and self.short_form == other.short_form
+                and self.value == other.value
             )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __repr__(self):  # pragma: no cover
         if self.default is None:
             return '<Option: %r>' % self.name
@@ -105,7 +101,7 @@ class Option(object):
                 self.name, self.default, self.value, self.is_argument
             )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def _deduce_converter(self, default):
         default_type = type(default)
 
@@ -114,7 +110,7 @@ class Option(object):
             default_type
         )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def set_value(self, val=None):
         if val is None:
             val = self.default
@@ -137,13 +133,13 @@ class Option(object):
         elif isinstance(val, Option):
             self.has_changed = val.default != self.value
             self.value = val.default
-        elif isinstance(val, collections.Mapping) and 'default' in val:
+        elif isinstance(val, collections.abc.Mapping) and 'default' in val:
             self.set_value(val["default"])
         else:
             self.has_changed = val != self.value
             self.value = val
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def set_default(self, val, force=False):
         """this function allows a default to be set on an option that dosen't
         have one.  It is used when a base class defines an Option for use in
@@ -179,7 +175,7 @@ class Option(object):
                 "option"
             )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def copy(self):
         """return a copy"""
         o = Option(
@@ -203,9 +199,9 @@ class Option(object):
         return o
 
 
-#==============================================================================
+# ==============================================================================
 class Aggregation(object):
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __init__(
         self,
         name,
@@ -220,14 +216,14 @@ class Aggregation(object):
         self.value = None
         self.secret = secret
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def aggregate(self, all_options, local_namespace, args):
         self.value = self.function(all_options, local_namespace, args)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __eq__(self, other):
         if isinstance(other, Aggregation):
             return (
-                self.name == other.name
-                and self.function == other.function
+                self.name == other.name and
+                self.function == other.function
             )

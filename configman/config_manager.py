@@ -13,7 +13,7 @@ import contextlib
 import functools
 import warnings
 
-#==============================================================================
+# ==============================================================================
 # for convenience define some external symbols here - some client modules may
 # import these symbols from here rather than their origin definition location.
 # PyFlakes may erroneously flag some of these as unused
@@ -62,16 +62,16 @@ from configman.value_sources import (
 )
 
 
-#==============================================================================
+# ==============================================================================
 class ConfigurationManager(object):
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __init__(
         self,
         definition_source=None,
         values_source_list=None,
         argv_source=None,
-        #use_config_files=True,
+        # use_config_files=True,
         use_auto_help=True,
         use_admin_controls=True,
         quit_after_admin=True,
@@ -135,7 +135,7 @@ class ConfigurationManager(object):
         if definition_source is None:
             definition_source_list = []
         elif (
-            isinstance(definition_source, collections.Sequence) and
+            isinstance(definition_source, collections.abc.Sequence) and
             not isinstance(definition_source, (six.binary_type, six.text_type))
         ):
             definition_source_list = list(definition_source)
@@ -315,7 +315,7 @@ class ConfigurationManager(object):
         if quit_after_admin and admin_tasks_done:
             sys.exit()
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     @contextlib.contextmanager
     def context(self, mapping_class=DotDictWithAcquisition):
         """return a config as a context that calls close on every item when
@@ -328,7 +328,7 @@ class ConfigurationManager(object):
             if config:
                 self._walk_and_close(config)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def get_config(self, mapping_class=DotDictWithAcquisition):
         config = self._generate_config(mapping_class)
         if self._aggregate(self.option_definitions, config, config):
@@ -337,7 +337,7 @@ class ConfigurationManager(object):
         else:
             return config
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def output_summary(self, output_stream=sys.stdout):
         """outputs a usage tip and the list of acceptable commands.
         This is useful as the output of the 'help' option.
@@ -424,7 +424,7 @@ class ConfigurationManager(object):
 
             print(line, file=output_stream)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def print_conf(self):
         """write a config file to the pathname specified in the parameter.  The
         file extention determines the type of file written and must match a
@@ -447,7 +447,7 @@ class ConfigurationManager(object):
         ]
         self.write_conf(config_file_type, stdout_opener, skip_keys=skip_keys)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def dump_conf(self, config_pathname=None):
         """write a config file to the pathname specified in the parameter.  The
         file extention determines the type of file written and must match a
@@ -471,7 +471,7 @@ class ConfigurationManager(object):
 
         self.write_conf(config_file_type, opener, skip_keys=skip_keys)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def write_conf(self, config_file_type, opener, skip_keys=None):
         """write a configuration file to a file-like object.
 
@@ -521,7 +521,7 @@ class ConfigurationManager(object):
 
         dispatch_request_to_write(config_file_type, option_defs, opener)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def log_config(self, logger):
         """write out the current configuration to a log-like object.
 
@@ -549,7 +549,7 @@ class ConfigurationManager(object):
                 except KeyError:
                     logger.info('%s: %s', key, val)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def get_option_names(self):
         """returns a list of fully qualified option names.
 
@@ -561,7 +561,7 @@ class ConfigurationManager(object):
         return [x for x in self.option_definitions.keys_breadth_first()
                 if isinstance(self.option_definitions[x], Option)]
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def _create_reference_value_options(self, keys, finished_keys):
         """this method steps through the option definitions looking for
         alt paths.  On finding one, it creates the 'reference_value_from' links
@@ -602,7 +602,7 @@ class ConfigurationManager(object):
 
         return set_of_reference_value_option_names
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def _overlay_expand(self):
         """This method overlays each of the value sources onto the default
         in each of the defined options.  It does so using a breadth first
@@ -669,7 +669,7 @@ class ConfigurationManager(object):
             for key in all_keys:
                 if key in finished_keys:
                     continue
-                #if not isinstance(an_option, Option):
+                # if not isinstance(an_option, Option):
                 #   continue  # aggregations and other types are ignored
                 # loop through all the value sources looking for values
                 # that match this current key.
@@ -725,7 +725,7 @@ class ConfigurationManager(object):
                 # mark this key as having been seen and processed
                 finished_keys.add(key)
                 an_option = self.option_definitions[key]
-                #if not isinstance(an_option, Option):
+                # if not isinstance(an_option, Option):
                 #    continue  # aggregations, namespaces are ignored
                 # apply the from string conversion to make the real value
                 an_option.set_value(an_option.default)
@@ -744,7 +744,7 @@ class ConfigurationManager(object):
                         )
                     # make sure what we got as new_req is actually a
                     # Mapping of some sort
-                    if not isinstance(new_requirements, collections.Mapping):
+                    if not isinstance(new_requirements, collections.abc.Mapping):
                         # we didn't get a mapping, perhaps the option value
                         # was a Mock object - in any case we can't try to
                         # interpret 'new_req' as a configman requirement
@@ -797,7 +797,7 @@ class ConfigurationManager(object):
                     pass
         return finished_keys
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def _check_for_mismatches(self, known_keys):
         """check for bad options from value sources"""
         for a_value_source in self.values_source_list:
@@ -862,11 +862,11 @@ class ConfigurationManager(object):
                         'Invalid options: %s' % ', '.join(sorted(unmatched_keys))
                     )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     @staticmethod
     def _walk_and_close(a_dict):
         for val in six.itervalues(a_dict):
-            if isinstance(val, collections.Mapping):
+            if isinstance(val, collections.abc.Mapping):
                 ConfigurationManager._walk_and_close(val)
             try:
                 if hasattr(val, 'close') and not inspect.isclass(val):
@@ -875,7 +875,7 @@ class ConfigurationManager(object):
                 # py3 will sometimes hit KeyError from the hasattr()
                 pass
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def _generate_config(self, mapping_class):
         """This routine generates a copy of the DotDict based config"""
         config = mapping_class()
@@ -886,12 +886,12 @@ class ConfigurationManager(object):
         )
         return config
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def _setup_auto_help(self):
         help_option = Option(name='help', doc='print this', default=False)
         self.definition_source_list.append({'help': help_option})
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def _get_config_pathname(self):
         if os.path.isdir(self.config_pathname):
             # we've got a path with no file name at the end
@@ -908,7 +908,7 @@ class ConfigurationManager(object):
                 return None
         return self.config_pathname
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def _setup_admin_options(self, values_source_list):
         base_namespace = Namespace()
         base_namespace.admin = admin = Namespace()
@@ -945,7 +945,7 @@ class ConfigurationManager(object):
             )
         return base_namespace
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def _walk_config_copy_values(self, source, destination, mapping_class):
         for key, val in source.items():
             if key.endswith('$'):
@@ -957,7 +957,7 @@ class ConfigurationManager(object):
                 destination[key] = d = mapping_class()
                 self._walk_config_copy_values(val, d, mapping_class)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def _aggregate(self, source, base_namespace, local_namespace):
         aggregates_found = False
         for key, val in source.items():
@@ -974,7 +974,7 @@ class ConfigurationManager(object):
             # skip Options, we're only dealing with Aggregations
         return aggregates_found
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     @staticmethod
     def _option_sort(x_tuple):
         key, val = x_tuple
@@ -983,14 +983,14 @@ class ConfigurationManager(object):
         else:
             return key
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def _get_option(self, name):
         try:
             return self.option_definitions[name]
         except KeyError:
             raise NotAnOptionError('%s is not a known option name' % name)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def _get_options(self, source=None, options=None, prefix=''):
         return [
             (key, self.option_definitions[key])

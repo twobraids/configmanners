@@ -30,10 +30,11 @@ def backwards(x):
 def upper(x):
     print(x.upper())
 
+
 action_dispatch = {'echo': echo,
                    'backwards': backwards,
                    'upper': upper
-                  }
+                   }
 
 
 def action_converter(action):
@@ -48,22 +49,23 @@ def action_converter(action):
             return f
         raise Exception("'%s' is not a valid action" % action)
 
+
 # create the definitions for the parameters that are to come from
 # the command line or config file.
 definition_source = Namespace()
 definition_source.add_option('text',
-                                 'Socorro Forever',
-                                 'the text input value',
-                                 short_form='t')
+                             'Socorro Forever',
+                             'the text input value',
+                             short_form='t')
 # this application doesn't have a main function. This parameter
 # definition sets up what function will be executed on invocation of
 # of this script.
 definition_source.add_option('action',
-                                 'echo',
-                                 'the action to take [%s]' %
-                                    ', '.join(action_dispatch),
-                                short_form='a',
-                                from_string_converter=action_converter)
+                             'echo',
+                             'the action to take [%s]' %
+                             ', '.join(action_dispatch),
+                             short_form='a',
+                             from_string_converter=action_converter)
 
 # this time, we're not going to accept the default list of value sources for
 # the definitions created above.  'value_sources' is a sequence of objects that
@@ -77,7 +79,7 @@ definition_source.add_option('action',
 # finally, apply values that it gets from the command line.
 value_sources = ('demo2.ini', environment, command_line)
 # the value_sources sequence can contian any object that is a derivation of the
-# type collections.Mapping, a module, or instances of any of the registered
+# type collections.abc.Mapping, a module, or instances of any of the registered
 # handlers. cm.environment is just an alias for os.environ.  cm.command_line is
 # an alias for the 'getopt' module, a registerd handler.
 

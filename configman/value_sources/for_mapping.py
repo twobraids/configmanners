@@ -15,19 +15,19 @@ from configman import namespace
 
 can_handle = (
     os.environ,
-    collections.Mapping,
+    collections.abc.Mapping,
 )
 
 file_name_extension = 'env'
 
 
-#==============================================================================
+# ==============================================================================
 class ValueSource(object):
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __init__(self, source, the_config_manager=None):
         if source is os.environ:
             self.always_ignore_mismatches = True
-        elif isinstance(source, collections.Mapping):
+        elif isinstance(source, collections.abc.Mapping):
             if "always_ignore_mismatches" in source:
                 self.always_ignore_mismatches = \
                     bool(source["always_ignore_mismatches"])
@@ -37,14 +37,14 @@ class ValueSource(object):
             raise CantHandleTypeException()
         self.source = source
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     @memoize()
     def get_values(self, config_manager, ignore_mismatches, obj_hook=DotDict):
         if isinstance(self.source, obj_hook):
             return self.source
         return obj_hook(initializer=self.source)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     @staticmethod
     def _namespace_reference_value_from_sort(key_value_tuple):
         key, value = key_value_tuple
@@ -54,7 +54,7 @@ class ValueSource(object):
         else:
             return key
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     @staticmethod
     def write(source_dict, namespace_name=None, output_stream=sys.stdout):
         options = [

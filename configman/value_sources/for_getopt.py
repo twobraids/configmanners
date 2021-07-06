@@ -29,9 +29,10 @@ from configman.value_sources.source_exceptions import (
 )
 
 
-#==============================================================================
+# ==============================================================================
 class GetOptFailureException(ValueException):
     pass
+
 
 can_handle = (
     getopt,
@@ -39,15 +40,16 @@ can_handle = (
 )
 
 
-#==============================================================================
+# ==============================================================================
 class ValueSource(object):
     """The ValueSource implementation for the getopt module.  This class will
     interpret an argv list of commandline arguments using getopt."""
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
+
     def __init__(self, source, the_config_manager=None):
         if source is getopt:
             self.argv_source = the_config_manager.argv_source
-        elif isinstance(source, collections.Sequence):
+        elif isinstance(source, collections.abc.Sequence):
             self.argv_source = source
         else:
             raise CantHandleTypeException()
@@ -60,7 +62,7 @@ class ValueSource(object):
     # regard to the overall --admin.strict setting.
     command_line_value_source = True
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def get_values(self, config_manager, ignore_mismatches, obj_hook=DotDict):
         """This is the black sheep of the crowd of ValueSource implementations.
         It needs to know ahead of time all of the parameters that it will need,
@@ -123,7 +125,7 @@ class ValueSource(object):
             command_line_values[name] = value
         return command_line_values
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def getopt_create_opts(self, option_definitions):
         short_options_list = []
         long_options_list = []
@@ -134,7 +136,7 @@ class ValueSource(object):
         short_options_str = ''.join(short_options_list)
         return short_options_str, long_options_list
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def getopt_create_opts_recursive(self, source,
                                      prefix,
                                      short_options_list,
@@ -166,7 +168,7 @@ class ValueSource(object):
                                                   short_options_list,
                                                   long_options_list)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     @staticmethod
     def getopt_with_ignore(args, shortopts, longopts=[]):
         """my_getopt(args, options[, long_options]) -> opts, args
@@ -209,7 +211,7 @@ class ValueSource(object):
                 args = args[1:]
         return opts, prog_args
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def find_name_with_short_form(self, short_name, source, prefix):
         for key, val in source.items():
             if isinstance(val, namespace.Namespace):
@@ -226,14 +228,14 @@ class ValueSource(object):
                     continue
         return None
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     @staticmethod
     def _get_arguments(option_definitions, switches_already_used):
         for key in option_definitions.keys_breadth_first():
             try:
                 if (
-                    option_definitions[key].is_argument
-                    and key not in switches_already_used
+                    option_definitions[key].is_argument and
+                    key not in switches_already_used
                 ):
                     yield key
             except AttributeError:
@@ -241,7 +243,7 @@ class ValueSource(object):
                 # an argument - likely an aggregation
                 pass
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     @staticmethod
     def _setup_auto_help(the_config_manager):
         help_option = option.Option(

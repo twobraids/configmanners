@@ -12,19 +12,19 @@ from configman.dotdict import DotDict
 import configman.def_sources as defsrc
 
 
-#==============================================================================
+# ==============================================================================
 class TestCase(unittest.TestCase):
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_setup_definitions_1(self):
         d = DotDict()
 
         def fake_mapping_func(source, destination):
-            self.assertTrue(isinstance(source, collections.Mapping))
+            self.assertTrue(isinstance(source, collections.abc.Mapping))
             self.assertEqual(d, destination)
         saved_original = defsrc.definition_dispatch.copy()
         try:
-            defsrc.definition_dispatch[collections.Mapping] = fake_mapping_func
+            defsrc.definition_dispatch[collections.abc.Mapping] = fake_mapping_func
             s = {}
             defsrc.setup_definitions(s, d)
             s = DotDict()
@@ -34,7 +34,7 @@ class TestCase(unittest.TestCase):
         finally:
             defsrc.definition_dispatch = saved_original
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_setup_definitions_2(self):
         d = DotDict()
 
@@ -49,7 +49,7 @@ class TestCase(unittest.TestCase):
         finally:
             defsrc.definition_dispatch = saved_original
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_setup_definitions_3(self):
         d = DotDict()
 

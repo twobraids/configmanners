@@ -13,7 +13,7 @@ from configman.option import (
 )
 
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 def setup_definitions(source, destination):
     for key, val in source.items():
         if key.startswith('__'):
@@ -25,7 +25,7 @@ def setup_definitions(source, destination):
             val.set_value(val.default)
         elif isinstance(val, Aggregation):
             destination[key] = val
-        elif isinstance(val, collections.Mapping):
+        elif isinstance(val, collections.abc.Mapping):
             if 'name' in val and 'default' in val:
                 # this is an Option in the form of a dict, not a Namespace
                 if key == 'not_for_definition' and val is True:

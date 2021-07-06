@@ -14,7 +14,7 @@ from configman.def_sources import for_modules
 from configman.def_sources import for_json
 
 definition_dispatch = {
-    collections.Mapping: for_mappings.setup_definitions,
+    collections.abc.Mapping: for_mappings.setup_definitions,
     type(for_modules): for_modules.setup_definitions,
     six.binary_type: for_json.setup_definitions,
     six.text_type: for_json.setup_definitions,

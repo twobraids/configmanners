@@ -29,13 +29,13 @@ from configman.converters import (
 )
 
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # horrors
 # argparse is not very friendly toward extension in this manner.  In order to
 # fully exploit argparse, it is necessary to reach inside it to examine some
 # of its internal structures that are not intended for external use.  These
 # invasive methods are restricted to read-only.
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 def find_action_name_by_value(registry, target_action_instance):
     """the association of a name of an action class with a human readable
     string is exposed externally only at the time of argument definitions.
@@ -52,7 +52,7 @@ def find_action_name_by_value(registry, target_action_instance):
     return None
 
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 def get_args_and_values(parser, an_action):
     """this rountine attempts to reconstruct the kwargs that were used in the
     creation of an action object"""
@@ -61,8 +61,8 @@ def get_args_and_values(parser, an_action):
         (an_attr, getattr(an_action, an_attr))
         for an_attr in args
         if (
-            an_attr not in ('self', 'required')
-            and getattr(an_action, an_attr) is not None
+            an_attr not in ('self', 'required') and
+            getattr(an_action, an_attr) is not None
         )
     )
     action_name = find_action_name_by_value(
@@ -80,7 +80,7 @@ def get_args_and_values(parser, an_action):
     return args, kwargs
 
 
-#==============================================================================
+# ==============================================================================
 class SubparserFromStringConverter(object):
     """this class serves as both a repository of namespace sets corresponding
     with subparsers, and a from string converer. It is used in configman as the
@@ -90,11 +90,12 @@ class SubparserFromStringConverter(object):
     for the subparser configman option.  A deriviative of a string, this class
     also contains the configman required config corresponding to the actions
     of the subparsers."""
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
+
     def __init__(self):
         self.namespaces = {}
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def add_namespace(self, name, a_namespace):
         """as we build up argparse, the actions that define a subparser are
         translated into configman options.  Each of those options must be
@@ -109,12 +110,12 @@ class SubparserFromStringConverter(object):
                 an_option.foreign_data = DotDict()
             an_option.foreign_data['argparse.owning_subparser_name'] = name
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __call__(self, subparser_name):
         """As an instance of this class must serve as a from_string_converter,
         it must behave like a function.  This method gives an instance of this
         class function semantics"""
-        #======================================================================
+        # ======================================================================
         class SubparserValue(str):
             """Instances of this class/closure serve as the value given out as
             the final value of the subparser configman option.  It is a string,
@@ -133,7 +134,7 @@ class SubparserFromStringConverter(object):
                     '%s is not a known sub-command' % subparser_name
                 )
 
-            #------------------------------------------------------------------
+            # ------------------------------------------------------------------
             def __new__(cls):
                 """deriving from string is tricky business.  You cannot set the
                 value in an __init__ method because strings are immutable and
@@ -142,11 +143,11 @@ class SubparserFromStringConverter(object):
                 obj = str.__new__(cls, subparser_name)
                 return obj
 
-            #------------------------------------------------------------------
+            # ------------------------------------------------------------------
             def get_required_config(self):
                 return self.required_config
 
-            #------------------------------------------------------------------
+            # ------------------------------------------------------------------
             def to_str(self):
                 return subparser_name
         # instantiate the class and return it.  It will be assigned as the
@@ -154,20 +155,21 @@ class SubparserFromStringConverter(object):
         return SubparserValue()
 
 
-#==============================================================================
+# ==============================================================================
 class ConfigmanSubParsersAction(argparse._SubParsersAction):
     """this is a derivation of the argpares _SubParsersAction action.  We
     require its use over the default _SubParsersAction because we need to
     preserve the original args & kwargs that created it.  They will be used
     in a later phase of configman to perfectly reproduce the object without
     having to resort to a copy."""
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
+
     def __init__(self, *args, **kwargs):
         self.original_args = args
         self.original_kwargs = kwargs
         super(ConfigmanSubParsersAction, self).__init__(*args, **kwargs)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def add_parser(self, *args, **kwargs):
         """each time a subparser action is used to create a new parser object
         we must save the original args & kwargs.  In a later phase of
@@ -191,12 +193,12 @@ class ConfigmanSubParsersAction(argparse._SubParsersAction):
         })
         return a_subparser
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def add_configman_option(self, an_option):
         self._configman_option = an_option
 
 
-#==============================================================================
+# ==============================================================================
 class ArgumentParser(argparse.ArgumentParser):
     """this subclass of the standard argparse parser to be used as a drop in
     replacement for argparse.ArgumentParser.  It hijacks the standard
@@ -205,9 +207,10 @@ class ArgumentParser(argparse.ArgumentParser):
     the final output do its overlay magic. The final result is not an
     argparse Namespace object, but a configman DotDict.  This means that it
     is functionlly equivalent to the argparse Namespace with the additional
-    benefit of being compliant with the collections.Mapping abstract base
+    benefit of being compliant with the collections.abc.Mapping abstract base
     class."""
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
+
     def __init__(self, *args, **kwargs):
         self.original_args = args
         self.original_kwargs = kwargs.copy()
@@ -222,7 +225,7 @@ class ArgumentParser(argparse.ArgumentParser):
         self.value_source_list = [environ, ConfigFileFutureProxy, argparse]
         self.required_config = Namespace()
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def get_required_config(self):
         """because of the exsistance of subparsers, the configman options
         that correspond with argparse arguments are not a constant.  We need
@@ -256,7 +259,7 @@ class ArgumentParser(argparse.ArgumentParser):
             pass
         return required_config
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def add_argument(self, *args, **kwargs):
         """this method overrides the standard in order to create a parallel
         argument system in both the argparse and configman worlds.  Each call
@@ -319,7 +322,7 @@ class ArgumentParser(argparse.ArgumentParser):
         configman_is_argument = False
 
         # each of argparse's Action types must be handled separately.
-        #--------------------------------------------------------------------
+        # --------------------------------------------------------------------
         # STORE
         if argparse_action_name == 'store':
             if argparse_dest is None:
@@ -376,11 +379,11 @@ class ArgumentParser(argparse.ArgumentParser):
                 configman_from_string = str
             configman_to_string = to_str
 
-        #--------------------------------------------------------------------
+        # --------------------------------------------------------------------
         # STORE_CONST
         elif (
-            argparse_action_name == 'store_const'
-            or argparse_action_name == 'count'
+            argparse_action_name == 'store_const' or
+            argparse_action_name == 'count'
         ):
             if argparse_dest is None:
                 configman_name, configman_is_argument = self._get_option_name(
@@ -400,11 +403,11 @@ class ArgumentParser(argparse.ArgumentParser):
                 )
             configman_to_string = to_str
 
-        #--------------------------------------------------------------------
+        # --------------------------------------------------------------------
         # STORE_TRUE /  STORE_FALSE
         elif (
-            argparse_action_name == 'store_true'
-            or argparse_action_name == 'store_false'
+            argparse_action_name == 'store_true' or
+            argparse_action_name == 'store_false'
         ):
             if argparse_dest is None:
                 configman_name, configman_is_argument = self._get_option_name(
@@ -418,7 +421,7 @@ class ArgumentParser(argparse.ArgumentParser):
             configman_from_string = boolean_converter
             configman_to_string = to_str
 
-        #--------------------------------------------------------------------
+        # --------------------------------------------------------------------
         # APPEND
         elif argparse_action_name == 'append':
             if argparse_dest is None:
@@ -436,7 +439,7 @@ class ArgumentParser(argparse.ArgumentParser):
                 configman_from_string = str
             configman_to_string = to_str
 
-        #--------------------------------------------------------------------
+        # --------------------------------------------------------------------
         # APPEND_CONST
         elif argparse_action_name == 'append_const':
             if argparse_dest is None:
@@ -457,12 +460,12 @@ class ArgumentParser(argparse.ArgumentParser):
                 )
             configman_to_string = to_str
 
-        #--------------------------------------------------------------------
+        # --------------------------------------------------------------------
         # VERSION
         elif argparse_action_name == 'version':
             return an_action
 
-        #--------------------------------------------------------------------
+        # --------------------------------------------------------------------
         # OTHER
         else:
             configman_name = argparse_dest
@@ -484,7 +487,7 @@ class ArgumentParser(argparse.ArgumentParser):
             doc=configman_doc,
             from_string_converter=configman_from_string,
             to_string_converter=configman_to_string,
-            #short_form=configman_short_form,
+            # short_form=configman_short_form,
             is_argument=configman_is_argument,
             not_for_definition=configman_not_for_definition,
             # we're going to save the args & kwargs that created the
@@ -500,7 +503,7 @@ class ArgumentParser(argparse.ArgumentParser):
         )
         return an_action
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def add_subparsers(self, *args, **kwargs):
         """When adding a subparser, we need to ensure that our version of the
         SubparserAction object is returned.  We also need to create the
@@ -555,14 +558,14 @@ class ArgumentParser(argparse.ArgumentParser):
 
         return subparser_action
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def set_defaults(self, **kwargs):
         """completely take over the 'set_defaults' system of argparse, because
         configman has no equivalent.  These will be added back to the configman
         result at the very end."""
         self.extra_defaults = kwargs
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def parse_args(self, args=None, namespace=None):
         """this method hijacks the normal argparse Namespace generation,
         shimming configman into the process. The return value will be a
@@ -614,7 +617,7 @@ class ArgumentParser(argparse.ArgumentParser):
 
         return conf
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def parse_known_args(self, args=None, namespace=None):
         """this method hijacks the normal argparse Namespace generation,
         shimming configman into the process. The return value will be a
@@ -639,7 +642,7 @@ class ArgumentParser(argparse.ArgumentParser):
         )
         return conf
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def _get_option_name(self, args):
         # argparse is loose in the manner that it names arguments.  Sometimes
         # it comes in as the 'dest' kwarg, othertimes it is deduced from args
@@ -658,11 +661,11 @@ class ArgumentParser(argparse.ArgumentParser):
         return None
 
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 def setup_definitions(source, destination):
     """this method stars the process of configman reading and using an argparse
     instance as a source of configuration definitions."""
-    #"""assume that source is of type argparse
+    # """assume that source is of type argparse
     try:
         destination.update(source.get_required_config())
     except AttributeError:

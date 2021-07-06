@@ -12,7 +12,7 @@ from configman import RequiredConfig, Namespace, ConfigurationManager
 from configman.dotdict import DotDict
 
 
-#==============================================================================
+# ==============================================================================
 # the following two classes are used in test_classes_in_namespaces_converter1
 # and need to be declared at module level scope
 class Foo(RequiredConfig):
@@ -21,7 +21,7 @@ class Foo(RequiredConfig):
     required_config.add_option('y', default=23)
 
 
-#==============================================================================
+# ==============================================================================
 class Bar(RequiredConfig):
     required_config = Namespace()
     required_config.add_option('x', default=227)
@@ -30,48 +30,48 @@ class Bar(RequiredConfig):
 
 # the following two classes are used in test_classes_in_namespaces_converter2
 # and test_classes_in_namespaces_converter_3.  They need to be declared at
-#module level scope
-#==============================================================================
+# module level scope
+# ==============================================================================
 class Alpha(RequiredConfig):
     required_config = Namespace()
     required_config.add_option('a', doc='a', default=17)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __init__(self, config):
         self.config = config
         self.a = config.a
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def to_str(self):
         return "I am an instance of an Alpha object"
 
 
-#==============================================================================
+# ==============================================================================
 class AlphaBad1(Alpha):
     def __init__(self, config):
         super(AlphaBad1, self).__init__(config)
         self.a_type = int
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def to_str(self):
         raise AttributeError
 
 
-#==============================================================================
+# ==============================================================================
 class AlphaBad2(AlphaBad1):
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def to_str(self):
         raise KeyError
 
 
-#==============================================================================
+# ==============================================================================
 class AlphaBad3(AlphaBad1):
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def to_str(self):
         raise TypeError
 
 
-#==============================================================================
+# ==============================================================================
 class Beta(RequiredConfig):
     required_config = Namespace()
     required_config.add_option(
@@ -80,16 +80,16 @@ class Beta(RequiredConfig):
         default=23
     )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __init__(self, config):
         self.config = config
         self.b = config.b
 
 
-#==============================================================================
+# ==============================================================================
 class TestCase(unittest.TestCase):
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_str_dict_keys(self):
         function = converters.str_dict_keys
         result = function({u'name': u'Peter', 'age': 99, 10: 11})
@@ -103,7 +103,7 @@ class TestCase(unittest.TestCase):
             else:
                 self.assertTrue(isinstance(key, int))
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_str_quote_stripper(self):
         a = """'"single and double quoted"'"""
         self.assertEqual(
@@ -129,7 +129,7 @@ class TestCase(unittest.TestCase):
             "trailing apostrophy'"
         )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_str_to_timedelta(self):
         str_to_timedelta = converters.timedelta_converter
         from datetime import timedelta
@@ -156,11 +156,11 @@ class TestCase(unittest.TestCase):
         self.assertRaises(ValueError, str_to_timedelta, 'xxx')
         self.assertRaises(TypeError, str_to_timedelta, 10.1)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_str_to_python_object_nothing(self):
         self.assertEqual(converters.str_to_python_object(''), None)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_str_to_python_object_with_whitespace(self):
         """either side whitespace doesn't matter"""
         function = converters.class_converter
@@ -172,7 +172,7 @@ class TestCase(unittest.TestCase):
         """),
             Foo)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_dict_conversions(self):
         d = {
             'a': 1,
@@ -187,7 +187,7 @@ class TestCase(unittest.TestCase):
         dd = converter_fn(s)
         self.assertEqual(dd, d)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_classes_in_namespaces_converter_1(self):
         converter_fn = converters.classes_in_namespaces_converter('HH%d')
         class_list_str = (
@@ -212,13 +212,13 @@ class TestCase(unittest.TestCase):
             ])
         )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_classes_in_namespaces_converter_2(self):
         converter_fn = converters.classes_in_namespaces_converter('HH%d')
         class_sequence = (Foo, Bar)
         self.assertRaises(TypeError, converter_fn, class_sequence)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_classes_in_namespaces_converter_3(self):
         n = Namespace()
         n.add_option(
@@ -228,8 +228,7 @@ class TestCase(unittest.TestCase):
                 'configman.tests.test_converters.Alpha, '
                 'configman.tests.test_converters.Alpha'
             ),
-            from_string_converter=
-            converters.classes_in_namespaces_converter('kls%d')
+            from_string_converter=converters.classes_in_namespaces_converter('kls%d')
         )
 
         cm = ConfigurationManager(n, argv_source=[])
@@ -241,7 +240,7 @@ class TestCase(unittest.TestCase):
             self.assertEqual(config[x].cls, Alpha)
             self.assertTrue('cls_instance' not in config[x])
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_classes_in_namespaces_converter_4(self):
         n = Namespace()
         n.add_option(
@@ -280,7 +279,7 @@ class TestCase(unittest.TestCase):
                            config[x].kls)
             )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_to_str_to_regular_expression(self):
         import re
         self.assertEqual(
@@ -288,7 +287,7 @@ class TestCase(unittest.TestCase):
             re.compile('.*')
         )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_str_to_list(self):
         function = converters.list_converter
         self.assertEqual(function(''), [])
@@ -310,7 +309,7 @@ class TestCase(unittest.TestCase):
             [u'P\xefter', u'L\xa3rs']
         )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_to_str(self):
         to_str = converters.to_str
         self.assertEqual(to_str(int), 'int')
@@ -330,7 +329,7 @@ class TestCase(unittest.TestCase):
         self.assertEqual(to_str(type), 'type')
         self.assertEqual(
             to_str(converters.compiled_regexp_type),
-            '_sre.SRE_Pattern'
+            're.Pattern'
         )
         self.assertEqual(to_str(1), '1')
         self.assertEqual(to_str(3.1415), '3.1415')
@@ -380,7 +379,7 @@ class TestCase(unittest.TestCase):
         r = re.compile('.*')
         self.assertEqual(to_str(r), '.*')
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_str_to_boolean(self):
         self.assertTrue(converters.str_to_boolean('TRUE'))
         self.assertTrue(converters.str_to_boolean('"""TRUE"""'))
@@ -404,7 +403,7 @@ class TestCase(unittest.TestCase):
         ))
         self.assertRaises(ValueError, converters.str_to_boolean, 99)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_arbitrary_object_to_string(self):
         function = converters.py_obj_to_str
         self.assertEqual(function(None), '')
@@ -446,7 +445,7 @@ class TestCase(unittest.TestCase):
         from configman import tests as tests_module
         self.assertEqual(function(tests_module), 'configman.tests')
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def test_list_to_str(self):
         function = converters.list_to_str
         self.assertEqual(function([]), '')
