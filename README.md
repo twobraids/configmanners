@@ -23,9 +23,9 @@ injection system. In addition to its own API, it mimics the argparse API, so in 
 _This is the K Lars Lohn fork of configman. Since I am no longer associated with Mozilla,
 I have no ownership/control/privileges on the moribund Mozilla repo. I don't think Mozilla
 uses it anywhere anymore. As it it critical to my personal software work, I intend
-to continue to maintain and modify it for my own purposes.
+to continue to maintain and modify it for my own purposes._
 
-It is highly unlikely that I will publish it as a 'pip' installable module._
+It is highly unlikely that I will publish it as a 'pip' installable module.
 
 
 Running tests (moribund)
