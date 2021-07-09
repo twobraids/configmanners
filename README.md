@@ -4,7 +4,13 @@ configmanners
 [![Travis](https://travis-ci.org/mozilla/configman.png?branch=master)](https://travis-ci.org/mozilla/configman)
 
 Copyright Mozilla, 2013 - 2015
+
 Copyright K Lars Lohn 2021
+
+Configmanners
+-------------
+
+Making various dispart configuration methods play politely with each other.
 
 This is a unification of several methods of passing configuration into a Python program.
 The primary feature is making a consistent interface to commandline arguments,
@@ -14,11 +20,12 @@ conflicts. It can dynamically load modules creating a "poor man's" dependency
 injection system. In addition to its own API, it mimics the argparse API, so in many
 (not all) cases, it substitute for argparse.
 
-_This is the K Lars Lohn fork of configman. Since I am no longer associated with Mozilla, I have no
- ownership/control/privileges on the moribund Mozilla repo. I don't think Mozilla
- uses it anywhere anymore. As it it critical to my personal software work, I intend
-to continue to maintain and modify it for my own purposes.  However, I do not intend
-on publishing this as a 'pip' installable module._
+_This is the K Lars Lohn fork of configman. Since I am no longer associated with Mozilla,
+I have no ownership/control/privileges on the moribund Mozilla repo. I don't think Mozilla
+uses it anywhere anymore. As it it critical to my personal software work, I intend
+to continue to maintain and modify it for my own purposes.
+
+It is highly unlikely that I will publish it as a 'pip' installable module._
 
 
 Running tests (moribund)
