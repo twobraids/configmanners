@@ -47,15 +47,15 @@ def find_tests_require():
 
 
 setup(
-    name='configman',
-    version=read('configman/version.txt'),
+    name='configmanners',
+    version=read('configmanners/version.txt'),
     description=(
         'Flexible reading and writing of namespaced configuration options'
     ),
     long_description=read('README.md'),
     author='K Lars Lohn, Peter Bengtsson',
     author_email='lars@mozilla.com, peterbe@mozilla.com',
-    url='https://github.com/mozilla/configman',
+    url='https://github.com/mozilla/configmanners',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)',
@@ -70,8 +70,8 @@ setup(
         'Intended Audience :: Developers',
         'Environment :: Console',
     ],
-    packages=['configman'],
-    package_data={'configman': ['*/*', 'version.txt']},
+    packages=['configmanners'],
+    package_data={'configmanners': ['*/*', 'version.txt']},
     install_requires=find_install_requires(),
     tests_require=find_tests_require(),
     test_suite='nose.collector',

@@ -8,7 +8,7 @@ This sample app uses .ini files with `+include` directives
 to prove that it's possible to use relative paths.
 """
 from __future__ import absolute_import, division, print_function
-from configman import RequiredConfig, Namespace
+from configmanners import RequiredConfig, Namespace
 
 
 # the following class embodies the business logic of the application.
@@ -79,6 +79,7 @@ def create_environment():
                 "+include %s\n" % os.path.basename(f3)
             )
         return f0
+
 
 if __name__ == "__main__":
     f = create_environment()

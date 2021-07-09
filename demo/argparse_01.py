@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import configman
+import configmanners
 
-parser = configman.ArgumentParser()
+parser = configmanners.ArgumentParser()
 parser.parse_args()

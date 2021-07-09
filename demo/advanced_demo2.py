@@ -15,11 +15,14 @@ from __future__ import absolute_import, division, print_function
 import contextlib
 import threading
 
-from configman import RequiredConfig, ConfigurationManager, Namespace
+from configmanners import RequiredConfig, ConfigurationManager, Namespace
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
+
 class FakeDatabaseConnection():
     """this class substitutes for a real database connection"""
+
     def __init__(self, dsn):
         print("FakeDatabaseConnection - created")
         self.connection_open = True
@@ -48,11 +51,11 @@ class FakeDatabaseConnection():
         self.in_transaction = False
 
 
-#==============================================================================
+# ==============================================================================
 class PGTransaction(RequiredConfig):
-    """a configman complient class for setup of a Postgres transaction"""
-    #--------------------------------------------------------------------------
-    # configman parameter definition section
+    """a configmanners complient class for setup of a Postgres transaction"""
+    # --------------------------------------------------------------------------
+    # configmanners parameter definition section
     # here we're setting up the minimal parameters required for connecting
     # to a database.
     required_config = Namespace()
@@ -82,7 +85,7 @@ class PGTransaction(RequiredConfig):
         doc='the name of the database',
     )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __init__(self, config, local_config):
         super(PGTransaction, self).__init__()
         self.dsn = ("host=%(database_host)s "
@@ -91,7 +94,7 @@ class PGTransaction(RequiredConfig):
                     "user=%(database_user)s "
                     "password=%(database_password)s") % local_config
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def connection(self, name_unused=None):
         """return a new database connection
 
@@ -101,7 +104,7 @@ class PGTransaction(RequiredConfig):
         """
         return FakeDatabaseConnection(self.dsn)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     @contextlib.contextmanager
     def __call__(self, name=None):
         """returns a database connection wrapped in a contextmanager.
@@ -122,7 +125,7 @@ class PGTransaction(RequiredConfig):
                 conn.rollback()
             self.close_connection(conn)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def close_connection(self, connection):
         """close the connection passed in.
 
@@ -135,7 +138,7 @@ class PGTransaction(RequiredConfig):
         print("PGTransaction - requestng connection to close")
         connection.close()
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def close(self):
         """close any pooled or cached connections.  Since this base class
         object does no caching, there is no implementation required.  Derived
@@ -143,16 +146,17 @@ class PGTransaction(RequiredConfig):
         pass
 
 
-#==============================================================================
+# ==============================================================================
 class PGPooledTransaction(PGTransaction):
     """a condigman compliant class that pools database connections"""
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
+
     def __init__(self, config, local_config):
         super(PGPooledTransaction, self).__init__(config, local_config)
         print("PGPooledTransaction - setting up connection pool")
         self.pool = {}
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def connection(self, name=None):
         """return a named connection.
 
@@ -171,14 +175,14 @@ class PGPooledTransaction(PGTransaction):
         self.pool[name] = FakeDatabaseConnection(self.dsn)
         return self.pool[name]
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def close_connection(self, connection):
         """overriding the baseclass function, this routine will decline to
         close a connection at the end of a transaction context.  This allows
         for reuse of connections."""
         print('PGPooledTransaction - refusing to close connection')
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def close(self):
         """close all pooled connections"""
         print("PGPooledTransaction - shutting down connection pool")
@@ -187,7 +191,7 @@ class PGPooledTransaction(PGTransaction):
             print("PGPooledTransaction - connection %s closed" % name)
 
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 def transaction_factory(config, local_config, args):
     """instantiate a transaction object that will create database connections
 
@@ -197,6 +201,7 @@ def transaction_factory(config, local_config, args):
     instantiate the class
     """
     return local_config.database(config, local_config)
+
 
 if __name__ == "__main__":
 

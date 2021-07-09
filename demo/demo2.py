@@ -3,8 +3,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-"""This sample application demonstrates a simple way to use configman."""
-# this second demo shows how to use configman in the same manner that one would
+"""This sample application demonstrates a simple way to use configmanners."""
+# this second demo shows how to use configmanners in the same manner that one would
 # use other libraries like argparse.  We have a collection of functions that
 # embody the business logic of the application.  We setup configuration
 # parameters that will control the command line and config file forms.  Then
@@ -13,9 +13,9 @@
 # application is specified in configuration.  The last line of the file invokes
 # the action.
 from __future__ import absolute_import, division, print_function
-from configman import ConfigurationManager, Namespace
-from configman import environment, command_line
-from configman.converters import class_converter
+from configmanners import ConfigurationManager, Namespace
+from configmanners import environment, command_line
+from configmanners.converters import class_converter
 
 
 # the following three functions are the business logic of the application.

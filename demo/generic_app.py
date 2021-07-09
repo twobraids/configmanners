@@ -8,10 +8,10 @@ import os.path
 import inspect
 import six
 
-import configman as cm
-from configman import ConfigurationManager, Namespace
-from configman import ConfigFileFutureProxy, environment, command_line
-from configman.converters import class_converter
+import configmanners as cm
+from configmanners import ConfigurationManager, Namespace
+from configmanners import ConfigFileFutureProxy, environment, command_line
+from configmanners.converters import class_converter
 
 
 # This main function will load an application object, initialize it and then
@@ -32,11 +32,10 @@ def main(app_object=None):
                                   'application',
                               default=app_object,
                               from_string_converter=class_converter
-                             )
+                              )
     app_name = getattr(app_object, 'app_name', 'unknown')
     app_version = getattr(app_object, 'app_version', '0.0')
     app_description = getattr(app_object, 'app_description', 'no idea')
-
 
     # create an iterable collection of value sources
     # the order is important as these will supply values for the sources
@@ -48,7 +47,7 @@ def main(app_object=None):
                                              # to specify a config file on
                                              # the command line
                      environment,  # alias for os.environ
-                     command_line) # alias for getopt
+                     command_line)  # alias for getopt
 
     # set up the manager with the definitions and values
     # it isn't necessary to provide the app_name because the
@@ -59,7 +58,7 @@ def main(app_object=None):
                                           app_name=app_name,
                                           app_version=app_version,
                                           app_description=app_description,
-                                         )
+                                          )
     config = config_manager.get_config()
 
     app_object = config.admin.application
@@ -74,6 +73,7 @@ def main(app_object=None):
     elif inspect.isfunction(app_object):
         # invocation of the app if the app_object was a function
         app_object(config)
+
 
 if __name__ == '__main__':
     main()

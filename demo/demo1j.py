@@ -3,8 +3,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-"""This sample application demonstrates the external way to use configman."""
-# this varient of the first demo shows how to use configman with the
+"""This sample application demonstrates the external way to use configmanners."""
+# this varient of the first demo shows how to use configmanners with the
 # definitions of the configuration parameters entirely in an external json
 # file.  Just like the original demo1, we have a collection of functions that
 # embody the business logic of the application.  We setup configuration
@@ -12,7 +12,7 @@
 # we run the application.
 from __future__ import absolute_import, division, print_function
 import sys
-from configman import ConfigurationManager
+from configmanners import ConfigurationManager
 
 
 # the following three functions are the business logic of the application.
@@ -26,6 +26,7 @@ def backwards(x):
 
 def upper(x):
     print(x.upper())
+
 
 # create an iterable collection of definition sources
 # internally, this list will be appended to, so a tuple won't do.

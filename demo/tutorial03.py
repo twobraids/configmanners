@@ -1,15 +1,19 @@
 #!/usr/bin/env python
 from __future__ import absolute_import, division, print_function
-from configman import Namespace, ConfigurationManager
+from configmanners import Namespace, ConfigurationManager
+
 
 def backwards(x, capitalize=False):
     return x[::-1]
 
+
 import re
 vowels_regex = re.compile('[AEIOUY]', re.IGNORECASE)
 
+
 def devowel(x):
     return vowels_regex.sub('', x)
+
 
 def define_config():
     definition = Namespace()
@@ -26,6 +30,7 @@ def define_config():
       short_form='f'
     )
     return definition
+
 
 if __name__ == '__main__':
     definition = define_config()

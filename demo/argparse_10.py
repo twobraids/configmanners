@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from __future__ import absolute_import, division, print_function
-import configman
-parser = configman.ArgumentParser()
+import configmanners
+parser = configmanners.ArgumentParser()
 parser.add_argument("square", type=int,
                     help="display the square of a given number")
 parser.add_argument("-v", "--verbosity", action="count",

@@ -3,7 +3,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-"This sample application demonstrates dynamic class loading with configman."
+"This sample application demonstrates dynamic class loading with configmanners."
 # there are two ways to invoke this app:
 #    .../generic_app.py --admin.application=dyn_app.Dyn_app
 #    .../dyn_app.py
@@ -12,8 +12,8 @@
 # another.  It offers fake versions of Postgres, MySQL and HBase as the
 # data sources and sinks.
 from __future__ import absolute_import, division, print_function
-from configman import RequiredConfig, Namespace
-from configman.converters import class_converter
+from configmanners import RequiredConfig, Namespace
+from configmanners.converters import class_converter
 
 
 # the following class embodies the business logic of the application.
@@ -58,6 +58,7 @@ class DynApp(RequiredConfig):
         # write function
         for row in source.fetch():
             destination.write(row)
+
 
 # if you'd rather invoke the app directly with its source file, this will
 # allow it.

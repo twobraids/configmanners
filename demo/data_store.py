@@ -8,9 +8,10 @@ from __future__ import absolute_import, division, print_function
 import sys
 import datetime as dt
 
-import configman.config_manager as cm
-import configman.namespace as ns
-import configman.converters as conv
+import configmanners.config_manager as cm
+import configmanners.namespace as ns
+import configmanners.converters as conv
+
 
 def log(message):
     print(dt.datetime.now(), message, file=sys.stderr)
@@ -37,7 +38,7 @@ class Database(cm.RequiredConfig):
     def canned_query(self):
         """a generator that yield simulated database rows, logging each one"""
         for i in range(*self.connection):
-            row = (i, i*10, chr(i+32))
+            row = (i, i * 10, chr(i + 32))
             log('%s fetching row: %s' % (self.class_as_string, row))
             yield row
 
@@ -45,6 +46,7 @@ class Database(cm.RequiredConfig):
         """since this is a simulation, no actual insert take place.  We just
         log that we've gotten a row to insert"""
         log('%s inserting: %s' % (self.class_as_string, row))
+
 
 class Postgres(Database):
     required_config = ns.Namespace()
@@ -55,7 +57,7 @@ class Postgres(Database):
     def __init__(self, config):
         super(Postgres, self).__init__(config)
         log('connecting to Fake Postgres with %s' % self.class_as_string)
-        self.connection = (10,20)
+        self.connection = (10, 20)
 
 
 class MySQL(Database):
@@ -67,7 +69,7 @@ class MySQL(Database):
     def __init__(self, config):
         super(MySQL, self).__init__(config)
         log('connecting to Fake MySQL with %s' % self.class_as_string)
-        self.connection = (50,60)
+        self.connection = (50, 60)
 
 
 class HBase(cm.RequiredConfig):
@@ -87,7 +89,7 @@ class HBase(cm.RequiredConfig):
     def canned_query(self):
         for i in range(*self.connection):
             log('%s fetching row: %s' % (self.class_as_string, i))
-            yield i, i*10, chr(i+32)
+            yield i, i * 10, chr(i + 32)
 
     def write(self, row):
         log('%s inserting %s' % (self.class_as_string, str(row)))
@@ -109,6 +111,7 @@ class CannedDataSource(cm.RequiredConfig):
     def fetch(self):
         log('starting fetch from %s' % self.class_as_string)
         return self.datasource.canned_query()
+
 
 class CannedDataSink(cm.RequiredConfig):
     required_config = ns.Namespace()

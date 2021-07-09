@@ -2,13 +2,13 @@
 from __future__ import absolute_import, division, print_function
 import contextlib
 
-from configman import Namespace, ConfigurationManager
+from configmanners import Namespace, ConfigurationManager
 from fakedb import FakeDatabaseObjects
 
 
 # this is the interesting function in this example.  It is used as a
 # from aggregation function for an Aggregation object that live within a
-# configman's option definition.  It takes a database connection string (DSN)
+# configmanners's option definition.  It takes a database connection string (DSN)
 # and emits a fuction that returns a database connection object wrapped
 # in a contextmanager.  This allows a configuration value to serve as a
 # factory for database transaction objects suitable for use in a 'with'
@@ -63,7 +63,7 @@ def define_config():
     )
     # This final aggregation object is the most interesting one.  Its final
     # value depends on the final values of options within the same Namespace.
-    # After configman is done doing all its value overlays, there is
+    # After configmanners is done doing all its value overlays, there is
     # one final pass through the option definitions with the sole purpose of
     # expanding the Aggregations.  To do so, the Aggregations' aggregation_fn
     # is called passing the whole config set to the function.  That function

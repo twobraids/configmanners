@@ -3,15 +3,15 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-"""This sample application demonstrates the simlpest way to use configman."""
-# this first demo shows how to use configman in the same manner that one would
+"""This sample application demonstrates the simlpest way to use configmanners."""
+# this first demo shows how to use configmanners in the same manner that one would
 # use other libraries like argparse.  We have a collection of functions that
 # embody the business logic of the application.  We setup configuration
 # parameters that will control the command line and config file forms.  Then
 # we run the application.
 from __future__ import absolute_import, division, print_function
 import sys
-from configman import ConfigurationManager, Namespace
+from configmanners import ConfigurationManager, Namespace
 
 
 # the following three functions are the business logic of the application.
@@ -25,6 +25,7 @@ def backwards(x):
 
 def upper(x):
     print(x.upper())
+
 
 # create the definitions for the parameters that are to come from
 # the command line or config file.  First we create a container called a

@@ -4,15 +4,15 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 from __future__ import absolute_import, division, print_function
 
-"""This sample app demos wrapping a pluggable database with configman."""
-# this is an advanced demo uses configman to allow an app to not only change
+"""This sample app demos wrapping a pluggable database with configmanners."""
+# this is an advanced demo uses configmanners to allow an app to not only change
 # the database implementation at run time, but to change the overall behavior
 # of the database.  Three families of classes are used in this demo:
 # 1) FakeDatabaseConnection - there is only one member of this family.  It is
 #        used to simulate a database.  Understanding this class is unimportant
 #        in understanding the rest of the app.  It is just a mock.
 # 2) Postgres; PostgresPooled - This two member class hierarchy shows how to
-#        wrap a database module with configman to implement a transaction
+#        wrap a database module with configmanners to implement a transaction
 #        context.
 #        * The base class 'Postgres' implements a system where each database
 #          connection is opened, used once, and then closed.  Normally, this
@@ -37,7 +37,7 @@ from __future__ import absolute_import, division, print_function
 #          suceeds.  Between each subsequent retry, execution sleeps for a set
 #          or progressive number of seconds.  Exceptions deemed non-operational
 #          are passed out to the application and do not trigger retries.
-# The latter two class families are settable using configman at run time.  The
+# The latter two class families are settable using configmanners at run time.  The
 # demo app logs its actions, so we suggest trying different combinations of the
 # Postgres and TransactionExecutor families to observe how they differ in
 # behavior
@@ -48,32 +48,33 @@ import random
 import time
 import socket
 
-from configman import RequiredConfig, ConfigurationManager, Namespace
+from configmanners import RequiredConfig, ConfigurationManager, Namespace
 
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 class FakeDBOperationalError(Exception):
     pass
 
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 class FakeDBProgrammingError(Exception):
     pass
 
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 class FakeDatabaseConnection():
     """this class substitutes for a real database connection"""
     # understanding the inner workings of this class is unimportant for this
     # demo.  It is just a mock for a real database connection used to make the
     # demo easier to run.
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
+
     def __init__(self, dsn):
         print("FakeDatabaseConnection - created")
         self.connection_open = True
         self.in_transaction = False
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def close(self):
         if self.connection_open:
             print("FakeDatabaseConnection - closed connection")
@@ -81,7 +82,7 @@ class FakeDatabaseConnection():
         else:
             print("FakeDatabaseConnection - already closed")
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def query(self, query):
 
         if self.connection_open:
@@ -94,22 +95,22 @@ class FakeDatabaseConnection():
             print("FakeDatabaseConnection - can't query a closed connection")
             raise FakeDBProgrammingError("can't query a closed connection")
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def commit(self):
         print("FakeDatabaseConnection - commit")
         self.in_transaction = False
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def rollback(self):
         print("FakeDatabaseConnection - rollback")
         self.in_transaction = False
 
 
-#==============================================================================
+# ==============================================================================
 class Postgres(RequiredConfig):
-    """a configman compliant class for setup of Postgres transactions"""
-    #--------------------------------------------------------------------------
-    # configman parameter definition section
+    """a configmanners compliant class for setup of Postgres transactions"""
+    # --------------------------------------------------------------------------
+    # configmanners parameter definition section
     # here we're setting up the minimal parameters required for connecting
     # to a database.
     required_config = Namespace()
@@ -139,7 +140,7 @@ class Postgres(RequiredConfig):
         doc="the user's database password",
     )
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __init__(self, config, local_config):
         """Initialize the parts needed to start making database connections
 
@@ -158,7 +159,7 @@ class Postgres(RequiredConfig):
         self.operational_exceptions = (FakeDBOperationalError,
                                        socket.timeout)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def connection(self, name_unused=None):
         """return a new database connection
 
@@ -168,7 +169,7 @@ class Postgres(RequiredConfig):
         """
         return FakeDatabaseConnection(self.dsn)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     @contextlib.contextmanager
     def __call__(self, name=None):
         """returns a database connection wrapped in a contextmanager.
@@ -207,7 +208,7 @@ class Postgres(RequiredConfig):
                     pass
                 raise
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def close_connection(self, connection, force=False):
         """close the connection passed in.
 
@@ -221,7 +222,7 @@ class Postgres(RequiredConfig):
         print("Postgres - requestng connection to close")
         connection.close()
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def close(self):
         """close any pooled or cached connections.  Since this base class
         object does no caching, there is no implementation required.  Derived
@@ -229,16 +230,17 @@ class Postgres(RequiredConfig):
         pass
 
 
-#==============================================================================
+# ==============================================================================
 class PostgresPooled(Postgres):
-    """a configman compliant class that pools Postgres database connections"""
-    #--------------------------------------------------------------------------
+    """a configmanners compliant class that pools Postgres database connections"""
+    # --------------------------------------------------------------------------
+
     def __init__(self, config, local_config):
         super(PostgresPooled, self).__init__(config, local_config)
         print("PostgresPooled - setting up connection pool")
         self.pool = {}
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def connection(self, name=None):
         """return a named connection.
 
@@ -257,7 +259,7 @@ class PostgresPooled(Postgres):
         self.pool[name] = FakeDatabaseConnection(self.dsn)
         return self.pool[name]
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def close_connection(self, connection, force=False):
         """overriding the baseclass function, this routine will decline to
         close a connection at the end of a transaction context.  This allows
@@ -266,7 +268,7 @@ class PostgresPooled(Postgres):
             print('PostgresPooled - delegating connection closure')
             try:
                 super(PostgresPooled, self).close_connection(connection,
-                                                                  force)
+                                                             force)
             except self.operational_exceptions:
                 print('PostgresPooled - failed closing')
             for name, conn in self.pool.iteritems():
@@ -276,7 +278,7 @@ class PostgresPooled(Postgres):
         else:
             print('PostgresPooled - refusing to close connection')
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def close(self):
         """close all pooled connections"""
         print("PostgresPooled - shutting down connection pool")
@@ -285,7 +287,7 @@ class PostgresPooled(Postgres):
             print("PostgresPooled - connection %s closed" % name)
 
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 def transaction_factory(config, local_config, args):
     """instantiate a transaction object that will create database
     connections
@@ -298,7 +300,7 @@ def transaction_factory(config, local_config, args):
     return local_config.database_class(config, local_config)
 
 
-#==============================================================================
+# ==============================================================================
 class TransactionExecutor(RequiredConfig):
     required_config = Namespace()
     # setup the option that will specify which database connection/transaction
@@ -315,18 +317,18 @@ class TransactionExecutor(RequiredConfig):
         name='db_transaction',
         function=transaction_factory)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def __init__(self, config):
         self.config = config
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def do_transaction(self, function, *args, **kwargs):
         """execute a function within the context of a transaction"""
         with self.config.db_transaction() as trans:
             function(trans, *args, **kwargs)
 
 
-#==============================================================================
+# ==============================================================================
 class TransactionExecutorWithBackoff(TransactionExecutor):
     # back off times
     required_config = Namespace()
@@ -339,7 +341,7 @@ class TransactionExecutorWithBackoff(TransactionExecutor):
                                default=1,
                                doc='seconds between log during retries')
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def backoff_generator(self):
         """Generate a series of integers used for the length of the sleep
         between retries.  It produces after exhausting the list, it repeats
@@ -350,19 +352,19 @@ class TransactionExecutorWithBackoff(TransactionExecutor):
         while True:
             yield self.config.backoff_delays[-1]
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def responsive_sleep(self, seconds, wait_reason=''):
         """Sleep for the specified number of seconds, logging every
         'wait_log_interval' seconds with progress info."""
         for x in range(int(seconds)):
-            if (self.config.wait_log_interval and
-                not x % self.config.wait_log_interval):
+            if (self.config.wait_log_interval
+                    and not x % self.config.wait_log_interval):
                 print('%s: %dsec of %dsec' % (wait_reason,
                                               x,
                                               seconds))
             time.sleep(1.0)
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     def do_transaction(self, function, *args, **kwargs):
         """execute a function within the context of a transaction"""
         for wait_in_seconds in self.backoff_generator():
@@ -380,18 +382,19 @@ class TransactionExecutorWithBackoff(TransactionExecutor):
                                   "transaction")
 
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 def query1(conn):
     """a transaction to be executed by the database"""
     conn.query('select * from life')
 
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 def query2(conn):
     """another transaction to be executed by the database"""
     raise Exception("not a database related error")
 
-#==============================================================================
+
+# ==============================================================================
 if __name__ == "__main__":
     definition_source = Namespace()
     definition_source.add_option('transaction_executor_class',
