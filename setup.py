@@ -14,12 +14,8 @@ try:
 except ImportError:
     pass
 
-if sys.version_info[:3] <= (2, 6, 4):
-    print("Please upgrade to a python >= 2.6.5!", file=sys.stderr)
-    sys.exit(1)
-
-if sys.version_info[0] == 3 and sys.version_info[1] < 3:
-    print("Please upgrade to a python >= 3.3!", file=sys.stderr)
+if sys.version_info[0] == 3 and sys.version_info[1] < 8:
+    print("Please upgrade to a python >= 3.8!", file=sys.stderr)
     sys.exit(1)
 
 
@@ -53,20 +49,17 @@ setup(
         'Flexible reading and writing of namespaced configuration options'
     ),
     long_description=read('README.md'),
-    author='K Lars Lohn, Peter Bengtsson',
-    author_email='lars@mozilla.com, peterbe@mozilla.com',
-    url='https://github.com/mozilla/configmanners',
+    author='K Lars Lohn',
+    author_email='twobraids@gmail.com',
+    url='https://github.com/twobraids/configmanners',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'Intended Audience :: Developers',
         'Environment :: Console',
     ],
@@ -74,6 +67,6 @@ setup(
     package_data={'configmanners': ['*/*', 'version.txt']},
     install_requires=find_install_requires(),
     tests_require=find_tests_require(),
-    test_suite='nose.collector',
+    test_suite='',
     zip_safe=False,
 ),

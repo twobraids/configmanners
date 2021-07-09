@@ -14,13 +14,12 @@ conflicts. It can dynamically load modules creating a "poor man's" dependency
 injection system. In addition to its own API, it mimics the argparse API, so in many
 (not all) cases, it substitute for argparse.
 
-_This is the K Lars Lohn fork. Since I am no longer associated with Mozilla, I have no
+_This is the K Lars Lohn fork of configman. Since I am no longer associated with Mozilla, I have no
  ownership/control/privileges on the moribund Mozilla repo. I don't think Mozilla
  uses it anywhere anymore. As it it critical to my personal software work, I intend
 to continue to maintain and modify it for my own purposes.  However, I do not intend
 on publishing this as a 'pip' installable module._
 
-_I am likely to rename this project to: "configmanners"_
 
 Running tests (moribund)
 -------------
