@@ -426,6 +426,6 @@ def create_key_translating_dot_dict(
             )
 
     if six.PY2:
-        new_class_name = six.binary_type(new_class_name)
+        new_class_name = bytes(new_class_name)
     DotDictWithKeyTranslations.__name__ = new_class_name
     return DotDictWithKeyTranslations

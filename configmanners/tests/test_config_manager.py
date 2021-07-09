@@ -2197,7 +2197,7 @@ c.string =   from ini
                 argv_source=['--admin.conf=x.ini']
             )
             mocked_warnings.warn.assert_called_once_with(
-                six.text_type('Invalid options: bar, baz')
+                str('Invalid options: bar, baz')
             )
         finally:
             os.remove('x.ini')
@@ -2443,7 +2443,7 @@ c.string =   from ini
 
         class UpperCaseValueDotDict(DotDict):
             def __setattr__(self, key, value):
-                if isinstance(value, (six.binary_type, six.text_type)):
+                if isinstance(value, (bytes, str)):
                     value = to_str(value)
                     super(UpperCaseValueDotDict, self).__setattr__(
                         key,

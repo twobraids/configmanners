@@ -176,7 +176,7 @@ class TestCase(unittest.TestCase):
         opt = Option('name', default=u'Peter')
         self.assertEqual(opt.default, u'Peter')
         if six.PY3:
-            self.assertEqual(opt.from_string_converter, six.text_type)
+            self.assertEqual(opt.from_string_converter, str)
 
         opt = Option('name', default=100)
         self.assertEqual(opt.default, 100)

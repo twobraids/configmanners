@@ -35,8 +35,8 @@ function_type = type(lambda x: x)  # TODO: just how do you express the Fuction
 
 # the list of types that the contstuctor can handle.
 can_handle = (
-    six.binary_type,
-    six.text_type,
+    bytes,
+    str,
     function_type  # this is to say that this ValueSource is willing
                    # to try a function that will return a
                    # context manager
@@ -55,7 +55,7 @@ class ValueSource(object):
 
     # --------------------------------------------------------------------------
     def __init__(self, candidate, the_config_manager=None):
-        if isinstance(candidate, (six.binary_type, six.text_type)):
+        if isinstance(candidate, (bytes, str)):
             candidate = to_str(candidate)
         if (
             isinstance(candidate, six.string_types)
@@ -127,8 +127,8 @@ class ValueSource(object):
                 option_name = an_option.name
             print("# name: %s" % option_name, file=output_stream)
             print("# doc: %s" % an_option.doc, file=output_stream)
-            option_value = six.text_type(an_option)
-            if isinstance(option_value, six.text_type):
+            option_value = str(an_option)
+            if isinstance(option_value, str):
                 option_value = option_value.encode('utf8')
 
             if an_option.likely_to_be_changed:

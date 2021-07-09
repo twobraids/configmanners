@@ -376,7 +376,7 @@ class ParserContainer(object):
 
         if (
             isinstance(option.default, collections.abc.Sequence)
-            and not isinstance(option.default, (six.binary_type, six.text_type))
+            and not isinstance(option.default, (bytes, str))
         ):
             if option.is_argument:
                 kwargs.nargs = len(option.default)
@@ -438,7 +438,7 @@ class ValueSource(object):
                     None
                 )
             else:
-                if isinstance(an_option.value, (six.binary_type, six.text_type)):
+                if isinstance(an_option.value, (bytes, str)):
                     an_option.value = to_str(an_option.value)
                     return an_option.value
                 if an_option.to_string_converter:
@@ -448,7 +448,7 @@ class ValueSource(object):
                 nargs is not None
                 and isinstance(an_option.value, collections.abc.Sequence)
             ):
-                if isinstance(an_option.value, (six.binary_type, six.text_type)):
+                if isinstance(an_option.value, (bytes, str)):
                     an_option.value = to_str(an_option.value)
                     return an_option.value
                 return [to_str(x) for x in an_option.value]

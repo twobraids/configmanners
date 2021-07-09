@@ -136,11 +136,11 @@ class ConfigurationManager(object):
             definition_source_list = []
         elif (
             isinstance(definition_source, collections.abc.Sequence)
-            and not isinstance(definition_source, (six.binary_type, six.text_type))
+            and not isinstance(definition_source, (bytes, str))
         ):
             definition_source_list = list(definition_source)
         else:
-            if isinstance(definition_source, (six.binary_type, six.text_type)):
+            if isinstance(definition_source, (bytes, str)):
                 definition_source = to_str(definition_source)
             definition_source_list = [definition_source]
 

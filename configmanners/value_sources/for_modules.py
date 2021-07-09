@@ -34,8 +34,8 @@ file_name_extension = 'py'
 
 can_handle = (
     types.ModuleType,
-    six.binary_type,
-    six.text_type,
+    bytes,
+    str,
 )
 
 # ------------------------------------------------------------------------------
@@ -173,11 +173,11 @@ local_to_string_converters = {
     compiled_regexp_type: lambda x: string_to_string(x.pattern)
 }
 if six.PY2:
-    local_to_string_converters[six.text_type] = unicode_to_unicode
-    local_to_string_converters[six.binary_type] = string_to_string
+    local_to_string_converters[str] = unicode_to_unicode
+    local_to_string_converters[bytes] = string_to_string
 elif six.PY3:
-    local_to_string_converters[six.text_type] = string_to_string
-    local_to_string_converters[six.binary_type] = string_to_string
+    local_to_string_converters[str] = string_to_string
+    local_to_string_converters[bytes] = string_to_string
 
 
 # ------------------------------------------------------------------------------
@@ -247,7 +247,7 @@ class OrderableTuple(object):
 class ValueSource(object):
     # --------------------------------------------------------------------------
     def __init__(self, source, the_config_manager=None):
-        if isinstance(source, (six.binary_type, six.text_type)):
+        if isinstance(source, (bytes, str)):
             source = class_converter(source)
         module_as_dotdict = DotDict()
         try:

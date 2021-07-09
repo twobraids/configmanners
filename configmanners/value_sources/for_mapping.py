@@ -93,7 +93,7 @@ class ValueSource(object):
             else:
                 option_name = an_option.name
             option_value = str(an_option)
-            if isinstance(option_value, six.text_type):
+            if isinstance(option_value, str):
                 option_value = option_value.encode('utf8')
 
             comment_line = '%s (default: %r)' % (

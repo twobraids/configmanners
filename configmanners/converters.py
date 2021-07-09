@@ -66,7 +66,7 @@ def str_dict_keys(a_dict):
     """
     new_dict = {}
     for key in a_dict:
-        if six.PY2 and isinstance(key, six.text_type):
+        if six.PY2 and isinstance(key, str):
             new_dict[str(key)] = a_dict[key]
         else:
             new_dict[key] = a_dict[key]
@@ -113,7 +113,7 @@ timedelta_converter = str_to_timedelta  # for backward compatiblity
 # ------------------------------------------------------------------------------
 def py2_to_unicode(input_str):
     if six.PY2:
-        input_str = six.text_type(input_str, 'utf-8')
+        input_str = str(input_str, 'utf-8')
     return input_str
 
 
@@ -142,7 +142,7 @@ def str_to_python_object(input_str):
     """
     if not input_str:
         return None
-    if six.PY3 and isinstance(input_str, six.binary_type):
+    if six.PY3 and isinstance(input_str, bytes):
         input_str = to_str(input_str)
     if not isinstance(input_str, six.string_types):
         # gosh, we didn't get a string, we can't convert anything but strings
@@ -363,9 +363,9 @@ str_to_instance_of_type_converters = {
     compiled_regexp_type: regex_converter,
 }
 if six.PY2:
-    str_to_instance_of_type_converters[six.text_type] = py2_to_unicode
+    str_to_instance_of_type_converters[str] = py2_to_unicode
 if six.PY3:
-    str_to_instance_of_type_converters[six.binary_type] = py3_to_bytes
+    str_to_instance_of_type_converters[bytes] = py3_to_bytes
 
  # backward compatibility
 from_string_converters = str_to_instance_of_type_converters
@@ -382,7 +382,7 @@ def arbitrary_object_to_string(a_thing):
     # is it already a string?
     if isinstance(a_thing, six.string_types):
         return a_thing
-    if six.PY3 and isinstance(a_thing, six.binary_type):
+    if six.PY3 and isinstance(a_thing, bytes):
         try:
             return a_thing.decode('utf-8')
         except UnicodeDecodeError:
@@ -445,7 +445,7 @@ def list_to_str(a_list, delimiter=', '):
 
 # ------------------------------------------------------------------------------
 def py2_to_str(a_unicode):
-    return six.text_type(a_unicode)
+    return str(a_unicode)
 
 
 def py3_to_str(a_bytes):
@@ -480,9 +480,9 @@ to_string_converters = {
     compiled_regexp_type: lambda x: x.pattern,
 }
 if six.PY2:
-    to_string_converters[six.text_type] = py2_to_str
+    to_string_converters[str] = py2_to_str
 if six.PY3:
-    to_string_converters[six.binary_type] = py3_to_str
+    to_string_converters[bytes] = py3_to_str
 
 
 # ------------------------------------------------------------------------------

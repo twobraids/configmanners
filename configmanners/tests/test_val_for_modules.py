@@ -326,7 +326,7 @@ xxx = DotDict()
 xxx.yyy = 18
 """
         if six.PY2:
-            expected = six.binary_type(expected)
+            expected = bytes(expected)
         self.assertEqual(generated_python_module_text, expected)
 
     # --------------------------------------------------------------------------

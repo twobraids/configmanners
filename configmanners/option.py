@@ -43,14 +43,14 @@ class Option(object):
         self.name = name
         self.short_form = short_form
         self.default = default
-        if isinstance(doc, (six.binary_type, six.text_type)):
+        if isinstance(doc, (bytes, str)):
             doc = to_str(doc).strip()
         self.doc = doc
         if from_string_converter is None:
             if default is not None:
                 # take a qualified guess from the default value
                 from_string_converter = self._deduce_converter(default)
-        if isinstance(from_string_converter, (six.binary_type, six.text_type)):
+        if isinstance(from_string_converter, (bytes, str)):
             from_string_converter = str_to_python_object(from_string_converter)
         self.from_string_converter = from_string_converter
         # if this is not set, the type is used in converters.py to attempt
@@ -116,7 +116,7 @@ class Option(object):
     def set_value(self, val=None):
         if val is None:
             val = self.default
-        if isinstance(val, (six.binary_type, six.text_type)):
+        if isinstance(val, (bytes, str)):
             val = to_str(val)
             try:
                 new_value = self.from_string_converter(val)
@@ -211,7 +211,7 @@ class Aggregation(object):
         secret=False,
     ):
         self.name = name
-        if isinstance(function, (six.binary_type, six.text_type)):
+        if isinstance(function, (bytes, str)):
             self.function = str_to_python_object(function)
         else:
             self.function = function

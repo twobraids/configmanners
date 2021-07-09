@@ -25,8 +25,8 @@ from configmanners.dotdict import DotDict
 from configmanners.memoize import memoize
 
 can_handle = (
-    six.binary_type,
-    six.text_type,
+    bytes,
+    str,
     json
 )
 
@@ -52,7 +52,7 @@ class ValueSource(object):
                 raise NotEnoughInformationException(
                     "Can't setup an json file without knowing the file name"
                 )
-        if isinstance(source, (six.binary_type, six.text_type)):
+        if isinstance(source, (bytes, str)):
             source = to_str(source)
         if (
             isinstance(source, six.string_types) and

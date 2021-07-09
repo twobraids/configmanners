@@ -29,8 +29,8 @@ file_name_extension = 'ini'
 can_handle = (
     configobj,
     configobj.ConfigObj,
-    six.binary_type,
-    six.text_type,
+    bytes,
+    str,
 )
 
 
@@ -104,7 +104,7 @@ class ConfigObjWithIncludes(configobj.ConfigObj):
         completed, this method submits the list of lines to the super class'
         function of the same name.  ConfigObj proceeds, completely unaware
         that it's input file has been preprocessed."""
-        if isinstance(infile, (six.binary_type, six.text_type)):
+        if isinstance(infile, (bytes, str)):
             infile = to_str(infile)
             original_path = os.path.dirname(infile)
             expanded_file_contents = self._expand_files(infile, original_path)
@@ -148,7 +148,7 @@ class ValueSource(object):
                 return
             if not os.path.exists(source) and config_manager.config_optional:
                 return
-        if isinstance(source, (six.binary_type, six.text_type)):
+        if isinstance(source, (bytes, str)):
             source = to_str(source)
         if (
             isinstance(source, six.string_types)
