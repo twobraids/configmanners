@@ -135,7 +135,6 @@ class TestCase(unittest.TestCase):
         _keys = [x for x in d]
         self.assertEqual(_keys, ['e', 'dd', 'a'])
         self.assertEqual(list(d.keys()), ['e', 'dd', 'a'])
-        self.assertEqual(list(six.iterkeys(d)), ['e', 'dd', 'a'])
 
         d.xxx = DotDictWithAcquisition()
         d.xxx.p = 69
