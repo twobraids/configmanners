@@ -3,8 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 from __future__ import absolute_import, division, print_function
 from os import path
-with open(path.join(path.dirname(__file__), 'version.txt')) as f:
-    __version__ = f.read().strip()
+__version__ = "3.0"
 
 # Having these here makes it possible to easily import once configmanners is
 # installed.
