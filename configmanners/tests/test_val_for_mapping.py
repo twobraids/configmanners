@@ -157,8 +157,7 @@ x__password='secret'
 # how big in tons (default: 100)
 x__size='100'
         """.strip()
-        if six.PY3:
-            expected = expected.replace("='", "=b'")
+        expected = expected.replace("='", "=b'")
         self.assertEqual(received.strip(), expected)
 
     # --------------------------------------------------------------------------
@@ -186,6 +185,5 @@ x__size='100'
 # write it on multiple lines. (default: 'Default Value Goes In Here')
 aaa='Default Value Goes In Here'
         """.strip()
-        if six.PY3:
-            expected = expected.replace("='", "=b'")
+        expected = expected.replace("='", "=b'")
         self.assertEqual(received.strip(), expected)

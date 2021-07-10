@@ -252,7 +252,7 @@ class TestCase(unittest.TestCase):
         r = s.getvalue()
         g = {}
         l = {}
-        six.exec_(r, g, l)
+        exec(r, g, l)
         self.assertEqual(l['a'], 68)
         self.assertEqual(l['b'], 'this is b')
         self.assertEqual(l['n'].x, datetime(1960, 5, 4, 15, 10))

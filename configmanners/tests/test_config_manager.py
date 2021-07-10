@@ -1299,8 +1299,7 @@ c.string =   from ini
             "sub.name: wilma",
             "  source: getopt",
         ]
-        if six.PY3:
-            e[3] = "application: <class 'configmanners.tests.test_config_manager.TestCase.test_log_config.<locals>.MyApp'>"
+        e[3] = "application: <class 'configmanners.tests.test_config_manager.TestCase.test_log_config.<locals>.MyApp'>"
         for expected, received in zip(e, fl.log):
             self.assertEqual(expected, received)
 

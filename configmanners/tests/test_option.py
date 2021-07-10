@@ -175,8 +175,7 @@ class TestCase(unittest.TestCase):
     def test_setting_known_from_string_converter_onOption(self):
         opt = Option('name', default=u'Peter')
         self.assertEqual(opt.default, u'Peter')
-        if six.PY3:
-            self.assertEqual(opt.from_string_converter, str)
+        self.assertEqual(opt.from_string_converter, str)
 
         opt = Option('name', default=100)
         self.assertEqual(opt.default, 100)
