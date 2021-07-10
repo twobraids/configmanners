@@ -22,6 +22,7 @@ class TestCase(unittest.TestCase):
         def fake_mapping_func(source, destination):
             self.assertTrue(isinstance(source, collections.abc.Mapping))
             self.assertEqual(d, destination)
+
         saved_original = defsrc.definition_dispatch.copy()
         try:
             defsrc.definition_dispatch[collections.abc.Mapping] = fake_mapping_func
@@ -41,6 +42,7 @@ class TestCase(unittest.TestCase):
         def fake_mapping_func(source, destination):
             self.assertTrue(source is collections)
             self.assertEqual(d, destination)
+
         saved_original = defsrc.definition_dispatch.copy()
         try:
             defsrc.definition_dispatch[type(collections)] = fake_mapping_func
@@ -56,6 +58,7 @@ class TestCase(unittest.TestCase):
         def fake_mapping_func(source, destination):
             self.assertTrue(isinstance(source, str))
             self.assertEqual(d, destination)
+
         saved_original = defsrc.definition_dispatch.copy()
         try:
             defsrc.definition_dispatch[str] = fake_mapping_func

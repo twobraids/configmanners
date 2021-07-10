@@ -45,9 +45,7 @@ from configmanners.namespace import Namespace
 
 is_command_line_parser = True
 
-can_handle = (
-    argparse,
-)
+can_handle = (argparse,)
 
 parser_count = 0
 
@@ -55,26 +53,24 @@ parser_count = 0
 # ==============================================================================
 class IntermediateconfigmannersParser(argparse.ArgumentParser):
     """"""
+
     # --------------------------------------------------------------------------
 
     def __init__(self, *args, **kwargs):
         self.get_parser_id()
-        self.subparser_name = kwargs.pop('subparser_name', None)
+        self.subparser_name = kwargs.pop("subparser_name", None)
         self.configmanners_subparsers_option = kwargs.pop(
-            'configmanners_subparsers_option',
-            None
+            "configmanners_subparsers_option", None
         )
-        super(IntermediateconfigmannersParser, self).__init__(
-            *args, **kwargs
-        )
+        super(IntermediateconfigmannersParser, self).__init__(*args, **kwargs)
         self.required_config = Namespace()
 
-        self._use_argparse_add_help = kwargs.get('add_help', False)
+        self._use_argparse_add_help = kwargs.get("add_help", False)
 
     # --------------------------------------------------------------------------
     def get_parser_id(self):
         global parser_count
-        if hasattr(self, 'id'):
+        if hasattr(self, "id"):
             return
         self.id = "%03d" % parser_count
         parser_count += 1
@@ -82,7 +78,7 @@ class IntermediateconfigmannersParser(argparse.ArgumentParser):
     # --------------------------------------------------------------------------
     def error(self, message):
         """we need to suppress errors that might happen in earlier phases of
-        the expansion/overlay process. """
+        the expansion/overlay process."""
         if (
             "not allowed" in message
             or "ignored" in message
@@ -97,17 +93,16 @@ class IntermediateconfigmannersParser(argparse.ArgumentParser):
 
     # --------------------------------------------------------------------------
     def parse_args(self, args=None, namespace=None, object_hook=None):
-        proposed_config = \
-            super(IntermediateconfigmannersParser, self).parse_args(
-                args,
-                namespace
-            )
+        proposed_config = super(IntermediateconfigmannersParser, self).parse_args(
+            args, namespace
+        )
         return proposed_config
 
     # --------------------------------------------------------------------------
     def parse_known_args(self, args=None, namespace=None, object_hook=None):
-        result = super(IntermediateconfigmannersParser, self) \
-            .parse_known_args(args, namespace)
+        result = super(IntermediateconfigmannersParser, self).parse_known_args(
+            args, namespace
+        )
         try:
             an_argparse_namespace, extra_arguments = result
         except TypeError:
@@ -134,9 +129,7 @@ class FinalStageconfigmannersParser(IntermediateconfigmannersParser):
     # --------------------------------------------------------------------------
     def __init__(self, *args, **kwargs):
         self.get_parser_id()
-        super(FinalStageconfigmannersParser, self).__init__(
-            *args, **kwargs
-        )
+        super(FinalStageconfigmannersParser, self).__init__(*args, **kwargs)
 
 
 # ==============================================================================
@@ -144,11 +137,9 @@ class HelplessconfigmannersParser(IntermediateconfigmannersParser):
     # --------------------------------------------------------------------------
     def __init__(self, *args, **kwargs):
         new_kwargs = copy.copy(kwargs)
-        new_kwargs['add_help'] = False
+        new_kwargs["add_help"] = False
         self.get_parser_id()
-        super(HelplessconfigmannersParser, self).__init__(
-            *args, **new_kwargs
-        )
+        super(HelplessconfigmannersParser, self).__init__(*args, **new_kwargs)
 
 
 # ==============================================================================
@@ -156,9 +147,7 @@ class IntermediateconfigmannersSubParser(IntermediateconfigmannersParser):
     # --------------------------------------------------------------------------
     def __init__(self, *args, **kwargs):
         self.get_parser_id()
-        super(IntermediateconfigmannersSubParser, self).__init__(
-            *args, **kwargs
-        )
+        super(IntermediateconfigmannersSubParser, self).__init__(*args, **kwargs)
 
 
 # ==============================================================================
@@ -166,7 +155,7 @@ class HelplessIntermediateconfigmannersSubParser(IntermediateconfigmannersParser
     # --------------------------------------------------------------------------
     def __init__(self, *args, **kwargs):
         new_kwargs = copy.copy(kwargs)
-        new_kwargs['add_help'] = False
+        new_kwargs["add_help"] = False
         self.get_parser_id()
         super(HelplessIntermediateconfigmannersSubParser, self).__init__(
             *args, **new_kwargs
@@ -179,13 +168,11 @@ class configmannersAdminParser(IntermediateconfigmannersParser):
     def __init__(self, *args, **kwargs):
         self.get_parser_id()
         new_kwargs = copy.copy(kwargs)
-        new_kwargs['add_help'] = True
-        #new_kwargs['add_help'] = False
-        new_kwargs['prog'] = 'admin%s' % self.id
-        new_kwargs['parents'] = []
-        super(configmannersAdminParser, self).__init__(
-            *args, **new_kwargs
-        )
+        new_kwargs["add_help"] = True
+        # new_kwargs['add_help'] = False
+        new_kwargs["prog"] = "admin%s" % self.id
+        new_kwargs["parents"] = []
+        super(configmannersAdminParser, self).__init__(*args, **new_kwargs)
 
 
 # ==============================================================================
@@ -194,12 +181,10 @@ class HelplessconfigmannersAdminParser(IntermediateconfigmannersParser):
     def __init__(self, *args, **kwargs):
         self.get_parser_id()
         new_kwargs = copy.copy(kwargs)
-        new_kwargs['add_help'] = False
-        new_kwargs['prog'] = 'admin%s' % self.id
-        new_kwargs['parents'] = []
-        super(HelplessconfigmannersAdminParser, self).__init__(
-            *args, **new_kwargs
-        )
+        new_kwargs["add_help"] = False
+        new_kwargs["prog"] = "admin%s" % self.id
+        new_kwargs["parents"] = []
+        super(HelplessconfigmannersAdminParser, self).__init__(*args, **new_kwargs)
 
 
 # ==============================================================================
@@ -210,6 +195,7 @@ class ParserContainer(object):
     create argparse parameters by fetch original args & kwargs from the
     foreign_data sections of the configmanners Options.  Failing that, it tries
     to translate configmanners Options as best as it can."""
+
     # --------------------------------------------------------------------------
 
     def __init__(self, *args, **kwargs):
@@ -217,7 +203,7 @@ class ParserContainer(object):
         self.main_parser_args = DotDict()
         self.main_parser_args.args = args
         self.main_parser_args.kwargs = kwargs.copy()
-        self.main_parser_args.kwargs.setdefault('parents', [])
+        self.main_parser_args.kwargs.setdefault("parents", [])
         self.arguments_for_building_argparse = []
         self.subcommand = None
         self.subparser_args_list = []
@@ -226,14 +212,14 @@ class ParserContainer(object):
         self.admin_parser_args.args = args
         self.admin_parser_args.kwargs = kwargs.copy()
         self.admin_arguments = []
-        self._use_argparse_add_help = kwargs.get('add_help', False)
+        self._use_argparse_add_help = kwargs.get("add_help", False)
         self.get_parser_id()
         self.extra_defaults = {}
 
     # --------------------------------------------------------------------------
     def get_parser_id(self):
         global parser_count
-        if hasattr(self, 'id'):
+        if hasattr(self, "id"):
             return
         self.id = "%03d" % parser_count
         parser_count += 1
@@ -246,61 +232,53 @@ class ParserContainer(object):
         admin_parser_class=configmannersAdminParser,
     ):
         # create admin parser to be used a a parent parser
-        self.admin_parser_args.kwargs['parents'] = []
+        self.admin_parser_args.kwargs["parents"] = []
         admin_parser = admin_parser_class(
-            *self.admin_parser_args.args,
-            **self.admin_parser_args.kwargs
+            *self.admin_parser_args.args, **self.admin_parser_args.kwargs
         )
 
         for admin_args in self.admin_arguments:
-            admin_args.kwargs['default'] = argparse.SUPPRESS
+            admin_args.kwargs["default"] = argparse.SUPPRESS
             admin_parser.add_argument(*admin_args.args, **admin_args.kwargs)
 
         # create the main parser
-        self.main_parser_args.kwargs['parents'] = [admin_parser]
+        self.main_parser_args.kwargs["parents"] = [admin_parser]
         main_parser = main_parser_class(
-            *self.main_parser_args.args,
-            **self.main_parser_args.kwargs
+            *self.main_parser_args.args, **self.main_parser_args.kwargs
         )
 
         if self.subcommand is not None:
             # add any subparsers to the parent parser
             subcommand_kwargs = copy.copy(self.subcommand.kwargs)
-            subcommand_kwargs['parser_class'] = subparser_class
-            subcommand_kwargs.setdefault('parents', [])
-            if 'parents' in subcommand_kwargs:
-                del subcommand_kwargs['parents']
-            if 'action' in subcommand_kwargs:
-                del subcommand_kwargs['action']
+            subcommand_kwargs["parser_class"] = subparser_class
+            subcommand_kwargs.setdefault("parents", [])
+            if "parents" in subcommand_kwargs:
+                del subcommand_kwargs["parents"]
+            if "action" in subcommand_kwargs:
+                del subcommand_kwargs["action"]
             local_subparser_action = main_parser.add_subparsers(
-                *self.subcommand.args,
-                **subcommand_kwargs
+                *self.subcommand.args, **subcommand_kwargs
             )
             local_subparser_action.default = argparse.SUPPRESS
             for subparser_name in self.subcommand.subparsers.keys():
                 subparser_kwargs = copy.copy(
                     self.subcommand.subparsers[subparser_name].kwargs
                 )
-                subparser_args = \
-                    self.subcommand.subparsers[subparser_name].args
-                if 'dest' in subparser_kwargs:
-                    del subparser_kwargs['dest']
-                subparser_kwargs['parents'] = [admin_parser]
+                subparser_args = self.subcommand.subparsers[subparser_name].args
+                if "dest" in subparser_kwargs:
+                    del subparser_kwargs["dest"]
+                subparser_kwargs["parents"] = [admin_parser]
                 local_subparser = local_subparser_action.add_parser(
-                    *subparser_args,
-                    **subparser_kwargs
+                    *subparser_args, **subparser_kwargs
                 )
                 self.subparsers[subparser_name] = local_subparser
 
         # add the actual arguments to the appropriate main or subparsers
-        for args_for_an_argparse_argument in (
-            self.arguments_for_building_argparse
-        ):
+        for args_for_an_argparse_argument in self.arguments_for_building_argparse:
             args = args_for_an_argparse_argument.args
             kwargs = args_for_an_argparse_argument.kwargs
             owning_subparser_name = args_for_an_argparse_argument.get(
-                'owning_subparser_name',
-                None
+                "owning_subparser_name", None
             )
             if owning_subparser_name:
                 the_parser = self.subparsers[owning_subparser_name]
@@ -325,19 +303,21 @@ class ParserContainer(object):
             new_arguments.args = argparse_foreign_data.args
             new_arguments.kwargs = copy.copy(argparse_foreign_data.kwargs)
             new_arguments.qualified_name = qualified_name
-            new_arguments.owning_subparser_name = \
+            new_arguments.owning_subparser_name = (
                 argparse_foreign_data.owning_subparser_name
+            )
 
-            if new_arguments.args == (qualified_name.split('.')[-1],):
+            if new_arguments.args == (qualified_name.split(".")[-1],):
                 new_arguments.args = (qualified_name,)
-            elif 'dest' in new_arguments.kwargs:
-                if new_arguments.kwargs['dest'] != qualified_name:
-                    new_arguments.kwargs['dest'] = qualified_name
+            elif "dest" in new_arguments.kwargs:
+                if new_arguments.kwargs["dest"] != qualified_name:
+                    new_arguments.kwargs["dest"] = qualified_name
             else:
-                new_arguments.kwargs['dest'] = qualified_name
+                new_arguments.kwargs["dest"] = qualified_name
             try:
-                new_arguments.kwargs['dest'] = \
-                    new_arguments.kwargs['dest'].replace('$', '')
+                new_arguments.kwargs["dest"] = new_arguments.kwargs["dest"].replace(
+                    "$", ""
+                )
             except KeyError:
                 # there was no 'dest' key, so we can ignore this error
                 pass
@@ -351,19 +331,19 @@ class ParserContainer(object):
         if option.is_argument:  # is positional argument
             option_name = opt_name
         else:
-            option_name = '--%s' % opt_name
+            option_name = "--%s" % opt_name
             kwargs.dest = opt_name
 
         if option.short_form:
-            option_short_form = '-%s' % option.short_form
+            option_short_form = "-%s" % option.short_form
             args = (option_name, option_short_form)
         else:
             args = (option_name,)
 
         if option.from_string_converter in (bool, boolean_converter):
-            kwargs.action = 'store_true'
+            kwargs.action = "store_true"
         else:
-            kwargs.action = 'store'
+            kwargs.action = "store"
 
         kwargs.default = argparse.SUPPRESS
         kwargs.help = option.doc
@@ -373,26 +353,22 @@ class ParserContainer(object):
         new_arguments.kwargs = kwargs
         new_arguments.qualified_name = qualified_name
 
-        if (
-            isinstance(option.default, collections.abc.Sequence)
-            and not isinstance(option.default, (bytes, str))
+        if isinstance(option.default, collections.abc.Sequence) and not isinstance(
+            option.default, (bytes, str)
         ):
             if option.is_argument:
                 kwargs.nargs = len(option.default)
             else:
                 kwargs.nargs = "+"
 
-        if qualified_name.startswith('admin'):
+        if qualified_name.startswith("admin"):
             self.admin_arguments.append(new_arguments)
         else:
             self.arguments_for_building_argparse.append(new_arguments)
 
     # --------------------------------------------------------------------------
     def add_argument_from_option(self, qualified_name, option):
-        if (
-            option.foreign_data is not None
-            and "argparse" in option.foreign_data
-        ):
+        if option.foreign_data is not None and "argparse" in option.foreign_data:
             self._add_argument_from_original_source(qualified_name, option)
         else:
             self._add_argument_from_configmanners_option(qualified_name, option)
@@ -403,6 +379,7 @@ class ValueSource(object):
     """The ValueSource implementation for the argparse module.  This class will
     interpret an argv list of commandline arguments using argparse returning
     a DotDict derivative respresenting the values return by argparse."""
+
     # --------------------------------------------------------------------------
 
     def __init__(self, source, conf_manager):
@@ -410,7 +387,7 @@ class ValueSource(object):
         self.parent_parsers = []
         self.argv_source = tuple(conf_manager.argv_source)
 
-        self.identity = 'argparse'
+        self.identity = "argparse"
 
     # frequently, command line data sources must be treated differently.  For
     # example, even when the overall option for configmanners is to allow
@@ -423,19 +400,13 @@ class ValueSource(object):
     # --------------------------------------------------------------------------
     @staticmethod
     def _get_known_args(conf_manager):
-        return set(
-            x
-            for x in conf_manager.option_definitions.keys_breadth_first()
-        )
+        return set(x for x in conf_manager.option_definitions.keys_breadth_first())
 
     # --------------------------------------------------------------------------
     def _option_to_args_list(self, an_option, key):
         if an_option.is_argument:
             if an_option.foreign_data is not None:
-                nargs = an_option.foreign_data.argparse.kwargs.get(
-                    'nargs',
-                    None
-                )
+                nargs = an_option.foreign_data.argparse.kwargs.get("nargs", None)
             else:
                 if isinstance(an_option.value, (bytes, str)):
                     an_option.value = to_str(an_option.value)
@@ -443,9 +414,8 @@ class ValueSource(object):
                 if an_option.to_string_converter:
                     return an_option.to_string_converter(an_option.value)
                 return to_str(an_option.value)
-            if (
-                nargs is not None
-                and isinstance(an_option.value, collections.abc.Sequence)
+            if nargs is not None and isinstance(
+                an_option.value, collections.abc.Sequence
             ):
                 if isinstance(an_option.value, (bytes, str)):
                     an_option.value = to_str(an_option.value)
@@ -455,17 +425,14 @@ class ValueSource(object):
                 return []
             return to_str(an_option.value)
         # if an_option.foreign_data.argparse.kwargs.nargs == 0:
-            # return None
+        # return None
         if an_option.from_string_converter in (bool, boolean_converter):
             if an_option.value:
                 return "--%s" % key
             return None
         if an_option.value is None:
             return None
-        return '--%s="%s"' % (
-            key,
-            to_str(an_option)
-        )
+        return '--%s="%s"' % (key, to_str(an_option))
 
     # --------------------------------------------------------------------------
     def create_fake_args(self, config_manager):
@@ -474,17 +441,11 @@ class ValueSource(object):
         # some config file or environment will bring them in later.   argparse
         # needs to cope using this placebo argv
         args = [
-            self._option_to_args_list(
-                config_manager.option_definitions[key],
-                key
-            )
+            self._option_to_args_list(config_manager.option_definitions[key], key)
             for key in config_manager.option_definitions.keys_breadth_first()
             if (
-                isinstance(
-                    config_manager.option_definitions[key],
-                    Option
-                ) and
-                config_manager.option_definitions[key].is_argument
+                isinstance(config_manager.option_definitions[key], Option)
+                and config_manager.option_definitions[key].is_argument
             )
         ]
 
@@ -495,9 +456,7 @@ class ValueSource(object):
             else:
                 flattened_arg_list.append(x)
         final_arg_list = [
-            x.strip()
-            for x in flattened_arg_list
-            if x is not None and x.strip() != ''
+            x.strip() for x in flattened_arg_list if x is not None and x.strip() != ""
         ]
         try:
             return final_arg_list + self.extra_args
@@ -512,14 +471,12 @@ class ValueSource(object):
                 {
                     "main_parser_class": HelplessconfigmannersParser,
                     "subparser_class": HelplessIntermediateconfigmannersSubParser,
-                    "admin_parser_class": HelplessconfigmannersAdminParser
+                    "admin_parser_class": HelplessconfigmannersAdminParser,
                 },
                 config_manager,
                 False,  # create auto help
             )
-            namespace_and_extra_args = parser.parse_known_args(
-                args=self.argv_source
-            )
+            namespace_and_extra_args = parser.parse_known_args(args=self.argv_source)
 
             try:
                 argparse_namespace, unused_args = namespace_and_extra_args
@@ -531,8 +488,9 @@ class ValueSource(object):
         else:
             fake_args = self.create_fake_args(config_manager)
             if (
-                ('--help' in self.argv_source or "-h" in self.argv_source)
-                and '--help' not in fake_args and '-h' not in fake_args
+                ("--help" in self.argv_source or "-h" in self.argv_source)
+                and "--help" not in fake_args
+                and "-h" not in fake_args
             ):
                 fake_args.append("--help")
 
@@ -540,7 +498,7 @@ class ValueSource(object):
                 {
                     "main_parser_class": FinalStageconfigmannersParser,
                     "subparser_class": IntermediateconfigmannersSubParser,
-                    "admin_parser_class": HelplessconfigmannersAdminParser
+                    "admin_parser_class": HelplessconfigmannersAdminParser,
                 },
                 config_manager,
                 True,  # create Help

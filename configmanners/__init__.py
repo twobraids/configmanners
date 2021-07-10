@@ -18,10 +18,11 @@ from configmanners.config_file_future_proxy import ConfigFileFutureProxy
 from configmanners.converters import (
     class_converter,
     regex_converter,
-    timedelta_converter
+    timedelta_converter,
 )
 
 from configmanners.environment import environment
+
 # this next line brings in command_line and, if argparse is available,
 # a definition of the configmanners version of ArgumentParser.  Why is it done
 # with "import *" ? Because we don't know what symbols to import, the decision
@@ -37,7 +38,7 @@ def configuration(*args, **kwargs):
     the configuration dictionary.  It accepts all the same parameters as the
     constructor for the ConfigurationManager class."""
     try:
-        config_kwargs = {'mapping_class': kwargs.pop('mapping_class')}
+        config_kwargs = {"mapping_class": kwargs.pop("mapping_class")}
     except KeyError:
         config_kwargs = {}
     cm = ConfigurationManager(*args, **kwargs)

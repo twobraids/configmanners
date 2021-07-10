@@ -34,56 +34,49 @@ from configmanners.value_sources.source_exceptions import (
 # ==============================================================================
 class T1(RequiredConfig):
     required_config = Namespace()
-    required_config.add_option('a', default=11)
+    required_config.add_option("a", default=11)
 
 
 # ==============================================================================
 class T2(RequiredConfig):
     required_config = Namespace()
-    required_config.add_option('b', default=22)
+    required_config.add_option("b", default=22)
 
 
 # ==============================================================================
 class T3(RequiredConfig):
     required_config = Namespace()
-    required_config.add_option('c', default=33)
-    required_config.namespace('ccc')
-    required_config.ccc.add_option('x', default=99)
+    required_config.add_option("c", default=33)
+    required_config.namespace("ccc")
+    required_config.ccc.add_option("x", default=99)
 
 
 # ==============================================================================
 class AClass(RequiredConfig):
     required_config = Namespace()
-    required_config.namespace('zzz')
-    required_config.zzz.namespace('fff')
+    required_config.namespace("zzz")
+    required_config.zzz.namespace("fff")
     required_config.zzz.fff.add_option(
-        'a',
-        doc='another a',
-        default=3888,
-        reference_value_from='xxx.yyy'
+        "a", doc="another a", default=3888, reference_value_from="xxx.yyy"
     )
     required_config.zzz.fff.add_option(
-        'bclass',
-        default='configmanners.tests.test_config_manager.BClass',
-        from_string_converter=class_converter
+        "bclass",
+        default="configmanners.tests.test_config_manager.BClass",
+        from_string_converter=class_converter,
     )
 
 
 # ==============================================================================
 class BClass(RequiredConfig):
     required_config = Namespace()
-    required_config.namespace('ooo')
+    required_config.namespace("ooo")
     required_config.ooo.add_option(
-        'a',
-        doc='another a',
-        default=9988,
-        reference_value_from='xxx.yyy'
+        "a", doc="another a", default=9988, reference_value_from="xxx.yyy"
     )
 
 
 # ==============================================================================
 class TestCase(unittest.TestCase):
-
     def shortDescription(self):
         # so we can see the path to the failing test
         return None
@@ -93,22 +86,17 @@ class TestCase(unittest.TestCase):
         # because the default option argument defaults to using sys.argv we
         # have to mock that
         c = config_manager.ConfigurationManager(
-            use_admin_controls=False,
-            use_auto_help=False,
-            argv_source=[]
+            use_admin_controls=False, use_auto_help=False, argv_source=[]
         )
         self.assertEqual(c.option_definitions, config_manager.Namespace())
 
     # --------------------------------------------------------------------------
     def test_get_config_1(self):
         n = config_manager.Namespace()
-        n.add_option('a', 1, 'the a')
-        n.add_option('b', 17)
+        n.add_option("a", 1, "the a")
+        n.add_option("b", 17)
         c = config_manager.ConfigurationManager(
-            [n],
-            use_admin_controls=False,
-            use_auto_help=False,
-            argv_source=[]
+            [n], use_admin_controls=False, use_auto_help=False, argv_source=[]
         )
         d = c.get_config()
         e = DotDict()
@@ -119,24 +107,21 @@ class TestCase(unittest.TestCase):
     # --------------------------------------------------------------------------
     def test_get_config_2(self):
         n = config_manager.Namespace()
-        n.add_option('a', 1, 'the a')
+        n.add_option("a", 1, "the a")
         n.b = 17
         n.c = c = config_manager.Namespace()
-        c.x = 'fred'
+        c.x = "fred"
         c.y = 3.14159
-        c.add_option('z', 99, 'the 99')
+        c.add_option("z", 99, "the 99")
         c = config_manager.ConfigurationManager(
-            [n],
-            use_admin_controls=False,
-            use_auto_help=False,
-            argv_source=[]
+            [n], use_admin_controls=False, use_auto_help=False, argv_source=[]
         )
         d = c.get_config()
         e = DotDict()
         e.a = 1
         e.b = 17
         e.c = DotDict()
-        e.c.x = 'fred'
+        e.c.x = "fred"
         e.c.y = 3.14159
         e.c.z = 99
         self.assertEqual(d, e)
@@ -144,236 +129,235 @@ class TestCase(unittest.TestCase):
     # --------------------------------------------------------------------------
     def _some_namespaces(self):
         """set up some namespaces"""
-        n = config_manager.Namespace(doc='top')
+        n = config_manager.Namespace(doc="top")
         n.add_option(
-            'aaa',
-            '2011-05-04T15:10:00',
-            'the a',
-            short_form='a',
-            from_string_converter=datetime_from_ISO_string
+            "aaa",
+            "2011-05-04T15:10:00",
+            "the a",
+            short_form="a",
+            from_string_converter=datetime_from_ISO_string,
         )
-        n.c = config_manager.Namespace(doc='c space')
-        n.c.add_option('fred', 'stupid', 'husband from Flintstones')
-        n.c.add_option('wilma', 'waspish', 'wife from Flintstones')
-        n.d = config_manager.Namespace(doc='d space')
-        n.d.add_option('fred', 'crabby', 'male neighbor from I Love Lucy')
-        n.d.add_option('ethel', 'silly', 'female neighbor from I Love Lucy')
-        n.x = config_manager.Namespace(doc='x space')
-        n.x.add_option('size', 100, 'how big in tons', short_form='s')
-        n.x.add_option('password', 'secret', 'the password')
+        n.c = config_manager.Namespace(doc="c space")
+        n.c.add_option("fred", "stupid", "husband from Flintstones")
+        n.c.add_option("wilma", "waspish", "wife from Flintstones")
+        n.d = config_manager.Namespace(doc="d space")
+        n.d.add_option("fred", "crabby", "male neighbor from I Love Lucy")
+        n.d.add_option("ethel", "silly", "female neighbor from I Love Lucy")
+        n.x = config_manager.Namespace(doc="x space")
+        n.x.add_option("size", 100, "how big in tons", short_form="s")
+        n.x.add_option("password", "secret", "the password")
         return n
 
     # --------------------------------------------------------------------------
     def test_overlay_config_4(self):
         """test overlay dict w/flat source dict"""
         n = config_manager.Namespace()
-        n.add_option('a', doc='the a', default=1)
+        n.add_option("a", doc="the a", default=1)
         n.b = 17
         n.c = config_manager.Namespace()
-        n.c.add_option('extra', doc='the x', default=3.14159)
-        g = {'a': 2, 'c.extra': 2.89, '__identity': 'the_g_mapping'}
+        n.c.add_option("extra", doc="the x", default=3.14159)
+        g = {"a": 2, "c.extra": 2.89, "__identity": "the_g_mapping"}
         c = config_manager.ConfigurationManager(
-            [n],
-            [g],
-            use_admin_controls=True,
-            use_auto_help=False,
-            argv_source=[]
+            [n], [g], use_admin_controls=True, use_auto_help=False, argv_source=[]
         )
-        self.assertTrue(isinstance(c.option_definitions.b,
-                                   config_manager.Option))
+        self.assertTrue(isinstance(c.option_definitions.b, config_manager.Option))
         self.assertEqual(c.option_definitions.a.value, 2)
-        self.assertEqual(c.option_definitions.a.sourced_from, 'the_g_mapping')
+        self.assertEqual(c.option_definitions.a.sourced_from, "the_g_mapping")
 
         self.assertEqual(c.option_definitions.b.value, 17)
-        self.assertEqual(c.option_definitions.b.sourced_from, 'default value')
+        self.assertEqual(c.option_definitions.b.sourced_from, "default value")
         self.assertEqual(c.option_definitions.b.default, 17)
-        self.assertEqual(c.option_definitions.b.name, 'b')
+        self.assertEqual(c.option_definitions.b.name, "b")
 
-        self.assertEqual(c.option_definitions.c.extra.name, 'extra')
-        self.assertEqual(c.option_definitions.c.extra.doc, 'the x')
+        self.assertEqual(c.option_definitions.c.extra.name, "extra")
+        self.assertEqual(c.option_definitions.c.extra.doc, "the x")
         self.assertEqual(c.option_definitions.c.extra.default, 2.89)
         self.assertEqual(c.option_definitions.c.extra.value, 2.89)
-        self.assertEqual(c.option_definitions.c.extra.sourced_from, 'the_g_mapping')
+        self.assertEqual(c.option_definitions.c.extra.sourced_from, "the_g_mapping")
 
     # --------------------------------------------------------------------------
     def test_overlay_config_4a(self):
         """test overlay dict w/deep source dict"""
         n = config_manager.Namespace()
-        n.add_option('a', 1, doc='the a')
+        n.add_option("a", 1, doc="the a")
         n.b = 17
         n.c = config_manager.Namespace()
-        n.c.add_option('extra', doc='the x', default=3.14159)
-        g = {'a': 2, 'c': {'extra': 2.89}, '__identity': 'the_g_mapping'}
+        n.c.add_option("extra", doc="the x", default=3.14159)
+        g = {"a": 2, "c": {"extra": 2.89}, "__identity": "the_g_mapping"}
         c = config_manager.ConfigurationManager(
-            [n],
-            [g],
-            use_admin_controls=True,
-            use_auto_help=False,
-            argv_source=[]
+            [n], [g], use_admin_controls=True, use_auto_help=False, argv_source=[]
         )
-        self.assertTrue(isinstance(c.option_definitions.b,
-                                   config_manager.Option))
+        self.assertTrue(isinstance(c.option_definitions.b, config_manager.Option))
         self.assertEqual(c.option_definitions.a.value, 2)
-        self.assertEqual(c.option_definitions.a.sourced_from, 'the_g_mapping')
+        self.assertEqual(c.option_definitions.a.sourced_from, "the_g_mapping")
 
         self.assertEqual(c.option_definitions.b.value, 17)
-        self.assertEqual(c.option_definitions.b.sourced_from, 'default value')
+        self.assertEqual(c.option_definitions.b.sourced_from, "default value")
         self.assertEqual(c.option_definitions.b.default, 17)
-        self.assertEqual(c.option_definitions.b.name, 'b')
+        self.assertEqual(c.option_definitions.b.name, "b")
 
-        self.assertEqual(c.option_definitions.c.extra.name, 'extra')
-        self.assertEqual(c.option_definitions.c.extra.doc, 'the x')
+        self.assertEqual(c.option_definitions.c.extra.name, "extra")
+        self.assertEqual(c.option_definitions.c.extra.doc, "the x")
         self.assertEqual(c.option_definitions.c.extra.default, 2.89)
         self.assertEqual(c.option_definitions.c.extra.value, 2.89)
-        self.assertEqual(c.option_definitions.c.extra.sourced_from, 'the_g_mapping')
+        self.assertEqual(c.option_definitions.c.extra.sourced_from, "the_g_mapping")
 
     # --------------------------------------------------------------------------
     def test_overlay_config_5(self):
         """test namespace definition w/getopt"""
         n = config_manager.Namespace()
-        n.add_option('a', doc='the a', default=1)
+        n.add_option("a", doc="the a", default=1)
         n.b = 17
-        n.add_option('c', doc='the c', default=False)
+        n.add_option("c", doc="the c", default=False)
         c = config_manager.ConfigurationManager(
             [n],
             [getopt],
             use_admin_controls=True,
             use_auto_help=False,
-            argv_source=['--a', '2', '--c']
+            argv_source=["--a", "2", "--c"],
         )
-        self.assertTrue(isinstance(c.option_definitions.b,
-                                   config_manager.Option))
+        self.assertTrue(isinstance(c.option_definitions.b, config_manager.Option))
         self.assertEqual(c.option_definitions.a.value, 2)
-        self.assertEqual(c.option_definitions.a.sourced_from, 'getopt')
+        self.assertEqual(c.option_definitions.a.sourced_from, "getopt")
 
         self.assertEqual(c.option_definitions.b.value, 17)
-        self.assertEqual(c.option_definitions.b.sourced_from, 'default value')
+        self.assertEqual(c.option_definitions.b.sourced_from, "default value")
         self.assertEqual(c.option_definitions.b.default, 17)
-        self.assertEqual(c.option_definitions.b.name, 'b')
+        self.assertEqual(c.option_definitions.b.name, "b")
 
-        self.assertEqual(c.option_definitions.c.name, 'c')
+        self.assertEqual(c.option_definitions.c.name, "c")
         self.assertEqual(c.option_definitions.c.value, True)
-        self.assertEqual(c.option_definitions.c.sourced_from, 'getopt')
+        self.assertEqual(c.option_definitions.c.sourced_from, "getopt")
 
     # --------------------------------------------------------------------------
     def test_overlay_config_6(self):
         """test namespace definition w/getopt"""
         n = config_manager.Namespace()
-        n.add_option('a', doc='the a', default=1)
+        n.add_option("a", doc="the a", default=1)
         n.b = 17
         n.c = config_manager.Namespace()
-        n.c.add_option('extra', short_form='e', doc='the x', default=3.14159)
+        n.c.add_option("extra", short_form="e", doc="the x", default=3.14159)
         c = config_manager.ConfigurationManager(
             [n],
             [getopt],
             use_admin_controls=True,
             use_auto_help=False,
-            argv_source=['--a', '2', '--c.extra', '11.0']
+            argv_source=["--a", "2", "--c.extra", "11.0"],
         )
         self.assertEqual(type(c.option_definitions.b), config_manager.Option)
         self.assertEqual(c.option_definitions.a.value, 2)
-        self.assertEqual(c.option_definitions.a.sourced_from, 'getopt')
+        self.assertEqual(c.option_definitions.a.sourced_from, "getopt")
 
         self.assertEqual(c.option_definitions.b.value, 17)
-        self.assertEqual(c.option_definitions.b.sourced_from, 'default value')
+        self.assertEqual(c.option_definitions.b.sourced_from, "default value")
         self.assertEqual(c.option_definitions.b.default, 17)
-        self.assertEqual(c.option_definitions.b.name, 'b')
+        self.assertEqual(c.option_definitions.b.name, "b")
 
-        self.assertEqual(c.option_definitions.c.extra.name, 'extra')
-        self.assertEqual(c.option_definitions.c.extra.doc, 'the x')
-        self.assertEqual(c.option_definitions.c.extra.default, '11.0')
+        self.assertEqual(c.option_definitions.c.extra.name, "extra")
+        self.assertEqual(c.option_definitions.c.extra.doc, "the x")
+        self.assertEqual(c.option_definitions.c.extra.default, "11.0")
         self.assertEqual(c.option_definitions.c.extra.value, 11.0)
-        self.assertEqual(c.option_definitions.c.extra.sourced_from, 'getopt')
+        self.assertEqual(c.option_definitions.c.extra.sourced_from, "getopt")
 
     # --------------------------------------------------------------------------
     def test_overlay_config_6a(self):
         """test namespace w/getopt w/short form"""
         n = config_manager.Namespace()
-        n.add_option('a', doc='the a', default=1)
+        n.add_option("a", doc="the a", default=1)
         n.b = 17
         n.c = config_manager.Namespace()
-        n.c.add_option('extra', 3.14159, 'the x', short_form='e')
+        n.c.add_option("extra", 3.14159, "the x", short_form="e")
         c = config_manager.ConfigurationManager(
             [n],
             [getopt],
             use_admin_controls=True,
             use_auto_help=False,
-            argv_source=['--a', '2', '-e', '11.0']
+            argv_source=["--a", "2", "-e", "11.0"],
         )
         self.assertEqual(type(c.option_definitions.b), config_manager.Option)
         self.assertEqual(c.option_definitions.a.value, 2)
-        self.assertEqual(c.option_definitions.a.sourced_from, 'getopt')
+        self.assertEqual(c.option_definitions.a.sourced_from, "getopt")
 
         self.assertEqual(c.option_definitions.b.value, 17)
-        self.assertEqual(c.option_definitions.b.sourced_from, 'default value')
+        self.assertEqual(c.option_definitions.b.sourced_from, "default value")
         self.assertEqual(c.option_definitions.b.default, 17)
-        self.assertEqual(c.option_definitions.b.name, 'b')
+        self.assertEqual(c.option_definitions.b.name, "b")
 
-        self.assertEqual(c.option_definitions.c.extra.name, 'extra')
-        self.assertEqual(c.option_definitions.c.extra.doc, 'the x')
-        self.assertEqual(c.option_definitions.c.extra.default, '11.0')
+        self.assertEqual(c.option_definitions.c.extra.name, "extra")
+        self.assertEqual(c.option_definitions.c.extra.doc, "the x")
+        self.assertEqual(c.option_definitions.c.extra.default, "11.0")
         self.assertEqual(c.option_definitions.c.extra.value, 11.0)
-        self.assertEqual(c.option_definitions.c.extra.sourced_from, 'getopt')
+        self.assertEqual(c.option_definitions.c.extra.sourced_from, "getopt")
 
     # --------------------------------------------------------------------------
     def test_overlay_config_7(self):
         """test namespace definition flat file"""
         n = config_manager.Namespace()
-        n.add_option('a', doc='the a', default=1)
+        n.add_option("a", doc="the a", default=1)
         n.b = 17
         n.c = config_manager.Namespace()
-        n.c.add_option('extra', 3.14159, 'the x')
-        n.c.add_option('string', 'fred', doc='str')
+        n.c.add_option("extra", 3.14159, "the x")
+        n.c.add_option("string", "fred", doc="str")
 
         @contextmanager
         def dummy_open():
             yield [
-                '# comment line to be ignored\n',
-                '\n',  # blank line to be ignored
-                'a=22\n',
-                'b = 33\n',
-                'c.extra = 2.0\n',
-                'c.string =   wilma\n'
+                "# comment line to be ignored\n",
+                "\n",  # blank line to be ignored
+                "a=22\n",
+                "b = 33\n",
+                "c.extra = 2.0\n",
+                "c.string =   wilma\n",
             ]
+
         c = config_manager.ConfigurationManager(
-            [n],
-            [dummy_open],
-            use_admin_controls=True,
-            use_auto_help=False
+            [n], [dummy_open], use_admin_controls=True, use_auto_help=False
         )
         self.assertEqual(type(c.option_definitions.b), config_manager.Option)
         self.assertEqual(c.option_definitions.a.value, 22)
-        self.assertEqual(c.option_definitions.a.sourced_from, 'configmanners.tests.test_config_manager.dummy_open')
+        self.assertEqual(
+            c.option_definitions.a.sourced_from,
+            "configmanners.tests.test_config_manager.dummy_open",
+        )
 
         self.assertEqual(c.option_definitions.b.value, 33)
-        self.assertEqual(c.option_definitions.b.default, '33')
-        self.assertEqual(c.option_definitions.b.name, 'b')
-        self.assertEqual(c.option_definitions.b.sourced_from, 'configmanners.tests.test_config_manager.dummy_open')
+        self.assertEqual(c.option_definitions.b.default, "33")
+        self.assertEqual(c.option_definitions.b.name, "b")
+        self.assertEqual(
+            c.option_definitions.b.sourced_from,
+            "configmanners.tests.test_config_manager.dummy_open",
+        )
 
-        self.assertEqual(c.option_definitions.c.extra.name, 'extra')
-        self.assertEqual(c.option_definitions.c.extra.doc, 'the x')
-        self.assertEqual(c.option_definitions.c.extra.default, '2.0')
+        self.assertEqual(c.option_definitions.c.extra.name, "extra")
+        self.assertEqual(c.option_definitions.c.extra.doc, "the x")
+        self.assertEqual(c.option_definitions.c.extra.default, "2.0")
         self.assertEqual(c.option_definitions.c.extra.value, 2.0)
-        self.assertEqual(c.option_definitions.c.extra.sourced_from, 'configmanners.tests.test_config_manager.dummy_open')
+        self.assertEqual(
+            c.option_definitions.c.extra.sourced_from,
+            "configmanners.tests.test_config_manager.dummy_open",
+        )
 
-        self.assertEqual(c.option_definitions.c.string.name, 'string')
-        self.assertEqual(c.option_definitions.c.string.doc, 'str')
-        self.assertEqual(c.option_definitions.c.string.default, 'wilma')
-        self.assertEqual(c.option_definitions.c.string.value, 'wilma')
-        self.assertEqual(c.option_definitions.c.string.sourced_from, 'configmanners.tests.test_config_manager.dummy_open')
+        self.assertEqual(c.option_definitions.c.string.name, "string")
+        self.assertEqual(c.option_definitions.c.string.doc, "str")
+        self.assertEqual(c.option_definitions.c.string.default, "wilma")
+        self.assertEqual(c.option_definitions.c.string.value, "wilma")
+        self.assertEqual(
+            c.option_definitions.c.string.sourced_from,
+            "configmanners.tests.test_config_manager.dummy_open",
+        )
 
     # --------------------------------------------------------------------------
     def test_overlay_config_8(self):
         """test namespace definition ini file"""
         n = config_manager.Namespace()
         n.other = config_manager.Namespace()
-        n.other.add_option('t', 'tee', 'the t')
+        n.other.add_option("t", "tee", "the t")
         n.d = config_manager.Namespace()
-        n.d.add_option('a', 1, doc='the a')
+        n.d.add_option("a", 1, doc="the a")
         n.d.b = 17
         n.c = config_manager.Namespace()
-        n.c.add_option('extra', 3.14159, 'the x')
-        n.c.add_option('string', 'fred', doc='str')
+        n.c.add_option("extra", 3.14159, "the x")
+        n.c.add_option("string", "fred", doc="str")
         ini_data = b"""
 other.t=tea
 # blank line to be ignored
@@ -385,48 +369,62 @@ c.string = wilma
 
         def strio():
             return io.BytesIO(ini_data)
+
         c = config_manager.ConfigurationManager(
-            [n], [strio],
-            use_admin_controls=True,
-            use_auto_help=False
+            [n], [strio], use_admin_controls=True, use_auto_help=False
         )
-        self.assertEqual(c.option_definitions.other.t.name, 't')
-        self.assertEqual(c.option_definitions.other.t.value, 'tea')
-        self.assertEqual(c.option_definitions.other.t.sourced_from, 'configmanners.tests.test_config_manager.strio')
+        self.assertEqual(c.option_definitions.other.t.name, "t")
+        self.assertEqual(c.option_definitions.other.t.value, "tea")
+        self.assertEqual(
+            c.option_definitions.other.t.sourced_from,
+            "configmanners.tests.test_config_manager.strio",
+        )
 
         self.assertEqual(type(c.option_definitions.d.b), config_manager.Option)
         self.assertEqual(c.option_definitions.d.a.value, 22)
-        self.assertEqual(c.option_definitions.d.a.sourced_from, 'configmanners.tests.test_config_manager.strio')
+        self.assertEqual(
+            c.option_definitions.d.a.sourced_from,
+            "configmanners.tests.test_config_manager.strio",
+        )
 
         self.assertEqual(c.option_definitions.d.b.value, 33)
-        self.assertEqual(c.option_definitions.d.b.default, '33')
-        self.assertEqual(c.option_definitions.d.b.name, 'b')
-        self.assertEqual(c.option_definitions.d.b.sourced_from, 'configmanners.tests.test_config_manager.strio')
+        self.assertEqual(c.option_definitions.d.b.default, "33")
+        self.assertEqual(c.option_definitions.d.b.name, "b")
+        self.assertEqual(
+            c.option_definitions.d.b.sourced_from,
+            "configmanners.tests.test_config_manager.strio",
+        )
 
-        self.assertEqual(c.option_definitions.c.extra.name, 'extra')
-        self.assertEqual(c.option_definitions.c.extra.doc, 'the x')
-        self.assertEqual(c.option_definitions.c.extra.default, '2.0')
+        self.assertEqual(c.option_definitions.c.extra.name, "extra")
+        self.assertEqual(c.option_definitions.c.extra.doc, "the x")
+        self.assertEqual(c.option_definitions.c.extra.default, "2.0")
         self.assertEqual(c.option_definitions.c.extra.value, 2.0)
-        self.assertEqual(c.option_definitions.c.extra.sourced_from, 'configmanners.tests.test_config_manager.strio')
+        self.assertEqual(
+            c.option_definitions.c.extra.sourced_from,
+            "configmanners.tests.test_config_manager.strio",
+        )
 
-        self.assertEqual(c.option_definitions.c.string.name, 'string')
-        self.assertEqual(c.option_definitions.c.string.doc, 'str')
-        self.assertEqual(c.option_definitions.c.string.default, 'wilma')
-        self.assertEqual(c.option_definitions.c.string.value, 'wilma')
-        self.assertEqual(c.option_definitions.c.string.sourced_from, 'configmanners.tests.test_config_manager.strio')
+        self.assertEqual(c.option_definitions.c.string.name, "string")
+        self.assertEqual(c.option_definitions.c.string.doc, "str")
+        self.assertEqual(c.option_definitions.c.string.default, "wilma")
+        self.assertEqual(c.option_definitions.c.string.value, "wilma")
+        self.assertEqual(
+            c.option_definitions.c.string.sourced_from,
+            "configmanners.tests.test_config_manager.strio",
+        )
 
     # --------------------------------------------------------------------------
     def test_overlay_config_9(self):
         """test namespace definition ini file"""
         n = config_manager.Namespace()
         n.other = config_manager.Namespace()
-        n.other.add_option('t', 'tee', 'the t')
+        n.other.add_option("t", "tee", "the t")
         n.d = config_manager.Namespace()
-        n.d.add_option('a', 1, doc='the a')
+        n.d.add_option("a", 1, doc="the a")
         n.d.b = 17
         n.c = config_manager.Namespace()
-        n.c.add_option('extra', 3.14159, 'the x')
-        n.c.add_option('string', 'fred', 'str')
+        n.c.add_option("extra", 3.14159, "the x")
+        n.c.add_option("string", "fred", "str")
         ini_data = b"""
 other.t=tea
 # blank line to be ignored
@@ -437,14 +435,15 @@ c.string =   from ini
 
         def strio():
             return io.BytesIO(ini_data)
+
         e = DotDict()
         e.fred = DotDict()  # should be ignored
-        e.fred.t = 'T'  # should be ignored
+        e.fred.t = "T"  # should be ignored
         e.d = DotDict()
         e.d.a = 16
         e.c = DotDict()
         e.c.extra = 18.6
-        e.c.string = 'from environment'
+        e.c.string = "from environment"
 
         saved_environ = os.environ
         os.environ = e
@@ -454,53 +453,54 @@ c.string =   from ini
                 [e, strio, getopt],
                 use_admin_controls=True,
                 use_auto_help=False,
-                argv_source=[
-                    '--other.t',
-                    'TTT',
-                    '--c.extra',
-                    '11.0'
-                ]
+                argv_source=["--other.t", "TTT", "--c.extra", "11.0"],
             )
         finally:
             os.environ = saved_environ
-        #fm.os = saved_os
-        self.assertEqual(c.option_definitions.other.t.name, 't')
-        self.assertEqual(c.option_definitions.other.t.value, 'TTT')
-        self.assertEqual(c.option_definitions.other.t.sourced_from, 'getopt')
+        # fm.os = saved_os
+        self.assertEqual(c.option_definitions.other.t.name, "t")
+        self.assertEqual(c.option_definitions.other.t.value, "TTT")
+        self.assertEqual(c.option_definitions.other.t.sourced_from, "getopt")
 
         self.assertEqual(type(c.option_definitions.d.b), config_manager.Option)
         self.assertEqual(c.option_definitions.d.a.value, 22)
-        self.assertEqual(c.option_definitions.d.a.sourced_from, 'configmanners.tests.test_config_manager.strio')
+        self.assertEqual(
+            c.option_definitions.d.a.sourced_from,
+            "configmanners.tests.test_config_manager.strio",
+        )
 
         self.assertEqual(c.option_definitions.d.b.value, 17)
         self.assertEqual(c.option_definitions.d.b.default, 17)
-        self.assertEqual(c.option_definitions.d.b.name, 'b')
-        self.assertEqual(c.option_definitions.d.b.sourced_from, 'default value')
+        self.assertEqual(c.option_definitions.d.b.name, "b")
+        self.assertEqual(c.option_definitions.d.b.sourced_from, "default value")
 
-        self.assertEqual(c.option_definitions.c.extra.name, 'extra')
-        self.assertEqual(c.option_definitions.c.extra.doc, 'the x')
-        self.assertEqual(c.option_definitions.c.extra.default, '11.0')
+        self.assertEqual(c.option_definitions.c.extra.name, "extra")
+        self.assertEqual(c.option_definitions.c.extra.doc, "the x")
+        self.assertEqual(c.option_definitions.c.extra.default, "11.0")
         self.assertEqual(c.option_definitions.c.extra.value, 11.0)
-        self.assertEqual(c.option_definitions.c.extra.sourced_from, 'getopt')
+        self.assertEqual(c.option_definitions.c.extra.sourced_from, "getopt")
 
-        self.assertEqual(c.option_definitions.c.string.name, 'string')
-        self.assertEqual(c.option_definitions.c.string.doc, 'str')
-        self.assertEqual(c.option_definitions.c.string.default, 'from ini')
-        self.assertEqual(c.option_definitions.c.string.value, 'from ini')
-        self.assertEqual(c.option_definitions.c.string.sourced_from, 'configmanners.tests.test_config_manager.strio')
+        self.assertEqual(c.option_definitions.c.string.name, "string")
+        self.assertEqual(c.option_definitions.c.string.doc, "str")
+        self.assertEqual(c.option_definitions.c.string.default, "from ini")
+        self.assertEqual(c.option_definitions.c.string.value, "from ini")
+        self.assertEqual(
+            c.option_definitions.c.string.sourced_from,
+            "configmanners.tests.test_config_manager.strio",
+        )
 
     # --------------------------------------------------------------------------
     def test_overlay_config_10(self):
         """test namespace definition ini file"""
         n = config_manager.Namespace()
         n.other = config_manager.Namespace()
-        n.other.add_option('t', 'tee', 'the t')
+        n.other.add_option("t", "tee", "the t")
         n.d = config_manager.Namespace()
-        n.d.add_option('a', 1, 'the a')
+        n.d.add_option("a", 1, "the a")
         n.d.b = 17
         n.c = config_manager.Namespace()
-        n.c.add_option('extra', 3.14159, 'the x')
-        n.c.add_option('string', 'fred', doc='str')
+        n.c.add_option("extra", 3.14159, "the x")
+        n.c.add_option("string", "fred", doc="str")
         ini_data = b"""
 other.t=tea
 # blank line to be ignored
@@ -511,159 +511,145 @@ c.string =   from ini
 
         def strio():
             return io.BytesIO(ini_data)
+
         e = DotDict()
         e.other = DotDict()
-        e.other.t = 'T'
+        e.other.t = "T"
         e.d = DotDict()
         e.d.a = 16
         e.c = DotDict()
         e.c.extra = 18.6
-        e.c.string = 'from environment'
+        e.c.string = "from environment"
 
         c = config_manager.ConfigurationManager(
             [n],
             [e, strio, getopt],
             use_admin_controls=True,
-            argv_source=['--c.extra', '11.0'],
-            use_auto_help=False
+            argv_source=["--c.extra", "11.0"],
+            use_auto_help=False,
         )
-        self.assertEqual(c.option_definitions.other.t.name, 't')
-        self.assertEqual(c.option_definitions.other.t.value, 'tea')
-        self.assertEqual(c.option_definitions.other.t.sourced_from, 'configmanners.tests.test_config_manager.strio')
+        self.assertEqual(c.option_definitions.other.t.name, "t")
+        self.assertEqual(c.option_definitions.other.t.value, "tea")
+        self.assertEqual(
+            c.option_definitions.other.t.sourced_from,
+            "configmanners.tests.test_config_manager.strio",
+        )
 
         self.assertEqual(type(c.option_definitions.d.b), config_manager.Option)
         self.assertEqual(c.option_definitions.d.a.value, 22)
-        self.assertEqual(c.option_definitions.d.a.sourced_from, 'configmanners.tests.test_config_manager.strio')
+        self.assertEqual(
+            c.option_definitions.d.a.sourced_from,
+            "configmanners.tests.test_config_manager.strio",
+        )
 
         self.assertEqual(c.option_definitions.d.b.value, 17)
         self.assertEqual(c.option_definitions.d.b.default, 17)
-        self.assertEqual(c.option_definitions.d.b.name, 'b')
-        self.assertEqual(c.option_definitions.d.b.sourced_from, 'default value')
+        self.assertEqual(c.option_definitions.d.b.name, "b")
+        self.assertEqual(c.option_definitions.d.b.sourced_from, "default value")
 
-        self.assertEqual(c.option_definitions.c.extra.name, 'extra')
-        self.assertEqual(c.option_definitions.c.extra.doc, 'the x')
-        self.assertEqual(c.option_definitions.c.extra.default, '11.0')
+        self.assertEqual(c.option_definitions.c.extra.name, "extra")
+        self.assertEqual(c.option_definitions.c.extra.doc, "the x")
+        self.assertEqual(c.option_definitions.c.extra.default, "11.0")
         self.assertEqual(c.option_definitions.c.extra.value, 11.0)
-        self.assertEqual(c.option_definitions.c.extra.sourced_from, 'getopt')
+        self.assertEqual(c.option_definitions.c.extra.sourced_from, "getopt")
 
-        self.assertEqual(c.option_definitions.c.string.name, 'string')
-        self.assertEqual(c.option_definitions.c.string.doc, 'str')
-        self.assertEqual(c.option_definitions.c.string.default, 'from ini')
-        self.assertEqual(c.option_definitions.c.string.value, 'from ini')
-        self.assertEqual(c.option_definitions.c.string.sourced_from, 'configmanners.tests.test_config_manager.strio')
+        self.assertEqual(c.option_definitions.c.string.name, "string")
+        self.assertEqual(c.option_definitions.c.string.doc, "str")
+        self.assertEqual(c.option_definitions.c.string.default, "from ini")
+        self.assertEqual(c.option_definitions.c.string.value, "from ini")
+        self.assertEqual(
+            c.option_definitions.c.string.sourced_from,
+            "configmanners.tests.test_config_manager.strio",
+        )
 
     # --------------------------------------------------------------------------
     def test_overlay_config_11(self):
         """test overlay dict w/deep source dict and reference value links"""
         n = config_manager.Namespace()
-        n.add_option('a', 1, doc='the a', reference_value_from='xxx.yyy')
+        n.add_option("a", 1, doc="the a", reference_value_from="xxx.yyy")
         n.b = 17
         n.c = config_manager.Namespace()
         n.c.add_option(
-            'extra', doc='the x',
-            default=3.14159,
-            reference_value_from='xxx.yyy'
+            "extra", doc="the x", default=3.14159, reference_value_from="xxx.yyy"
         )
-        n.c.add_option(
-            'a',
-            doc='the a',
-            reference_value_from='xxx.yyy'
-        )
-        g = {
-            'xxx': {
-                'yyy': {
-                    'a': 2,
-                    'extra': 2.89
-                }
-            }
-        }
+        n.c.add_option("a", doc="the a", reference_value_from="xxx.yyy")
+        g = {"xxx": {"yyy": {"a": 2, "extra": 2.89}}}
         c = config_manager.ConfigurationManager(
-            [n],
-            [g],
-            use_admin_controls=True,
-            use_auto_help=False,
-            argv_source=[]
+            [n], [g], use_admin_controls=True, use_auto_help=False, argv_source=[]
         )
-        self.assertTrue(isinstance(
-            c.option_definitions.b,
-            config_manager.Option
-        ))
+        self.assertTrue(isinstance(c.option_definitions.b, config_manager.Option))
         self.assertEqual(c.option_definitions.a.value, 2)
-        self.assertEqual(c.option_definitions.a.sourced_from, "reference_value - 'xxx.yyy.a'")
+        self.assertEqual(
+            c.option_definitions.a.sourced_from, "reference_value - 'xxx.yyy.a'"
+        )
 
         self.assertEqual(c.option_definitions.b.value, 17)
         self.assertEqual(c.option_definitions.b.default, 17)
-        self.assertEqual(c.option_definitions.b.name, 'b')
+        self.assertEqual(c.option_definitions.b.name, "b")
         self.assertEqual(c.option_definitions.b.sourced_from, "default value")
 
-        self.assertEqual(c.option_definitions.c.extra.name, 'extra')
-        self.assertEqual(c.option_definitions.c.extra.doc, 'the x')
+        self.assertEqual(c.option_definitions.c.extra.name, "extra")
+        self.assertEqual(c.option_definitions.c.extra.doc, "the x")
         self.assertEqual(c.option_definitions.c.extra.default, 2.89)
         self.assertEqual(c.option_definitions.c.extra.value, 2.89)
-        self.assertEqual(c.option_definitions.c.extra.sourced_from, "reference_value - 'xxx.yyy.extra'")
+        self.assertEqual(
+            c.option_definitions.c.extra.sourced_from,
+            "reference_value - 'xxx.yyy.extra'",
+        )
 
         self.assertEqual(c.option_definitions.c.a.value, 2)
-        self.assertEqual(c.option_definitions.c.a.sourced_from, "reference_value - 'xxx.yyy.a'")
+        self.assertEqual(
+            c.option_definitions.c.a.sourced_from, "reference_value - 'xxx.yyy.a'"
+        )
 
     # --------------------------------------------------------------------------
     def test_overlay_config_12(self):
         """test overlay dict w/deep source dict and reference value links
         with dynamic class loading"""
         n = config_manager.Namespace()
-        n.add_option('a', 1, doc='the a', reference_value_from='xxx.yyy')
+        n.add_option("a", 1, doc="the a", reference_value_from="xxx.yyy")
         n.b = 17
         n.c = config_manager.Namespace()
         n.c.add_option(
-            'extra', doc='the x',
-            default=3.14159,
-            reference_value_from='xxx.yyy'
+            "extra", doc="the x", default=3.14159, reference_value_from="xxx.yyy"
         )
+        n.c.add_option("a", doc="the a", reference_value_from="xxx.yyy")
         n.c.add_option(
-            'a',
-            doc='the a',
-            reference_value_from='xxx.yyy'
+            "thingy",
+            default="configmanners.tests.test_config_manager.AClass",
+            from_string_converter=class_converter,
         )
-        n.c.add_option(
-            'thingy',
-            default='configmanners.tests.test_config_manager.AClass',
-            from_string_converter=class_converter
-        )
-        value_source = {
-            'xxx': {
-                'yyy': {
-                    'a': 2,
-                    'extra': 2.89
-                }
-            }
-        }
+        value_source = {"xxx": {"yyy": {"a": 2, "extra": 2.89}}}
         c = config_manager.ConfigurationManager(
             [n],
             [
-                {'b': 21, "__identity": 'first mapping'},
-                {'c.a': 399, "__identity": 'second mapping'},
+                {"b": 21, "__identity": "first mapping"},
+                {"c.a": 399, "__identity": "second mapping"},
                 value_source,
             ],
             use_admin_controls=True,
             use_auto_help=False,
-            argv_source=[]
+            argv_source=[],
         )
-        self.assertTrue(isinstance(
-            c.option_definitions.b,
-            config_manager.Option
-        ))
+        self.assertTrue(isinstance(c.option_definitions.b, config_manager.Option))
         self.assertEqual(c.option_definitions.a.value, 2)
-        self.assertEqual(c.option_definitions.a.sourced_from, "reference_value - 'xxx.yyy.a'")
+        self.assertEqual(
+            c.option_definitions.a.sourced_from, "reference_value - 'xxx.yyy.a'"
+        )
 
         self.assertEqual(c.option_definitions.b.value, 21)
         self.assertEqual(c.option_definitions.b.default, 21)
-        self.assertEqual(c.option_definitions.b.name, 'b')
+        self.assertEqual(c.option_definitions.b.name, "b")
         self.assertEqual(c.option_definitions.b.sourced_from, "first mapping")
 
-        self.assertEqual(c.option_definitions.c.extra.name, 'extra')
-        self.assertEqual(c.option_definitions.c.extra.doc, 'the x')
+        self.assertEqual(c.option_definitions.c.extra.name, "extra")
+        self.assertEqual(c.option_definitions.c.extra.doc, "the x")
         self.assertEqual(c.option_definitions.c.extra.default, 2.89)
         self.assertEqual(c.option_definitions.c.extra.value, 2.89)
-        self.assertEqual(c.option_definitions.c.extra.sourced_from, "reference_value - 'xxx.yyy.extra'")
+        self.assertEqual(
+            c.option_definitions.c.extra.sourced_from,
+            "reference_value - 'xxx.yyy.extra'",
+        )
 
         self.assertEqual(c.option_definitions.c.a.default, 399)
         self.assertEqual(c.option_definitions.c.a.value, 399)
@@ -671,47 +657,41 @@ c.string =   from ini
 
         self.assertEqual(c.option_definitions.c.zzz.fff.a.value, 2)
         self.assertEqual(c.option_definitions.c.zzz.fff.a.default, 2)
-        self.assertEqual(c.option_definitions.c.zzz.fff.a.sourced_from, "reference_value - 'xxx.yyy.a'")
+        self.assertEqual(
+            c.option_definitions.c.zzz.fff.a.sourced_from,
+            "reference_value - 'xxx.yyy.a'",
+        )
 
         self.assertEqual(c.option_definitions.c.zzz.fff.ooo.a.default, 2)
         self.assertEqual(c.option_definitions.c.zzz.fff.ooo.a.value, 2)
-        self.assertEqual(c.option_definitions.c.zzz.fff.ooo.a.sourced_from, "reference_value - 'xxx.yyy.a'")
+        self.assertEqual(
+            c.option_definitions.c.zzz.fff.ooo.a.sourced_from,
+            "reference_value - 'xxx.yyy.a'",
+        )
 
     # --------------------------------------------------------------------------
     def test_mapping_types_1(self):
         n = config_manager.Namespace()
-        n.add_option(
-            name='a',
-            default=1,
-            doc='the a'
-        )
+        n.add_option(name="a", default=1, doc="the a")
         n.b = 17
         n.c = config_manager.Namespace()
-        n.c.x = 'fred'
+        n.c.x = "fred"
         n.c.y = 3.14159
-        n.c.add_option(
-            name='z',
-            default=99,
-            doc='the 99'
-        )
-        o = {"a": 2, "c.z": 22, "c.x": 'noob', "c.y": "2.89"}
+        n.c.add_option(name="z", default=99, doc="the 99")
+        o = {"a": 2, "c.z": 22, "c.x": "noob", "c.y": "2.89"}
         c = config_manager.ConfigurationManager(
-            [n],
-            [o],
-            use_admin_controls=False,
-            use_auto_help=False,
-            argv_source=[]
+            [n], [o], use_admin_controls=False, use_auto_help=False, argv_source=[]
         )
         e = DotDict()
         e.a = 2
         e.b = 17
         e.c = DotDict()
-        e.c.x = 'noob'
+        e.c.x = "noob"
         e.c.y = 2.89
         e.c.z = 22
         d = c._generate_config(dict)
         self.assertTrue(isinstance(d, dict))
-        self.assertTrue(isinstance(d['c'], dict))
+        self.assertTrue(isinstance(d["c"], dict))
         self.assertEqual(d, e)
         d = c._generate_config(DotDict)
         self.assertTrue(isinstance(d, DotDict))
@@ -728,25 +708,22 @@ c.string =   from ini
     # --------------------------------------------------------------------------
     def test_get_option_names(self):
         n = config_manager.Namespace()
-        n.add_option('a', 1, 'the a')
+        n.add_option("a", 1, "the a")
         n.b = 17
         n.c = config_manager.Namespace()
-        n.c.add_option('fred')
-        n.c.add_option('wilma')
+        n.c.add_option("fred")
+        n.c.add_option("wilma")
         n.d = config_manager.Namespace()
-        n.d.add_option('fred')
-        n.d.add_option('wilma')
+        n.d.add_option("fred")
+        n.d.add_option("wilma")
         n.d.x = config_manager.Namespace()
-        n.d.x.add_option('size')
+        n.d.x.add_option("size")
         c = config_manager.ConfigurationManager(
-            [n],
-            use_admin_controls=False,
-            use_auto_help=False,
-            argv_source=[]
+            [n], use_admin_controls=False, use_auto_help=False, argv_source=[]
         )
         names = c.get_option_names()
         names.sort()
-        e = ['a', 'b', 'c.fred', 'c.wilma', 'd.fred', 'd.wilma', 'd.x.size']
+        e = ["a", "b", "c.fred", "c.wilma", "d.fred", "d.wilma", "d.x.size"]
         e.sort()
         self.assertEqual(names, e)
         names = sorted([x for x in c.option_definitions.keys_breadth_first()])
@@ -755,45 +732,42 @@ c.string =   from ini
     # --------------------------------------------------------------------------
     def test_get_option(self):
         n = config_manager.Namespace()
-        n.add_option('a', 1, 'the a')
+        n.add_option("a", 1, "the a")
         n.b = 17
         n.c = config_manager.Namespace()
-        n.c.add_option('fred')
-        n.c.add_option('wilma')
+        n.c.add_option("fred")
+        n.c.add_option("wilma")
         n.d = config_manager.Namespace()
-        n.d.add_option('fred')
-        n.d.add_option('wilma')
+        n.d.add_option("fred")
+        n.d.add_option("wilma")
         n.d.x = config_manager.Namespace()
-        n.d.x.add_option('size')
+        n.d.x.add_option("size")
         c = config_manager.ConfigurationManager(
-            [n],
-            use_admin_controls=True,
-            use_auto_help=False,
-            argv_source=[]
+            [n], use_admin_controls=True, use_auto_help=False, argv_source=[]
         )
-        self.assertEqual(c._get_option('a'), n.a)
-        self.assertEqual(c._get_option('b').name, 'b')
-        self.assertEqual(c._get_option('c.fred'), n.c.fred)
-        self.assertEqual(c._get_option('c.wilma'), n.c.wilma)
-        self.assertEqual(c._get_option('d.fred'), n.d.fred)
-        self.assertEqual(c._get_option('d.wilma'), n.d.wilma)
-        self.assertEqual(c._get_option('d.wilma'), n.d.wilma)
-        self.assertEqual(c._get_option('d.x.size'), n.d.x.size)
+        self.assertEqual(c._get_option("a"), n.a)
+        self.assertEqual(c._get_option("b").name, "b")
+        self.assertEqual(c._get_option("c.fred"), n.c.fred)
+        self.assertEqual(c._get_option("c.wilma"), n.c.wilma)
+        self.assertEqual(c._get_option("d.fred"), n.d.fred)
+        self.assertEqual(c._get_option("d.wilma"), n.d.wilma)
+        self.assertEqual(c._get_option("d.wilma"), n.d.wilma)
+        self.assertEqual(c._get_option("d.x.size"), n.d.x.size)
 
     # --------------------------------------------------------------------------
     def test_output_summary(self):
         """test_output_summary: the output from help"""
         n = config_manager.Namespace()
-        n.add_option('aaa', False, 'the a', short_form='a')
-        n.add_option('bee', True)
+        n.add_option("aaa", False, "the a", short_form="a")
+        n.add_option("bee", True)
         n.b = 17
         n.c = config_manager.Namespace()
-        n.c.add_option('fred', doc='husband from Flintstones')
+        n.c.add_option("fred", doc="husband from Flintstones")
         n.d = config_manager.Namespace()
-        n.d.add_option('fred', doc='male neighbor from I Love Lucy')
+        n.d.add_option("fred", doc="male neighbor from I Love Lucy")
         n.d.x = config_manager.Namespace()
-        n.d.x.add_option('size', 100, 'how big in tons', short_form='s')
-        n.d.x.add_option('password', 'secrets', 'the password')
+        n.d.x.add_option("size", 100, "how big in tons", short_form="s")
+        n.d.x.add_option("password", "secrets", "the password")
         c = config_manager.ConfigurationManager(
             [n],
             use_admin_controls=True,
@@ -803,27 +777,24 @@ c.string =   from ini
         s = StringIO()
         c.output_summary(output_stream=s)
         r = s.getvalue()
-        self.assertTrue('OPTIONS:\n' in r)
+        self.assertTrue("OPTIONS:\n" in r)
 
-        options = r.split('OPTIONS:\n')[1]
+        options = r.split("OPTIONS:\n")[1]
         s.close()
 
-        padding = '\n' + ' ' * 4
+        padding = "\n" + " " * 4
         expect = [
-            ('-a, --aaa', 'the a%s(default: False)' % padding),
-            ('--b', '(default: 17)'),
-            ('--bee', '(default: True)'),
-            ('--c.fred', 'husband from Flintstones'),
-            ('--d.fred', 'male neighbor from I Love Lucy'),
-            ('--d.x.password', 'the password%s(default: *********)' % padding),
-            ('-s, --d.x.size', 'how big in tons%s(default: 100)' % padding),
+            ("-a, --aaa", "the a%s(default: False)" % padding),
+            ("--b", "(default: 17)"),
+            ("--bee", "(default: True)"),
+            ("--c.fred", "husband from Flintstones"),
+            ("--d.fred", "male neighbor from I Love Lucy"),
+            ("--d.x.password", "the password%s(default: *********)" % padding),
+            ("-s, --d.x.size", "how big in tons%s(default: 100)" % padding),
         ]
         point = -1  # used to assert the sort order
         for i, (start, end) in enumerate(expect):
-            self.assertTrue(
-                point < options.find(start) < options.find(end),
-                expect[i]
-            )
+            self.assertTrue(point < options.find(start) < options.find(end), expect[i])
             point = options.find(end)
 
     # --------------------------------------------------------------------------
@@ -832,28 +803,28 @@ c.string =   from ini
         non-switch argument with no default value - the help output should
         list that argument by name, shown as not optional"""
         n = config_manager.Namespace()
-        n.add_option('application', None, 'the app', is_argument=True)
-        n.add_option('aaa', False, 'the a', short_form='a')
-        n.add_option('bee', True)
+        n.add_option("application", None, "the app", is_argument=True)
+        n.add_option("aaa", False, "the a", short_form="a")
+        n.add_option("bee", True)
         n.b = 17
         n.c = config_manager.Namespace()
-        n.c.add_option('fred', doc='husband from Flintstones')
+        n.c.add_option("fred", doc="husband from Flintstones")
         n.d = config_manager.Namespace()
-        n.d.add_option('fred', doc='male neighbor from I Love Lucy')
+        n.d.add_option("fred", doc="male neighbor from I Love Lucy")
         n.d.x = config_manager.Namespace()
-        n.d.x.add_option('size', 100, 'how big in tons', short_form='s')
-        n.d.x.add_option('password', 'secrets', 'the password')
+        n.d.x.add_option("size", 100, "how big in tons", short_form="s")
+        n.d.x.add_option("password", "secrets", "the password")
         c = config_manager.ConfigurationManager(
             [n],
             use_admin_controls=True,
             use_auto_help=False,
-            argv_source=['some_app'],
+            argv_source=["some_app"],
         )
         s = StringIO()
         c.output_summary(output_stream=s)
         r = s.getvalue()
-        self.assertTrue('[OPTIONS]... ' in r)
-        self.assertTrue('application' in r)  # yeah, we want to see option
+        self.assertTrue("[OPTIONS]... " in r)
+        self.assertTrue("application" in r)  # yeah, we want to see option
 
     # --------------------------------------------------------------------------
     def test_output_summary_with_argument_2(self):
@@ -864,27 +835,27 @@ c.string =   from ini
         and its should show it as not optional."""
         n = config_manager.Namespace()
         n.add_option(
-            'application',
+            "application",
             None,
-            'the app',
+            "the app",
             is_argument=True,
-            from_string_converter=class_converter
+            from_string_converter=class_converter,
         )
-        n.add_option('aaa', False, 'the a', short_form='a')
-        n.add_option('bee', True)
+        n.add_option("aaa", False, "the a", short_form="a")
+        n.add_option("bee", True)
         n.b = 17
         n.c = config_manager.Namespace()
-        n.c.add_option('fred', doc='husband from Flintstones')
+        n.c.add_option("fred", doc="husband from Flintstones")
         n.d = config_manager.Namespace()
-        n.d.add_option('fred', doc='male neighbor from I Love Lucy')
+        n.d.add_option("fred", doc="male neighbor from I Love Lucy")
         n.d.x = config_manager.Namespace()
-        n.d.x.add_option('size', 100, 'how big in tons', short_form='s')
-        n.d.x.add_option('password', 'secrets', 'the password')
+        n.d.x.add_option("size", 100, "how big in tons", short_form="s")
+        n.d.x.add_option("password", "secrets", "the password")
         c = config_manager.ConfigurationManager(
             [n],
-            values_source_list=[{
-                'application': object  # just want any old class here
-            }],
+            values_source_list=[
+                {"application": object}  # just want any old class here
+            ],
             use_admin_controls=True,
             use_auto_help=False,
             argv_source=[],
@@ -892,27 +863,27 @@ c.string =   from ini
         s = StringIO()
         c.output_summary(output_stream=s)
         r = s.getvalue()
-        self.assertTrue('OPTIONS:\n' in r)
-        self.assertFalse('application' in r)  # we don't want this as an option
-        self.assertTrue('object' in r)  # yeah, we want original str value
-        self.assertFalse('[ object' in r)  # but not as listed as optional
+        self.assertTrue("OPTIONS:\n" in r)
+        self.assertFalse("application" in r)  # we don't want this as an option
+        self.assertTrue("object" in r)  # yeah, we want original str value
+        self.assertFalse("[ object" in r)  # but not as listed as optional
 
     # --------------------------------------------------------------------------
     def test_output_summary_with_argument_3(self):
         """test_output_summary: the output from help where one item is a
         non-switch argument with no default value"""
         n = config_manager.Namespace()
-        n.add_option('application', 'somevalue', 'the app', is_argument=True)
-        n.add_option('aaa', False, 'the a', short_form='a')
-        n.add_option('bee', True)
+        n.add_option("application", "somevalue", "the app", is_argument=True)
+        n.add_option("aaa", False, "the a", short_form="a")
+        n.add_option("bee", True)
         n.b = 17
         n.c = config_manager.Namespace()
-        n.c.add_option('fred', doc='husband from Flintstones')
+        n.c.add_option("fred", doc="husband from Flintstones")
         n.d = config_manager.Namespace()
-        n.d.add_option('fred', doc='male neighbor from I Love Lucy')
+        n.d.add_option("fred", doc="male neighbor from I Love Lucy")
         n.d.x = config_manager.Namespace()
-        n.d.x.add_option('size', 100, 'how big in tons', short_form='s')
-        n.d.x.add_option('password', 'secrets', 'the password')
+        n.d.x.add_option("size", 100, "how big in tons", short_form="s")
+        n.d.x.add_option("password", "secrets", "the password")
         c = config_manager.ConfigurationManager(
             [n],
             use_admin_controls=True,
@@ -922,22 +893,17 @@ c.string =   from ini
         s = StringIO()
         c.output_summary(output_stream=s)
         r = s.getvalue()
-        self.assertTrue('OPTIONS:\n' in r)
-        self.assertTrue('application' in r)  # it ought to be there
-        self.assertTrue('[ application' in r)  # listed as optional
-        self.assertFalse('[ somevalue' in r)  # by name not by value
+        self.assertTrue("OPTIONS:\n" in r)
+        self.assertTrue("application" in r)  # it ought to be there
+        self.assertTrue("[ application" in r)  # listed as optional
+        self.assertFalse("[ somevalue" in r)  # by name not by value
 
     # --------------------------------------------------------------------------
     def test_output_summary_with_secret(self):
         """test the output_summary with a certain field that isn't called
         "password" or anything alike but it shouldn't be exposed anyway."""
         n = config_manager.Namespace()
-        n.add_option(
-            'secret',
-            default='I hate people',
-            doc='The secret',
-            secret=True
-        )
+        n.add_option("secret", default="I hate people", doc="The secret", secret=True)
         c = config_manager.ConfigurationManager(
             [n],
             use_admin_controls=True,
@@ -952,20 +918,15 @@ c.string =   from ini
         c.output_summary(output_stream=s)
         r = s.getvalue()
 
-        self.assertTrue('--secret' in r)
-        self.assertFalse('I hate people' in r)
+        self.assertTrue("--secret" in r)
+        self.assertFalse("I hate people" in r)
 
     # --------------------------------------------------------------------------
     def test_output_summary_with_secret_exposed(self):
         """test the output_summary with a certain field that isn't called
         "password" or anything alike but it shouldn't be exposed anyway."""
         n = config_manager.Namespace()
-        n.add_option(
-            'secret',
-            default='I hate people',
-            doc='The secret',
-            secret=True
-        )
+        n.add_option("secret", default="I hate people", doc="The secret", secret=True)
         c = config_manager.ConfigurationManager(
             [n],
             use_admin_controls=True,
@@ -980,8 +941,8 @@ c.string =   from ini
         c.output_summary(output_stream=s)
         r = s.getvalue()
 
-        self.assertTrue('--secret' in r)
-        self.assertTrue('I hate people' in r)
+        self.assertTrue("--secret" in r)
+        self.assertTrue("I hate people" in r)
 
     # --------------------------------------------------------------------------
     def test_output_summary_header(self):
@@ -989,7 +950,7 @@ c.string =   from ini
         printed on the output summary.
         """
         n = config_manager.Namespace()
-        n.add_option('aaa', False, 'the a', short_form='a')
+        n.add_option("aaa", False, "the a", short_form="a")
         c = config_manager.ConfigurationManager(
             n,
             use_admin_controls=True,
@@ -1003,40 +964,39 @@ c.string =   from ini
             return s.getvalue()
 
         output = get_output(c)
-        assert 'OPTIONS:' in output
-        self.assertTrue('Application:' not in output)
+        assert "OPTIONS:" in output
+        self.assertTrue("Application:" not in output)
 
-        c.app_name = 'foobar'
+        c.app_name = "foobar"
         output = get_output(c)
-        assert 'OPTIONS:' in output
-        self.assertTrue('Application: foobar' in output)
+        assert "OPTIONS:" in output
+        self.assertTrue("Application: foobar" in output)
 
-        c.app_version = '1.0'
+        c.app_version = "1.0"
         output = get_output(c)
-        assert 'OPTIONS:' in output
-        self.assertTrue('Application: foobar 1.0' in output)
+        assert "OPTIONS:" in output
+        self.assertTrue("Application: foobar 1.0" in output)
 
         c.app_description = "This ain't your mama's app"
         output = get_output(c)
-        assert 'OPTIONS:' in output
-        self.assertTrue('Application: foobar 1.0\n' in output)
+        assert "OPTIONS:" in output
+        self.assertTrue("Application: foobar 1.0\n" in output)
         self.assertTrue("This ain't your mama's app\n\n" in output)
 
     # --------------------------------------------------------------------------
     def test_eval_as_converter(self):
         """does eval work as a to string converter on an Option object?"""
         n = config_manager.Namespace()
-        n.add_option('aaa', doc='the a', default='', short_form='a')
-        self.assertEqual(n.aaa.value, '')
+        n.add_option("aaa", doc="the a", default="", short_form="a")
+        self.assertEqual(n.aaa.value, "")
 
     # --------------------------------------------------------------------------
     def test_RequiredConfig_get_required_config(self):
-
         class Foo:
-            required_config = {'foo': True}
+            required_config = {"foo": True}
 
         class Bar:
-            required_config = {'bar': False}
+            required_config = {"bar": False}
 
         class Poo:
             pass
@@ -1049,15 +1009,15 @@ c.string =   from ini
         self.assertEqual(result.bar.value, False)
 
         c = Combined()
-        c.config_assert({'foo': True, 'bar': False})
+        c.config_assert({"foo": True, "bar": False})
 
         self.assertRaises(AssertionError, c.config_assert, ({},))
 
     # --------------------------------------------------------------------------
     def test_app_name_from_app_obj(self):
         class MyApp(config_manager.RequiredConfig):
-            app_name = 'fred'
-            app_version = '1.0'
+            app_name = "fred"
+            app_version = "1.0"
             app_description = "my app"
 
             def __init__(inner_self, config):
@@ -1065,16 +1025,9 @@ c.string =   from ini
 
         n = config_manager.Namespace()
         n.admin = config_manager.Namespace()
-        n.add_option(
-            'application',
-            MyApp,
-            'the app object class'
-        )
+        n.add_option("application", MyApp, "the app object class")
         c = config_manager.ConfigurationManager(
-            [n],
-            use_admin_controls=True,
-            use_auto_help=False,
-            argv_source=[]
+            [n], use_admin_controls=True, use_auto_help=False, argv_source=[]
         )
         self.assertEqual(c.app_name, MyApp.app_name)
         self.assertEqual(c.app_version, MyApp.app_version)
@@ -1083,36 +1036,24 @@ c.string =   from ini
     # --------------------------------------------------------------------------
     def test_help_out(self):
         class MyApp(config_manager.RequiredConfig):
-            app_name = 'fred'
-            app_version = '1.0'
+            app_name = "fred"
+            app_version = "1.0"
             app_description = "my app"
             required_config = config_manager.Namespace()
             required_config.add_option(
-                'password',
-                'fred',
-                'the password',
-                short_form='p'
+                "password", "fred", "the password", short_form="p"
             )
             required_config.add_option(
-                'password_wo_default',
-                doc='This one has no default'
+                "password_wo_default", doc="This one has no default"
             )
-            required_config.add_option(
-                'password_wo_docstr',
-                default='Something'
-            )
+            required_config.add_option("password_wo_docstr", default="Something")
 
             def __init__(inner_self, config):
                 inner_self.config = config
 
         n = config_manager.Namespace()
         n.admin = config_manager.Namespace()
-        n.add_option(
-            'application',
-            MyApp,
-            'the app object class',
-            short_form='a'
-        )
+        n.add_option("application", MyApp, "the app object class", short_form="a")
 
         class Myconfigmannersager(config_manager.ConfigurationManager):
             def output_summary(inner_self):
@@ -1122,14 +1063,14 @@ c.string =   from ini
                 )
                 r = output_stream.getvalue()
                 output_stream.close()
-                self.assertTrue('Application: fred 1.0' in r)
-                self.assertTrue('my app\n\n' in r)
-                self.assertTrue('OPTIONS:\n' in r)
-                self.assertTrue('  --help' in r and 'print this' in r)
-                self.assertTrue('print this (default: True)' not in r)
-                self.assertTrue('  --password' in r)
-                self.assertTrue('(default: *********)' in r)
-                self.assertTrue('  --application' not in r)
+                self.assertTrue("Application: fred 1.0" in r)
+                self.assertTrue("my app\n\n" in r)
+                self.assertTrue("OPTIONS:\n" in r)
+                self.assertTrue("  --help" in r and "print this" in r)
+                self.assertTrue("print this (default: True)" not in r)
+                self.assertTrue("  --password" in r)
+                self.assertTrue("(default: *********)" in r)
+                self.assertTrue("  --application" not in r)
 
         def my_exit():
             pass
@@ -1142,7 +1083,7 @@ c.string =   from ini
                 [getopt],
                 use_admin_controls=True,
                 use_auto_help=True,
-                argv_source=['--password=wilma', '--help']
+                argv_source=["--password=wilma", "--help"],
             )
         finally:
             sys.exit = old_sys_exit
@@ -1150,22 +1091,18 @@ c.string =   from ini
     # --------------------------------------------------------------------------
     def test_write_gets_called(self):
         class MyApp(config_manager.RequiredConfig):
-            app_name = 'fred'
-            app_version = '1.0'
+            app_name = "fred"
+            app_version = "1.0"
             app_description = "my app"
             required_config = config_manager.Namespace()
-            required_config.add_option('password', 'fred', 'the password')
+            required_config.add_option("password", "fred", "the password")
 
             def __init__(inner_self, config):
                 inner_self.config = config
 
         n = config_manager.Namespace()
         n.admin = config_manager.Namespace()
-        n.add_option(
-            'application',
-            MyApp,
-            'the app object class'
-        )
+        n.add_option("application", MyApp, "the app object class")
 
         class Myconfigmannersager(config_manager.ConfigurationManager):
             def __init__(inner_self, *args, **kwargs):
@@ -1177,6 +1114,7 @@ c.string =   from ini
 
         def my_exit():
             pass
+
         old_sys_exit = sys.exit
         sys.exit = my_exit
         try:
@@ -1185,10 +1123,7 @@ c.string =   from ini
                 [getopt],
                 use_admin_controls=True,
                 use_auto_help=True,
-                argv_source=[
-                    '--password=wilma',
-                    '--admin.dump_conf=x.ini'
-                ]
+                argv_source=["--password=wilma", "--admin.dump_conf=x.ini"],
             )
             self.assertEqual(c.dump_conf_called, True)
         finally:
@@ -1197,47 +1132,38 @@ c.string =   from ini
     # --------------------------------------------------------------------------
     def test_get_options(self):
         class MyApp(config_manager.RequiredConfig):
-            app_name = 'fred'
-            app_version = '1.0'
+            app_name = "fred"
+            app_version = "1.0"
             app_description = "my app"
             required_config = config_manager.Namespace()
-            required_config.add_option('password', 'fred', 'the password')
+            required_config.add_option("password", "fred", "the password")
             required_config.sub = config_manager.Namespace()
-            required_config.sub.add_option(
-                'name',
-                'ethel',
-                'the name'
-            )
+            required_config.sub.add_option("name", "ethel", "the name")
 
             def __init__(inner_self, config):
                 inner_self.config = config
 
         n = config_manager.Namespace()
         n.admin = config_manager.Namespace()
-        n.add_option(
-            'application',
-            MyApp,
-            'the app object class'
-        )
+        n.add_option("application", MyApp, "the app object class")
 
         c = config_manager.ConfigurationManager(
-            n,
-            use_admin_controls=True,
-            use_auto_help=False,
-            argv_source=[]
+            n, use_admin_controls=True, use_auto_help=False, argv_source=[]
         )
         r = sorted(c._get_options())
-        e = sorted([
-            ('admin.expose_secrets', 'expose_secrets', False),
-            ('admin.print_conf', 'print_conf', None),
-            ('admin.dump_conf', 'dump_conf', ''),
-            ('admin.conf', 'conf', None),
-            ('admin.strict', 'strict', False),
-            ('admin.why', 'why', False),
-            ('application', 'application', MyApp),
-            ('password', 'password', 'fred'),
-            ('sub.name', 'name', 'ethel')
-        ])
+        e = sorted(
+            [
+                ("admin.expose_secrets", "expose_secrets", False),
+                ("admin.print_conf", "print_conf", None),
+                ("admin.dump_conf", "dump_conf", ""),
+                ("admin.conf", "conf", None),
+                ("admin.strict", "strict", False),
+                ("admin.why", "why", False),
+                ("application", "application", MyApp),
+                ("password", "password", "fred"),
+                ("sub.name", "name", "ethel"),
+            ]
+        )
         for expected, result in zip(e, r):
             expected_key, expected_name, expected_default = expected
             result_key, result_option = result
@@ -1248,34 +1174,26 @@ c.string =   from ini
     # --------------------------------------------------------------------------
     def test_log_config(self):
         class MyApp(config_manager.RequiredConfig):
-            app_name = 'fred'
-            app_version = '1.0'
+            app_name = "fred"
+            app_version = "1.0"
             app_description = "my app"
             required_config = config_manager.Namespace()
-            required_config.add_option('password', 'fred', 'the password')
+            required_config.add_option("password", "fred", "the password")
             required_config.sub = config_manager.Namespace()
-            required_config.sub.add_option(
-                'name',
-                'ethel',
-                'the name'
-            )
+            required_config.sub.add_option("name", "ethel", "the name")
 
             def __init__(inner_self, config):
                 inner_self.config = config
 
         n = config_manager.Namespace()
-        n.add_option(
-            'application',
-            MyApp,
-            'the app object class'
-        )
+        n.add_option("application", MyApp, "the app object class")
 
         c = config_manager.ConfigurationManager(
             n,
             [getopt],
             use_admin_controls=True,
             use_auto_help=False,
-            argv_source=['--sub.name=wilma']
+            argv_source=["--sub.name=wilma"],
         )
 
         class FakeLogger(object):
@@ -1298,78 +1216,57 @@ c.string =   from ini
             "sub.name: wilma",
             "  source: getopt",
         ]
-        e[3] = "application: <class 'configmanners.tests.test_config_manager.TestCase.test_log_config.<locals>.MyApp'>"
+        e[
+            3
+        ] = "application: <class 'configmanners.tests.test_config_manager.TestCase.test_log_config.<locals>.MyApp'>"
         for expected, received in zip(e, fl.log):
             self.assertEqual(expected, received)
 
     # --------------------------------------------------------------------------
     def test_extra_commandline_parameters(self):
         class MyApp(config_manager.RequiredConfig):
-            app_name = 'fred'
-            app_version = '1.0'
+            app_name = "fred"
+            app_version = "1.0"
             app_description = "my app"
             required_config = config_manager.Namespace()
-            required_config.add_option('password', 'fred', 'the password')
+            required_config.add_option("password", "fred", "the password")
             required_config.sub = config_manager.Namespace()
-            required_config.sub.add_option(
-                'name',
-                'ethel',
-                'the name'
-            )
+            required_config.sub.add_option("name", "ethel", "the name")
 
             def __init__(inner_self, config):
                 inner_self.config = config
 
         n = config_manager.Namespace()
         n.admin = config_manager.Namespace()
-        n.add_option(
-            'application',
-            MyApp,
-            'the app object class'
-        )
+        n.add_option("application", MyApp, "the app object class")
 
         c = config_manager.ConfigurationManager(
             n,
             [getopt],
             use_admin_controls=True,
             use_auto_help=False,
-            argv_source=[
-                '--sub.name=wilma',
-                'argument 1',
-                'argument 2',
-                'argument 3'
-            ]
+            argv_source=["--sub.name=wilma", "argument 1", "argument 2", "argument 3"],
         )
-        expected = ['argument 1',
-                    'argument 2',
-                    'argument 3']
+        expected = ["argument 1", "argument 2", "argument 3"]
         self.assertEqual(c.args, expected)
 
     # --------------------------------------------------------------------------
     def test_print_conf_called(self):
         class MyApp(config_manager.RequiredConfig):
-            app_name = 'fred'
-            app_version = '1.0'
+            app_name = "fred"
+            app_version = "1.0"
             app_description = "my app"
             required_config = config_manager.Namespace()
-            required_config.add_option('password', 'fred', 'the password')
+            required_config.add_option("password", "fred", "the password")
             required_config.sub = config_manager.Namespace()
-            required_config.sub.add_option(
-                'name',
-                'ethel',
-                'the name'
-            )
+            required_config.sub.add_option("name", "ethel", "the name")
 
             def __init__(inner_self, config):
                 inner_self.config = config
 
         n = config_manager.Namespace()
         n.admin = config_manager.Namespace()
-        n.add_option(
-            'application',
-            MyApp,
-            'the app object class'
-        )
+        n.add_option("application", MyApp, "the app object class")
 
         class Myconfigmannersager(config_manager.ConfigurationManager):
             def __init__(inner_self, *args, **kwargs):
@@ -1379,23 +1276,27 @@ c.string =   from ini
             def print_conf(inner_self):
                 inner_self.print_conf_called = True
 
-        c = Myconfigmannersager(n,
-                                [getopt],
-                                use_admin_controls=True,
-                                use_auto_help=False,
-                                quit_after_admin=False,
-                                argv_source=['--admin.print_conf=ini',
-                                             'argument 1',
-                                             'argument 2',
-                                             'argument 3'])
+        c = Myconfigmannersager(
+            n,
+            [getopt],
+            use_admin_controls=True,
+            use_auto_help=False,
+            quit_after_admin=False,
+            argv_source=[
+                "--admin.print_conf=ini",
+                "argument 1",
+                "argument 2",
+                "argument 3",
+            ],
+        )
         self.assertEqual(c.print_conf_called, True)
 
     # --------------------------------------------------------------------------
     def test_non_compliant_app_object(self):
         # the MyApp class doesn't define required config
-        class MyApp():
-            app_name = 'fred'
-            app_version = '1.0'
+        class MyApp:
+            app_name = "fred"
+            app_version = "1.0"
             app_description = "my app"
 
             def __init__(inner_self, config):
@@ -1403,25 +1304,17 @@ c.string =   from ini
 
         n = config_manager.Namespace()
         n.admin = config_manager.Namespace()
-        n.add_option(
-            'application',
-            MyApp,
-            'the app object class'
-        )
+        n.add_option("application", MyApp, "the app object class")
 
         c = config_manager.ConfigurationManager(
             n,
             [getopt],
             use_admin_controls=True,
             use_auto_help=False,
-            argv_source=[
-                'argument 1',
-                'argument 2',
-                'argument 3'
-            ]
+            argv_source=["argument 1", "argument 2", "argument 3"],
         )
         conf = c.get_config()
-        self.assertEqual(list(conf.keys()), ['admin', 'application'])
+        self.assertEqual(list(conf.keys()), ["admin", "application"])
 
     # --------------------------------------------------------------------------
     def test_print_conf(self):
@@ -1441,7 +1334,7 @@ c.string =   from ini
                     sys.stdout = temp_stdout
 
             def write_conf(inner_self, file_type, opener, skip_keys=None):
-                self.assertEqual(file_type, 'ini')
+                self.assertEqual(file_type, "ini")
                 with opener() as f:
                     self.assertEqual(f, 17)
 
@@ -1451,11 +1344,14 @@ c.string =   from ini
             use_admin_controls=True,
             use_auto_help=False,
             quit_after_admin=False,
-            argv_source=['--admin.print_conf=ini',
-                         'argument 1',
-                         'argument 2',
-                         'argument 3'],
-            config_pathname='fred')
+            argv_source=[
+                "--admin.print_conf=ini",
+                "argument 1",
+                "argument 2",
+                "argument 3",
+            ],
+            config_pathname="fred",
+        )
 
     # --------------------------------------------------------------------------
     def test_dump_conf(self):
@@ -1467,8 +1363,8 @@ c.string =   from ini
                 super(Myconfigmannersager, inner_self).__init__(*args, **kwargs)
 
             def write_conf(inner_self, file_type, opener, skip_keys=None):
-                self.assertEqual(file_type, 'ini')
-                self.assertEqual(opener.args, ('fred.ini', 'w'))
+                self.assertEqual(file_type, "ini")
+                self.assertEqual(opener.args, ("fred.ini", "w"))
 
         Myconfigmannersager(
             n,
@@ -1476,11 +1372,13 @@ c.string =   from ini
             use_admin_controls=True,
             use_auto_help=False,
             quit_after_admin=False,
-            argv_source=['--admin.dump_conf=fred.ini',
-                         'argument 1',
-                         'argument 2',
-                         'argument 3'],
-            config_pathname='fred'
+            argv_source=[
+                "--admin.dump_conf=fred.ini",
+                "argument 1",
+                "argument 2",
+                "argument 3",
+            ],
+            config_pathname="fred",
         )
 
     # --------------------------------------------------------------------------
@@ -1496,28 +1394,28 @@ c.string =   from ini
             use_auto_help=False,
             quit_after_admin=False,
             argv_source=[
-                '--admin.dump_conf=/tmp/fred.xxx',
-                'argument 1',
-                'argument 2',
-                'argument 3'
+                "--admin.dump_conf=/tmp/fred.xxx",
+                "argument 1",
+                "argument 2",
+                "argument 3",
             ],
-            config_pathname='fred'
+            config_pathname="fred",
         )
-        self.assertFalse(os.path.exists('/tmp/fred.xxx'))
+        self.assertFalse(os.path.exists("/tmp/fred.xxx"))
 
     # --------------------------------------------------------------------------
     def test_print_conf_some_options_excluded(self):
         n = config_manager.Namespace()
         n.add_option(
-            'gender',
-            default='Male',
-            doc='what gender identity?',
+            "gender",
+            default="Male",
+            doc="what gender identity?",
         )
         n.add_option(
-            'salary',
+            "salary",
             default=10000,
-            doc='How much do you earn?',
-            exclude_from_print_conf=True
+            doc="How much do you earn?",
+            exclude_from_print_conf=True,
         )
 
         old_stdout = sys.stdout
@@ -1530,15 +1428,15 @@ c.string =   from ini
                 use_admin_controls=True,
                 use_auto_help=False,
                 quit_after_admin=False,
-                argv_source=['--admin.print_conf=ini'],
-                config_pathname='fred'
+                argv_source=["--admin.print_conf=ini"],
+                config_pathname="fred",
             )
         finally:
             sys.stdout = old_stdout
 
         printed = temp_output.getvalue()
-        self.assertTrue('gender' in printed)
-        self.assertTrue('salary' not in printed)
+        self.assertTrue("gender" in printed)
+        self.assertTrue("salary" not in printed)
 
     # --------------------------------------------------------------------------
     def test_print_conf_with_secrets(self):
@@ -1546,14 +1444,14 @@ c.string =   from ini
         # ConfigurationManager.write_conf
         n = config_manager.Namespace()
         n.add_option(
-            'gender',
-            default='Male',
-            doc='what gender identity?',
+            "gender",
+            default="Male",
+            doc="what gender identity?",
         )
         n.add_option(
-            'salary',
+            "salary",
             default=10000,
-            doc='How much do you earn?',
+            doc="How much do you earn?",
             secret=True,
         )
 
@@ -1567,16 +1465,16 @@ c.string =   from ini
                 use_admin_controls=True,
                 use_auto_help=False,
                 quit_after_admin=False,
-                argv_source=['--admin.print_conf=ini'],
-                config_pathname='fred'
+                argv_source=["--admin.print_conf=ini"],
+                config_pathname="fred",
             )
         finally:
             sys.stdout = old_stdout
 
         printed = temp_output.getvalue()
-        self.assertTrue('gender' in printed)
-        self.assertTrue('salary' in printed)
-        self.assertTrue('*' * 16 in printed)
+        self.assertTrue("gender" in printed)
+        self.assertTrue("salary" in printed)
+        self.assertTrue("*" * 16 in printed)
 
     # --------------------------------------------------------------------------
     def test_print_conf_with_secrets_exposed(self):
@@ -1584,14 +1482,14 @@ c.string =   from ini
         # ConfigurationManager.write_conf
         n = config_manager.Namespace()
         n.add_option(
-            'gender',
-            default='Male',
-            doc='what gender identity?',
+            "gender",
+            default="Male",
+            doc="what gender identity?",
         )
         n.add_option(
-            'salary',
+            "salary",
             default=10000,
-            doc='How much do you earn?',
+            doc="How much do you earn?",
             secret=True,
         )
 
@@ -1605,32 +1503,32 @@ c.string =   from ini
                 use_admin_controls=True,
                 use_auto_help=False,
                 quit_after_admin=False,
-                argv_source=[
-                    '--admin.print_conf=ini',
-                    '--admin.expose_secrets'
-                ],
-                config_pathname='fred'
+                argv_source=["--admin.print_conf=ini", "--admin.expose_secrets"],
+                config_pathname="fred",
             )
         finally:
             sys.stdout = old_stdout
 
         printed = temp_output.getvalue()
-        self.assertTrue('gender' in printed)
-        self.assertTrue('salary' in printed)
-        self.assertTrue('*' * 16 not in printed)
+        self.assertTrue("gender" in printed)
+        self.assertTrue("salary" in printed)
+        self.assertTrue("*" * 16 not in printed)
 
     # --------------------------------------------------------------------------
     def test_dump_conf_some_options_excluded(self):
         n = config_manager.Namespace()
-        n.add_option('gender',
-                     default='Male',
-                     doc='what gender identity?',
-                     exclude_from_print_conf=True)
-        n.add_option('salary',
-                     default=10000,
-                     doc='How much do you earn?',
-                     exclude_from_dump_conf=True
-                     )
+        n.add_option(
+            "gender",
+            default="Male",
+            doc="what gender identity?",
+            exclude_from_print_conf=True,
+        )
+        n.add_option(
+            "salary",
+            default=10000,
+            doc="How much do you earn?",
+            exclude_from_dump_conf=True,
+        )
 
         try:
             config_manager.ConfigurationManager(
@@ -1639,81 +1537,70 @@ c.string =   from ini
                 use_admin_controls=True,
                 use_auto_help=False,
                 quit_after_admin=False,
-                argv_source=['--admin.dump_conf=foo.conf'],
-                config_pathname='fred'
+                argv_source=["--admin.dump_conf=foo.conf"],
+                config_pathname="fred",
             )
 
-            with open('foo.conf') as f:
+            with open("foo.conf") as f:
                 printed = f.read()
-                self.assertTrue('gender' in printed)
-                self.assertTrue('salary' not in printed)
+                self.assertTrue("gender" in printed)
+                self.assertTrue("salary" not in printed)
 
         finally:
-            if os.path.isfile('foo.conf'):
-                os.remove('foo.conf')
+            if os.path.isfile("foo.conf"):
+                os.remove("foo.conf")
 
     # --------------------------------------------------------------------------
     def test_do_aggregations(self):
         def aggregation_test(all_config, local_namespace, args):
-            self.assertTrue('password' in all_config)
-            self.assertTrue('sub1' in all_config)
-            self.assertTrue('name' in all_config.sub1)
-            self.assertTrue('name' in local_namespace)
-            self.assertTrue('spouse' in local_namespace)
+            self.assertTrue("password" in all_config)
+            self.assertTrue("sub1" in all_config)
+            self.assertTrue("name" in all_config.sub1)
+            self.assertTrue("name" in local_namespace)
+            self.assertTrue("spouse" in local_namespace)
             self.assertEqual(len(args), 2)
-            return (
-                '%s married %s using password %s but divorced because of %s.'
-                % (
-                    local_namespace.name,
-                    local_namespace.spouse,
-                    all_config.password,
-                    args[1]
-                )
+            return "%s married %s using password %s but divorced because of %s." % (
+                local_namespace.name,
+                local_namespace.spouse,
+                all_config.password,
+                args[1],
             )
 
         class MyApp(config_manager.RequiredConfig):
-            app_name = 'fred'
-            app_version = '1.0'
+            app_name = "fred"
+            app_version = "1.0"
             app_description = "my app"
             required_config = config_manager.Namespace()
-            required_config.add_option('password', '@$*$&26Ht', 'the password')
-            required_config.namespace('sub1')
-            required_config.sub1.add_option('name', 'ethel', 'the name')
-            required_config.sub1.add_option('spouse', 'fred', 'the spouse')
-            required_config.sub1.add_aggregation('statement', aggregation_test)
+            required_config.add_option("password", "@$*$&26Ht", "the password")
+            required_config.namespace("sub1")
+            required_config.sub1.add_option("name", "ethel", "the name")
+            required_config.sub1.add_option("spouse", "fred", "the spouse")
+            required_config.sub1.add_aggregation("statement", aggregation_test)
 
             def __init__(inner_self, config):
                 inner_self.config = config
 
         n = config_manager.Namespace()
         n.admin = config_manager.Namespace()
-        n.add_option(
-            'application',
-            MyApp,
-            'the app object class'
-        )
+        n.add_option("application", MyApp, "the app object class")
 
         c = config_manager.ConfigurationManager(
             n,
             [getopt],
             use_admin_controls=True,
             use_auto_help=False,
-            argv_source=[
-                '--sub1.name=wilma',
-                'arg1',
-                'arg2'
-            ]
+            argv_source=["--sub1.name=wilma", "arg1", "arg2"],
         )
         config = c.get_config()
-        self.assertEqual(config.sub1.statement,
-                         'wilma married fred using password @$*$&26Ht '
-                         'but divorced because of arg2.')
+        self.assertEqual(
+            config.sub1.statement,
+            "wilma married fred using password @$*$&26Ht "
+            "but divorced because of arg2.",
+        )
 
     # --------------------------------------------------------------------------
     def test_context(self):
-
         class AggregatedValue(object):
-
             def __init__(self, value):
                 self.value = value
 
@@ -1721,66 +1608,64 @@ c.string =   from ini
                 self.value = None
 
         def aggregation_test(all_config, local_namespace, args):
-            self.assertTrue('password' in all_config)
-            self.assertTrue('sub1' in all_config)
-            self.assertTrue('name' in all_config['sub1'])
-            self.assertTrue('name' in local_namespace)
-            self.assertTrue('spouse' in local_namespace)
+            self.assertTrue("password" in all_config)
+            self.assertTrue("sub1" in all_config)
+            self.assertTrue("name" in all_config["sub1"])
+            self.assertTrue("name" in local_namespace)
+            self.assertTrue("spouse" in local_namespace)
             self.assertEqual(len(args), 2)
-            return AggregatedValue('%s married %s using password %s but '
-                                   'divorced because of %s.' %
-                                   (local_namespace['name'],
-                                    local_namespace['spouse'],
-                                    all_config['password'],
-                                    args[1]))
+            return AggregatedValue(
+                "%s married %s using password %s but "
+                "divorced because of %s."
+                % (
+                    local_namespace["name"],
+                    local_namespace["spouse"],
+                    all_config["password"],
+                    args[1],
+                )
+            )
 
         class MyApp(config_manager.RequiredConfig):
-            app_name = 'fred'
-            app_version = '1.0'
+            app_name = "fred"
+            app_version = "1.0"
             app_description = "my app"
             required_config = config_manager.Namespace()
-            required_config.add_option('password', '@$*$&26Ht', 'the password')
-            required_config.namespace('sub1')
-            required_config.sub1.add_option('name', 'ethel', 'the name')
-            required_config.sub1.add_option('spouse', 'fred', 'the spouse')
-            required_config.sub1.add_aggregation('statement', aggregation_test)
+            required_config.add_option("password", "@$*$&26Ht", "the password")
+            required_config.namespace("sub1")
+            required_config.sub1.add_option("name", "ethel", "the name")
+            required_config.sub1.add_option("spouse", "fred", "the spouse")
+            required_config.sub1.add_aggregation("statement", aggregation_test)
 
             def __init__(inner_self, config):
                 inner_self.config = config
 
         n = config_manager.Namespace()
-        n.add_option('application',
-                     MyApp,
-                     'the app object class')
+        n.add_option("application", MyApp, "the app object class")
 
         c = config_manager.ConfigurationManager(
             n,
             [getopt],
             use_admin_controls=False,
             use_auto_help=False,
-            argv_source=[
-                '--sub1.name=wilma',
-                'arg1',
-                'arg2'
-            ]
+            argv_source=["--sub1.name=wilma", "arg1", "arg2"],
         )
 
         with c.context() as config:
             statement = config.sub1.statement
             self.assertEqual(
                 statement.value,
-                'wilma married fred using password @$*$&26Ht '
-                'but divorced because of arg2.'
+                "wilma married fred using password @$*$&26Ht "
+                "but divorced because of arg2.",
             )
         self.assertTrue(statement.value is None)
 
         with c.context(mapping_class=dict) as config:
             self.assertTrue(isinstance(config, dict))
-            statement = config['sub1']['statement']
+            statement = config["sub1"]["statement"]
             self.assertEqual(
                 statement.value,
-                'wilma married fred using password @$*$&26Ht '
-                'but divorced because of arg2.'
+                "wilma married fred using password @$*$&26Ht "
+                "but divorced because of arg2.",
             )
         self.assertTrue(statement.value is None)
 
@@ -1789,8 +1674,8 @@ c.string =   from ini
         """Reproduces and assures this issue
         https://github.com/mozilla/configmanners/issues/21
         """
-        class AggregatedValue(object):
 
+        class AggregatedValue(object):
             def __init__(self, value):
                 self.value = value
 
@@ -1802,29 +1687,21 @@ c.string =   from ini
 
         def aggregation_test(all_config, local_namespace, args):
             # the aggregator might be broken
-            raise SomeException('anything')
+            raise SomeException("anything")
 
         class MyApp(config_manager.RequiredConfig):
-            app_name = 'fred'
-            app_version = '1.0'
+            app_name = "fred"
+            app_version = "1.0"
             app_description = "my app"
             required_config = config_manager.Namespace()
-            required_config.add_aggregation('statement', aggregation_test)
+            required_config.add_aggregation("statement", aggregation_test)
 
         n = config_manager.Namespace()
         n.admin = config_manager.Namespace()
-        n.add_option(
-            'application',
-            MyApp,
-            'the app object class'
-        )
+        n.add_option("application", MyApp, "the app object class")
 
         c = config_manager.ConfigurationManager(
-            n,
-            [getopt],
-            use_admin_controls=True,
-            use_auto_help=False,
-            argv_source=[]
+            n, [getopt], use_admin_controls=True, use_auto_help=False, argv_source=[]
         )
 
         contextmanager_ = c.context()
@@ -1833,53 +1710,47 @@ c.string =   from ini
     # --------------------------------------------------------------------------
     def test_namespaces_with_conflicting_class_converters(self):
         rc = Namespace()
-        rc.namespace('source')
+        rc.namespace("source")
         rc.source.add_option(
-            'cls',
-            default='configmanners.tests.test_config_manager.T1',
-            from_string_converter=class_converter
+            "cls",
+            default="configmanners.tests.test_config_manager.T1",
+            from_string_converter=class_converter,
         )
-        rc.namespace('destination')
+        rc.namespace("destination")
         rc.destination.add_option(
-            'cls',
-            default='configmanners.tests.test_config_manager.T2',
-            from_string_converter=class_converter
+            "cls",
+            default="configmanners.tests.test_config_manager.T2",
+            from_string_converter=class_converter,
         )
         c = config_manager.ConfigurationManager(
             rc,
             [
                 {
-                    'source': {
-                        'cls': 'configmanners.tests.test_config_manager.T2'
+                    "source": {"cls": "configmanners.tests.test_config_manager.T2"},
+                    "destination": {
+                        "cls": "configmanners.tests.test_config_manager.T3"
                     },
-                    'destination': {
-                        'cls': 'configmanners.tests.test_config_manager.T3'
-                    }
                 },
                 {
-                    'source': {
-                        'cls': 'configmanners.tests.test_config_manager.T1'
+                    "source": {"cls": "configmanners.tests.test_config_manager.T1"},
+                    "destination": {
+                        "cls": "configmanners.tests.test_config_manager.T2"
                     },
-                    'destination': {
-                        'cls': 'configmanners.tests.test_config_manager.T2'
-                    }
                 },
                 {
-                    'source': {
-                        'cls': 'configmanners.tests.test_config_manager.T3'
+                    "source": {"cls": "configmanners.tests.test_config_manager.T3"},
+                    "destination": {
+                        "cls": "configmanners.tests.test_config_manager.T1"
                     },
-                    'destination': {
-                        'cls': 'configmanners.tests.test_config_manager.T1'
-                    }
                 },
             ],
             use_admin_controls=True,
             use_auto_help=False,
-            argv_source=[]
+            argv_source=[],
         )
         conf = c.get_config()
         self.assertEqual(len(conf), 3)
-        self.assertEqual(list(conf.keys()), ['source', 'destination', 'admin'])
+        self.assertEqual(list(conf.keys()), ["source", "destination", "admin"])
         self.assertEqual(len(conf.source), 3)
         self.assertEqual(conf.source.c, 33)
         self.assertEqual(conf.source.cls, T3)
@@ -1892,21 +1763,16 @@ c.string =   from ini
     # --------------------------------------------------------------------------
     def _common_app_namespace_setup(self):
         class MyApp(config_manager.RequiredConfig):
-            app_name = 'fred'
-            app_version = '1.0'
+            app_name = "fred"
+            app_version = "1.0"
             app_description = "my app"
             required_config = config_manager.Namespace()
-            required_config.namespace('toplevel')
-            required_config.toplevel.add_option('password', 'fred',
-                                                'the password')
+            required_config.namespace("toplevel")
+            required_config.toplevel.add_option("password", "fred", "the password")
 
         n = config_manager.Namespace()
         n.admin = config_manager.Namespace()
-        n.add_option(
-            'application',
-            MyApp,
-            'the app object class'
-        )
+        n.add_option("application", MyApp, "the app object class")
         return n
 
     # --------------------------------------------------------------------------
@@ -1920,74 +1786,60 @@ c.string =   from ini
             IOError,
             config_manager.ConfigurationManager,
             (n,),
-            argv_source=['--admin.conf=x.ini']
+            argv_source=["--admin.conf=x.ini"],
         )
 
         # but check we can still do it if the file exists
-        with open('x.ini', 'w') as f:
-            f.write(
-                '[toplevel]\n'
-                'password=something\n'
-            )
+        with open("x.ini", "w") as f:
+            f.write("[toplevel]\n" "password=something\n")
         try:
             c = config_manager.ConfigurationManager(
-                (n,),
-                argv_source=['--admin.conf=x.ini']
+                (n,), argv_source=["--admin.conf=x.ini"]
             )
             with c.context() as config:
-                self.assertEqual(config.toplevel.password, 'something')
+                self.assertEqual(config.toplevel.password, "something")
         finally:
-            os.remove('x.ini')
+            os.remove("x.ini")
 
     # --------------------------------------------------------------------------
     def test_bad_options(self):
         """tests _check_for_mismatches"""
         rc = Namespace()
-        rc.namespace('source')
+        rc.namespace("source")
         rc.source.add_option(
-            'cls',
-            default='configmanners.tests.test_config_manager.T1',
-            from_string_converter=class_converter
+            "cls",
+            default="configmanners.tests.test_config_manager.T1",
+            from_string_converter=class_converter,
         )
-        rc.namespace('destination')
+        rc.namespace("destination")
         rc.destination.add_option(
-            'cls',
-            default='configmanners.tests.test_config_manager.T2',
-            from_string_converter=class_converter
+            "cls",
+            default="configmanners.tests.test_config_manager.T2",
+            from_string_converter=class_converter,
         )
         self.assertRaises(  # 'classy' is not an option
             NotAnOptionError,
             config_manager.ConfigurationManager,
             rc,
             [
+                {"admin": {"strict": True}},
                 {
-                    'admin': {
-                        'strict': True
-                    }
+                    "source": {"cls": "configmanners.tests.test_config_manager.T2"},
+                    "destination": {
+                        "cls": "configmanners.tests.test_config_manager.T3"
+                    },
                 },
                 {
-                    'source': {
-                        'cls': 'configmanners.tests.test_config_manager.T2'
+                    "source": {"cls": "configmanners.tests.test_config_manager.T1"},
+                    "destination": {
+                        "cls": "configmanners.tests.test_config_manager.T2"
                     },
-                    'destination': {
-                        'cls': 'configmanners.tests.test_config_manager.T3'
-                    }
                 },
                 {
-                    'source': {
-                        'cls': 'configmanners.tests.test_config_manager.T1'
+                    "source": {"classy": "configmanners.tests.test_config_manager.T3"},
+                    "destination": {
+                        "cls": "configmanners.tests.test_config_manager.T1"
                     },
-                    'destination': {
-                        'cls': 'configmanners.tests.test_config_manager.T2'
-                    }
-                },
-                {
-                    'source': {
-                        'classy': 'configmanners.tests.test_config_manager.T3'
-                    },
-                    'destination': {
-                        'cls': 'configmanners.tests.test_config_manager.T1'
-                    }
                 },
             ],
         )
@@ -1996,34 +1848,24 @@ c.string =   from ini
             config_manager.ConfigurationManager,
             rc,
             [
+                {"admin": {"strict": True}},
                 {
-                    'admin': {
-                        'strict': True
-                    }
+                    "source": {"cls": "configmanners.tests.test_config_manager.T2"},
+                    "destination": {
+                        "cls": "configmanners.tests.test_config_manager.T3"
+                    },
                 },
                 {
-                    'source': {
-                        'cls': 'configmanners.tests.test_config_manager.T2'
+                    "sourness": {"cls": "configmanners.tests.test_config_manager.T1"},
+                    "destination": {
+                        "cls": "configmanners.tests.test_config_manager.T2"
                     },
-                    'destination': {
-                        'cls': 'configmanners.tests.test_config_manager.T3'
-                    }
                 },
                 {
-                    'sourness': {
-                        'cls': 'configmanners.tests.test_config_manager.T1'
+                    "source": {"cls": "configmanners.tests.test_config_manager.T3"},
+                    "destination": {
+                        "cls": "configmanners.tests.test_config_manager.T1"
                     },
-                    'destination': {
-                        'cls': 'configmanners.tests.test_config_manager.T2'
-                    }
-                },
-                {
-                    'source': {
-                        'cls': 'configmanners.tests.test_config_manager.T3'
-                    },
-                    'destination': {
-                        'cls': 'configmanners.tests.test_config_manager.T1'
-                    }
                 },
             ],
         )
@@ -2031,34 +1873,31 @@ c.string =   from ini
         # make sure commandline data sources always behave stictly even when
         # strict is set to False
         import getopt
+
         self.assertRaises(  # 'alpha' is not an option
             NotAnOptionError,
             config_manager.ConfigurationManager,
             rc,
             [
-                {'admin': {'strict': False}},  # not strict, we allow anything
+                {"admin": {"strict": False}},  # not strict, we allow anything
                 {
-                    'source': {
-                        'cls': 'configmanners.tests.test_config_manager.T2'
+                    "source": {"cls": "configmanners.tests.test_config_manager.T2"},
+                    "destination": {
+                        "cls": "configmanners.tests.test_config_manager.T3"
                     },
-                    'destination': {
-                        'cls': 'configmanners.tests.test_config_manager.T3'
-                    }
                 },
                 {
-                    'source': {
-                        'cls': 'configmanners.tests.test_config_manager.T1'
+                    "source": {"cls": "configmanners.tests.test_config_manager.T1"},
+                    "destination": {
+                        "cls": "configmanners.tests.test_config_manager.T2"
                     },
-                    'destination': {
-                        'cls': 'configmanners.tests.test_config_manager.T2'
-                    }
                 },
                 # commandline sources need to ignore when strict=False and
                 # raise NotAnOptionError anyway - we don't want to allow
                 # arbitrary  switches on the command line.
                 getopt,
             ],
-            argv_source=['--alpha']
+            argv_source=["--alpha"],
         )
 
     # --------------------------------------------------------------------------
@@ -2067,23 +1906,23 @@ c.string =   from ini
         from the base namespace.  Both sub-namespace Options should have the
         end value from the base value namespace."""
         rc = Namespace()
-        rc.namespace('source')
+        rc.namespace("source")
         rc.source.add_option(
-            'cls',
-            default='configmanners.tests.test_config_manager.T1',
-            from_string_converter=class_converter
+            "cls",
+            default="configmanners.tests.test_config_manager.T1",
+            from_string_converter=class_converter,
         )
-        rc.namespace('destination')
+        rc.namespace("destination")
         rc.destination.add_option(
-            'cls',
-            default='configmanners.tests.test_config_manager.T2',
-            from_string_converter=class_converter
+            "cls",
+            default="configmanners.tests.test_config_manager.T2",
+            from_string_converter=class_converter,
         )
         cm = config_manager.ConfigurationManager(
             rc,
             [
                 DotDictWithAcquisition(
-                    {'cls': 'configmanners.tests.test_config_manager.T2'}
+                    {"cls": "configmanners.tests.test_config_manager.T2"}
                 ),
             ],
         )
@@ -2097,20 +1936,17 @@ c.string =   from ini
         n = self._common_app_namespace_setup()
 
         # make a config file that nothing will understand
-        with open('x.fred', 'w') as f:
-            f.write(
-                '[toplevel]\n'
-                'password=something\n'
-            )
+        with open("x.fred", "w") as f:
+            f.write("[toplevel]\n" "password=something\n")
         try:
             self.assertRaises(
                 AllHandlersFailedException,
                 config_manager.ConfigurationManager,
                 (n,),
-                argv_source=['--admin.conf=x.fred']
+                argv_source=["--admin.conf=x.fred"],
             )
         finally:
-            os.remove('x.fred')
+            os.remove("x.fred")
 
     # --------------------------------------------------------------------------
     def test_admin_conf_fail_message_gets_through(self):
@@ -2118,28 +1954,25 @@ c.string =   from ini
         n = self._common_app_namespace_setup()
 
         # make a config file that fails to load in its proper handler
-        with open('x.ini', 'w') as f:
-            f.write(
-                'this makes no sense as an ini file'
-            )
+        with open("x.ini", "w") as f:
+            f.write("this makes no sense as an ini file")
         try:
             config_manager.ConfigurationManager(
-                (n,),
-                argv_source=['--admin.conf=x.ini']
+                (n,), argv_source=["--admin.conf=x.ini"]
             )
             assert False, "where's the missing exception?"
         except AllHandlersFailedException as x:
-            self.assertTrue('ConfigObj cannot load' in str(x))
+            self.assertTrue("ConfigObj cannot load" in str(x))
         finally:
-            os.remove('x.ini')
+            os.remove("x.ini")
 
     # --------------------------------------------------------------------------
     def test_get_option_definitions(self):
         n = self._common_app_namespace_setup()
-        n.add_option('silly', default=1)
-        n.add_aggregation('strange', lambda x, y: 4)
-        n.add_aggregation('weird', lambda x, y: 11)
-        n.add_option('concrete', default=68)
+        n.add_option("silly", default=1)
+        n.add_aggregation("strange", lambda x, y: 4)
+        n.add_aggregation("weird", lambda x, y: 11)
+        n.add_option("concrete", default=68)
 
         cm = config_manager.ConfigurationManager(
             (n,),
@@ -2148,57 +1981,44 @@ c.string =   from ini
         )
         opts = cm.get_option_names()
         for an_opt in opts:
-            self.assertTrue(
-                isinstance(cm.option_definitions[an_opt], Option)
-            )
+            self.assertTrue(isinstance(cm.option_definitions[an_opt], Option))
         self.assertEqual(len(opts), 11)  # there must be exactly 11 options
 
     # --------------------------------------------------------------------------
-    @mock.patch('configmanners.config_manager.warnings')
+    @mock.patch("configmanners.config_manager.warnings")
     def test_warn_on_one_excess_options(self, mocked_warnings):
-        assert 'configobj' in sys.modules.keys()
+        assert "configobj" in sys.modules.keys()
 
         n = self._common_app_namespace_setup()
-        n.add_option('foo')
-        with open('x.ini', 'w') as f:
-            f.write(
-                'foo=FOO\n'
-                'bar=BAR\n'
-            )
+        n.add_option("foo")
+        with open("x.ini", "w") as f:
+            f.write("foo=FOO\n" "bar=BAR\n")
         try:
             config_manager.ConfigurationManager(
-                (n,),
-                argv_source=['--admin.conf=x.ini']
+                (n,), argv_source=["--admin.conf=x.ini"]
             )
-            mocked_warnings.warn.assert_called_once_with(
-                'Invalid options: bar'
-            )
+            mocked_warnings.warn.assert_called_once_with("Invalid options: bar")
         finally:
-            os.remove('x.ini')
+            os.remove("x.ini")
 
     # --------------------------------------------------------------------------
-    @mock.patch('configmanners.config_manager.warnings')
+    @mock.patch("configmanners.config_manager.warnings")
     def test_warn_on_multiple_excess_options(self, mocked_warnings):
-        assert 'configobj' in sys.modules.keys()
+        assert "configobj" in sys.modules.keys()
 
         n = self._common_app_namespace_setup()
-        n.add_option('foo')
-        with open('x.ini', 'w') as f:
-            f.write(
-                'foo=FOO\n'
-                'bar=BAR\n'
-                'baz=BAZ\n'
-            )
+        n.add_option("foo")
+        with open("x.ini", "w") as f:
+            f.write("foo=FOO\n" "bar=BAR\n" "baz=BAZ\n")
         try:
             config_manager.ConfigurationManager(
-                (n,),
-                argv_source=['--admin.conf=x.ini']
+                (n,), argv_source=["--admin.conf=x.ini"]
             )
             mocked_warnings.warn.assert_called_once_with(
-                str('Invalid options: bar, baz')
+                str("Invalid options: bar, baz")
             )
         finally:
-            os.remove('x.ini')
+            os.remove("x.ini")
 
     # --------------------------------------------------------------------------
     def test_overlay_bug(self):
@@ -2207,12 +2027,8 @@ c.string =   from ini
         # the values back to their original defaults
 
         r = Namespace()
-        r.add_option('fred', default=0)
-        r.add_option(
-            'class',
-            default=int,
-            from_string_converter=class_converter
-        )
+        r.add_option("fred", default=0)
+        r.add_option("class", default=int, from_string_converter=class_converter)
 
         # this class will bring in an Option that already exists called "fred".
         # Since overlay is done before expansion, "fred" should get set to 99.
@@ -2220,11 +2036,10 @@ c.string =   from ini
         # make sure that the overlay process then puts its back to 99.
         class A(RequiredConfig):
             required_config = Namespace()
-            required_config.add_option('fred', default='77')
+            required_config.add_option("fred", default="77")
 
         cm = config_manager.ConfigurationManager(
-            [r],
-            [{'fred': 21}, {'class': A}, {'fred': 99}]
+            [r], [{"fred": 21}, {"class": A}, {"fred": 99}]
         )
         cn = cm.get_config()
         self.assertEqual(cn.fred, 99)
@@ -2236,12 +2051,8 @@ c.string =   from ini
         # the values back to their original defaults
 
         r = Namespace()
-        r.add_option('fred', default=0, reference_value_from='a')
-        r.add_option(
-            'class',
-            default=int,
-            from_string_converter=class_converter
-        )
+        r.add_option("fred", default=0, reference_value_from="a")
+        r.add_option("class", default=int, from_string_converter=class_converter)
 
         # this class will bring in an Option that already exists called "fred".
         # Since overlay is done before expansion, "fred" should get set to 99.
@@ -2249,15 +2060,10 @@ c.string =   from ini
         # make sure that the overlay process then puts its back to 99.
         class A(RequiredConfig):
             required_config = Namespace()
-            required_config.add_option(
-                'fred',
-                default='77',
-                reference_value_from='a'
-            )
+            required_config.add_option("fred", default="77", reference_value_from="a")
 
         cm = config_manager.ConfigurationManager(
-            [r],
-            [{'a.fred': 21}, {'class': A}, {'a.fred': 99}]
+            [r], [{"a.fred": 21}, {"class": A}, {"a.fred": 99}]
         )
         cn = cm.get_config()
         self.assertEqual(cn.fred, 99)
@@ -2269,41 +2075,33 @@ c.string =   from ini
         # the values back to their original defaults
         class A(RequiredConfig):
             required_config = Namespace()
-            required_config.add_option(
-                'fred',
-                default='77',
-                reference_value_from='a'
-            )
+            required_config.add_option("fred", default="77", reference_value_from="a")
 
         class B(RequiredConfig):
             required_config = Namespace()
             required_config.add_option(
-                'a_class',
+                "a_class",
                 default=A,
                 from_string_converter=class_converter,
-                reference_value_from='a'
+                reference_value_from="a",
             )
 
         r = Namespace()
         r.add_option(
-            'some_class',
+            "some_class",
             default=A,
             from_string_converter=class_converter,
-            reference_value_from='a'
+            reference_value_from="a",
         )
         r.add_option(
-            'other_class',
+            "other_class",
             default=A,
             from_string_converter=class_converter,
-            reference_value_from='a'
+            reference_value_from="a",
         )
 
         cm = config_manager.ConfigurationManager(
-            [r],
-            [
-                {'a.fred': 21},
-                {'other_class': B}
-            ]
+            [r], [{"a.fred": 21}, {"other_class": B}]
         )
         cn = cm.get_config()
         self.assertEqual(cn.fred, 21)
@@ -2326,70 +2124,63 @@ c.string =   from ini
 
         r = Namespace()
         r.add_option(
-            'some_class',
+            "some_class",
             default=A,
             from_string_converter=class_converter,
         )
 
         cm = config_manager.ConfigurationManager(
-            definition_source=[r],
-            values_source_list=[],
-            argv_source=[]
+            definition_source=[r], values_source_list=[], argv_source=[]
         )
         cn = cm.get_config()
 
         self.assertEqual(cn.alpha, 1)
         self.assertTrue(cn.beta)
-        self.assertEqual(cn.gamma, 'hello')
+        self.assertEqual(cn.gamma, "hello")
 
     # --------------------------------------------------------------------------
     def test_value_source_object_hook_1(self):
         """the definition source defines only keys with underscores.
         the value sources may have hyphens instead of underscores.
         test the use of a translating DotDict varient that changes
-        hyphens into underscores """
+        hyphens into underscores"""
 
         class A(RequiredConfig):
             required_config = Namespace()
             required_config.add_option(
-                'f_r_e_d',
-                default='77',
-                reference_value_from='a'
+                "f_r_e_d", default="77", reference_value_from="a"
             )
 
         class B(RequiredConfig):
             required_config = Namespace()
             required_config.add_option(
-                'a_class',
+                "a_class",
                 default=A,
                 from_string_converter=class_converter,
-                reference_value_from='a'
+                reference_value_from="a",
             )
 
         r = Namespace()
         r.add_option(
-            'some_class',
+            "some_class",
             default=A,
             from_string_converter=class_converter,
-            reference_value_from='a'
+            reference_value_from="a",
         )
         r.add_option(
-            'other_class',
+            "other_class",
             default=A,
             from_string_converter=class_converter,
-            reference_value_from='a'
+            reference_value_from="a",
         )
 
         cm = config_manager.ConfigurationManager(
             [r],
-            [
-                {'a.f-r-e-d': 21},
-                {'other-class': B}
-            ],
+            [{"a.f-r-e-d": 21}, {"other-class": B}],
             value_source_object_hook=create_key_translating_dot_dict(
-                'HyphenIsUnderScoreDotDict',
-                (('-', '_'),),
-            )
+                "HyphenIsUnderScoreDotDict",
+                (("-", "_"),),
+            ),
         )
         cn = cm.get_config()
         self.assertEqual(cn.f_r_e_d, 21)
@@ -2406,63 +2197,50 @@ c.string =   from ini
         class A(RequiredConfig):
             required_config = Namespace()
             required_config.add_option(
-                'fred',
-                default='abcdefgh',
-                reference_value_from='a'
+                "fred", default="abcdefgh", reference_value_from="a"
             )
 
         class B(RequiredConfig):
             required_config = Namespace()
             required_config.add_option(
-                'a_class',
+                "a_class",
                 default=A,
                 from_string_converter=class_converter,
-                reference_value_from='a'
+                reference_value_from="a",
             )
             required_config.add_option(
-                'name',
-                default='wilma',
-                reference_value_from='a'
+                "name", default="wilma", reference_value_from="a"
             )
 
         r = Namespace()
         r.add_option(
-            'some_class',
+            "some_class",
             default=A,
             from_string_converter=class_converter,
-            reference_value_from='a'
+            reference_value_from="a",
         )
         r.add_option(
-            'other_class',
+            "other_class",
             default=A,
             from_string_converter=class_converter,
-            reference_value_from='a'
+            reference_value_from="a",
         )
 
         class UpperCaseValueDotDict(DotDict):
             def __setattr__(self, key, value):
                 if isinstance(value, (bytes, str)):
                     value = to_str(value)
-                    super(UpperCaseValueDotDict, self).__setattr__(
-                        key,
-                        value.upper()
-                    )
+                    super(UpperCaseValueDotDict, self).__setattr__(key, value.upper())
                 else:
-                    super(UpperCaseValueDotDict, self).__setattr__(
-                        key,
-                        value
-                    )
+                    super(UpperCaseValueDotDict, self).__setattr__(key, value)
 
         cm = config_manager.ConfigurationManager(
             [r],
             [
-                {
-                    'a.fred': 'this should be uppercase',
-                    'a.name': 'uppercase'
-                },
-                {'other_class': B}
+                {"a.fred": "this should be uppercase", "a.name": "uppercase"},
+                {"other_class": B},
             ],
-            value_source_object_hook=UpperCaseValueDotDict
+            value_source_object_hook=UpperCaseValueDotDict,
         )
         cn = cm.get_config()
         self.assertEqual(cn.fred, "THIS SHOULD BE UPPERCASE")
@@ -2476,7 +2254,6 @@ c.string =   from ini
         from configmanners import configuration
 
         class AggregatedValue(object):
-
             def __init__(self, value):
                 self.value = value
 
@@ -2484,56 +2261,54 @@ c.string =   from ini
                 self.value = None
 
         def aggregation_test(all_config, local_namespace, args):
-            self.assertTrue('password' in all_config)
-            self.assertTrue('sub1' in all_config)
-            self.assertTrue('name' in all_config['sub1'])
-            self.assertTrue('name' in local_namespace)
-            self.assertTrue('spouse' in local_namespace)
+            self.assertTrue("password" in all_config)
+            self.assertTrue("sub1" in all_config)
+            self.assertTrue("name" in all_config["sub1"])
+            self.assertTrue("name" in local_namespace)
+            self.assertTrue("spouse" in local_namespace)
             self.assertEqual(len(args), 2)
-            return AggregatedValue('%s married %s using password %s but '
-                                   'divorced because of %s.' %
-                                   (local_namespace['name'],
-                                    local_namespace['spouse'],
-                                    all_config['password'],
-                                    args[1]))
+            return AggregatedValue(
+                "%s married %s using password %s but "
+                "divorced because of %s."
+                % (
+                    local_namespace["name"],
+                    local_namespace["spouse"],
+                    all_config["password"],
+                    args[1],
+                )
+            )
 
         class MyApp(config_manager.RequiredConfig):
-            app_name = 'fred'
-            app_version = '1.0'
+            app_name = "fred"
+            app_version = "1.0"
             app_description = "my app"
             required_config = config_manager.Namespace()
-            required_config.add_option('password', '@$*$&26Ht', 'the password')
-            required_config.namespace('sub1')
-            required_config.sub1.add_option('name', 'ethel', 'the name')
-            required_config.sub1.add_option('spouse', 'fred', 'the spouse')
-            required_config.sub1.add_aggregation('statement', aggregation_test)
+            required_config.add_option("password", "@$*$&26Ht", "the password")
+            required_config.namespace("sub1")
+            required_config.sub1.add_option("name", "ethel", "the name")
+            required_config.sub1.add_option("spouse", "fred", "the spouse")
+            required_config.sub1.add_aggregation("statement", aggregation_test)
 
             def __init__(inner_self, config):
                 inner_self.config = config
 
         n = config_manager.Namespace()
-        n.add_option('application',
-                     MyApp,
-                     'the app object class')
+        n.add_option("application", MyApp, "the app object class")
 
         config = configuration(
             n,
             [getopt],
             use_admin_controls=False,
             use_auto_help=False,
-            argv_source=[
-                '--sub1.name=wilma',
-                'arg1',
-                'arg2'
-            ]
+            argv_source=["--sub1.name=wilma", "arg1", "arg2"],
         )
 
         self.assertTrue(isinstance(config, DotDictWithAcquisition))
-        statement = config['sub1']['statement']
+        statement = config["sub1"]["statement"]
         self.assertEqual(
             statement.value,
-            'wilma married fred using password @$*$&26Ht '
-            'but divorced because of arg2.'
+            "wilma married fred using password @$*$&26Ht "
+            "but divorced because of arg2.",
         )
 
         config = configuration(
@@ -2541,42 +2316,26 @@ c.string =   from ini
             [getopt],
             use_admin_controls=False,
             use_auto_help=False,
-            argv_source=[
-                '--sub1.name=wilma',
-                'arg1',
-                'arg2'
-            ],
-            mapping_class=dict
+            argv_source=["--sub1.name=wilma", "arg1", "arg2"],
+            mapping_class=dict,
         )
 
         self.assertTrue(isinstance(config, dict))
-        statement = config['sub1']['statement']
+        statement = config["sub1"]["statement"]
         self.assertEqual(
             statement.value,
-            'wilma married fred using password @$*$&26Ht '
-            'but divorced because of arg2.'
+            "wilma married fred using password @$*$&26Ht "
+            "but divorced because of arg2.",
         )
 
     # --------------------------------------------------------------------------
     def test_configmannersger_set_has_changed_successfully(self):
 
         n = config_manager.Namespace()
-        n.add_option(
-            name='dwight',
-            default=0
-        )
-        n.add_option(
-            name='wilma',
-            default=0
-        )
-        n.add_option(
-            name='sarita',
-            default=0
-        )
-        n.add_option(
-            name='robert',
-            default=0
-        )
+        n.add_option(name="dwight", default=0)
+        n.add_option(name="wilma", default=0)
+        n.add_option(name="sarita", default=0)
+        n.add_option(name="robert", default=0)
 
         config = config_manager.ConfigurationManager(
             n,
@@ -2584,10 +2343,7 @@ c.string =   from ini
                 {
                     "dwight": 20,
                 },
-                {
-                    "dwight": 22,
-                    "wilma": 10
-                },
+                {"dwight": 22, "wilma": 10},
                 {
                     "wilma": 0,
                     "robert": 16,
@@ -2595,7 +2351,7 @@ c.string =   from ini
             ],
             use_admin_controls=False,
             use_auto_help=False,
-            argv_source=[]
+            argv_source=[],
         )
         self.assertTrue(config.option_definitions.dwight.has_changed)
         self.assertFalse(config.option_definitions.wilma.has_changed)

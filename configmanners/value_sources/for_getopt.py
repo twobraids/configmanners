@@ -25,7 +25,7 @@ from configmanners.dotdict import DotDict
 
 from configmanners.value_sources.source_exceptions import (
     ValueException,
-    CantHandleTypeException
+    CantHandleTypeException,
 )
 
 
@@ -36,7 +36,7 @@ class GetOptFailureException(ValueException):
 
 can_handle = (
     getopt,
-    list,   # a list of options to serve as the argv source
+    list,  # a list of options to serve as the argv source
 )
 
 
@@ -44,6 +44,7 @@ can_handle = (
 class ValueSource(object):
     """The ValueSource implementation for the getopt module.  This class will
     interpret an argv list of commandline arguments using getopt."""
+
     # --------------------------------------------------------------------------
 
     def __init__(self, source, the_config_manager=None):
@@ -54,7 +55,7 @@ class ValueSource(object):
         else:
             raise CantHandleTypeException()
 
-        self.identity = 'getopt'
+        self.identity = "getopt"
 
     # frequently, command line data sources must be treated differently.  For
     # example, even when the overall option for configmanners is to allow
@@ -93,24 +94,22 @@ class ValueSource(object):
             # consumes the defined switches.  The things that are not
             # consumed are then offered as the 'args' variable of the
             # parent configuration_manager
-            getopt_options, config_manager.args = fn(self.argv_source,
-                                                     short_options_str,
-                                                     long_options_list)
+            getopt_options, config_manager.args = fn(
+                self.argv_source, short_options_str, long_options_list
+            )
         except getopt.GetoptError as x:
             raise NotAnOptionError(str(x))
         command_line_values = obj_hook()
         for opt_name, opt_val in getopt_options:
-            if opt_name.startswith('--'):
+            if opt_name.startswith("--"):
                 name = opt_name[2:]
             else:
                 name = self.find_name_with_short_form(
-                    opt_name[1:],
-                    config_manager.option_definitions,
-                    ''
+                    opt_name[1:], config_manager.option_definitions, ""
                 )
                 if not name:
                     raise NotAnOptionError(
-                        '%s is not a valid short form option' % opt_name[1:]
+                        "%s is not a valid short form option" % opt_name[1:]
                     )
             option_ = config_manager._get_option(name)
             if option_.from_string_converter == boolean_converter:
@@ -118,11 +117,8 @@ class ValueSource(object):
             else:
                 command_line_values[name] = opt_val
         for name, value in zip(
-            self._get_arguments(
-                config_manager.option_definitions,
-                command_line_values
-            ),
-            config_manager.args
+            self._get_arguments(config_manager.option_definitions, command_line_values),
+            config_manager.args,
         ):
             command_line_values[name] = value
         return command_line_values
@@ -131,18 +127,16 @@ class ValueSource(object):
     def getopt_create_opts(self, option_definitions):
         short_options_list = []
         long_options_list = []
-        self.getopt_create_opts_recursive(option_definitions,
-                                          "",
-                                          short_options_list,
-                                          long_options_list)
-        short_options_str = ''.join(short_options_list)
+        self.getopt_create_opts_recursive(
+            option_definitions, "", short_options_list, long_options_list
+        )
+        short_options_str = "".join(short_options_list)
         return short_options_str, long_options_list
 
     # --------------------------------------------------------------------------
-    def getopt_create_opts_recursive(self, source,
-                                     prefix,
-                                     short_options_list,
-                                     long_options_list):
+    def getopt_create_opts_recursive(
+        self, source, prefix, short_options_list, long_options_list
+    ):
         for key, val in source.items():
             if isinstance(val, option.Option):
                 boolean_option = type(val.default) == bool
@@ -158,17 +152,16 @@ class ValueSource(object):
                     except AttributeError:
                         pass
                 if boolean_option:
-                    long_options_list.append('%s%s' % (prefix, val.name))
+                    long_options_list.append("%s%s" % (prefix, val.name))
                 else:
-                    long_options_list.append('%s%s=' % (prefix, val.name))
+                    long_options_list.append("%s%s=" % (prefix, val.name))
             elif isinstance(val, option.Aggregation):
                 pass  # skip Aggregations they have nothing to do with getopt
             else:  # Namespace case
-                new_prefix = '%s%s.' % (prefix, key)
-                self.getopt_create_opts_recursive(val,
-                                                  new_prefix,
-                                                  short_options_list,
-                                                  long_options_list)
+                new_prefix = "%s%s." % (prefix, key)
+                self.getopt_create_opts_recursive(
+                    val, new_prefix, short_options_list, long_options_list
+                )
 
     # --------------------------------------------------------------------------
     @staticmethod
@@ -185,26 +178,18 @@ class ValueSource(object):
         else:
             longopts = list(longopts)
         while args:
-            if args[0] == '--':
+            if args[0] == "--":
                 prog_args += args[1:]
                 break
-            if args[0].startswith('--'):
+            if args[0].startswith("--"):
                 try:
-                    opts, args = getopt.do_longs(
-                        opts,
-                        args[0][2:],
-                        longopts,
-                        args[1:]
-                    )
+                    opts, args = getopt.do_longs(opts, args[0][2:], longopts, args[1:])
                 except getopt.GetoptError:
                     args = args[1:]
-            elif args[0][0] == '-':
+            elif args[0][0] == "-":
                 try:
                     opts, args = getopt.do_shorts(
-                        opts,
-                        args[0][1:],
-                        shortopts,
-                        args[1:]
+                        opts, args[0][1:], shortopts, args[1:]
                     )
                 except getopt.GetoptError:
                     args = args[1:]
@@ -217,15 +202,14 @@ class ValueSource(object):
     def find_name_with_short_form(self, short_name, source, prefix):
         for key, val in source.items():
             if isinstance(val, namespace.Namespace):
-                new_prefix = '%s.' % key
-                name = self.find_name_with_short_form(short_name, val,
-                                                      new_prefix)
+                new_prefix = "%s." % key
+                name = self.find_name_with_short_form(short_name, val, new_prefix)
                 if name:
                     return name
             elif isinstance(val, option.Option):
                 try:
                     if short_name == val.short_form:
-                        return '%s%s' % (prefix, val.name)
+                        return "%s%s" % (prefix, val.name)
                 except KeyError:
                     continue
         return None
@@ -248,9 +232,5 @@ class ValueSource(object):
     # --------------------------------------------------------------------------
     @staticmethod
     def _setup_auto_help(the_config_manager):
-        help_option = option.Option(
-            name='help',
-            doc='print this',
-            default=False
-        )
-        the_config_manager.definition_source_list.append({'help': help_option})
+        help_option = option.Option(name="help", doc="print this", default=False)
+        the_config_manager.definition_source_list.append({"help": help_option})

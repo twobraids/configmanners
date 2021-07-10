@@ -26,9 +26,10 @@ from configmanners.converters import (
     known_mapping_str_to_type,
     CannotConvertError,
     str_quote_stripper,
-    compiled_regexp_type
+    compiled_regexp_type,
 )
-file_name_extension = 'py'
+
+file_name_extension = "py"
 
 
 can_handle = (
@@ -46,7 +47,7 @@ can_handle = (
 # that can serialize objects into Python code.  This allows writing of a
 # Python module in the same manner that ini files are written.
 
-identifier_re = re.compile(r'^[a-z_][a-z0-9_\.]*$', re.I)
+identifier_re = re.compile(r"^[a-z_][a-z0-9_\.]*$", re.I)
 
 
 # ------------------------------------------------------------------------------
@@ -58,20 +59,14 @@ def is_identifier(a_candidate):
 
 # ------------------------------------------------------------------------------
 def sequence_to_string(
-    a_list,
-    open_bracket_char='[',
-    close_bracket_char=']',
-    delimiter=", "
+    a_list, open_bracket_char="[", close_bracket_char="]", delimiter=", "
 ):
     """a dedicated function that turns a list into a comma delimited string
     of items converted.  This method will flatten nested lists."""
     return "%s%s%s" % (
         open_bracket_char,
-        delimiter.join(
-            local_to_str(x)
-            for x in a_list
-        ),
-        close_bracket_char
+        delimiter.join(local_to_str(x) for x in a_list),
+        close_bracket_char,
     )
 
 
@@ -81,7 +76,7 @@ def dict_to_string(d):
         d,
         indent=4,
         sort_keys=True,
-        separators=(',', ': '),
+        separators=(",", ": "),
     )
 
 
@@ -112,15 +107,14 @@ def unicode_to_unicode(a_string):
 
 # ------------------------------------------------------------------------------
 def datetime_to_string(d):
-    return "datetime(year=%s, month=%s, day=%s, hour=%s, " \
-        "minute=%s, second=%s)" % (
-            d.year,
-            d.month,
-            d.day,
-            d.hour,
-            d.minute,
-            d.second,
-        )
+    return "datetime(year=%s, month=%s, day=%s, hour=%s, " "minute=%s, second=%s)" % (
+        d.year,
+        d.month,
+        d.day,
+        d.hour,
+        d.minute,
+        d.second,
+    )
 
 
 # ------------------------------------------------------------------------------
@@ -151,9 +145,9 @@ def get_import_for_type(t):
         # like the configmanners.converter.str_to_classes_in_namespaces
         # InnerClassList.  We can safely ignore these things here.
         return (None, None)
-    if '.' in t_as_string:
-        parts = t_as_string.split('.')
-        return ('.'.join(parts[:-1]), parts[-1])
+    if "." in t_as_string:
+        parts = t_as_string.split(".")
+        return (".".join(parts[:-1]), parts[-1])
     else:
         if t_as_string in known_mapping_str_to_type:
             return (None, None)
@@ -169,7 +163,7 @@ local_to_string_converters = {
     datetime.date: date_to_string,
     datetime.timedelta: timedelta_to_string,
     type(None): lambda x: "None",
-    compiled_regexp_type: lambda x: string_to_string(x.pattern)
+    compiled_regexp_type: lambda x: string_to_string(x.pattern),
 }
 local_to_string_converters[str] = string_to_string
 local_to_string_converters[bytes] = string_to_string
@@ -197,8 +191,7 @@ def local_to_str(a_thing):
 # ==============================================================================
 @total_ordering
 class OrderableObj(object):
-    """Python3 can't sort non-string types implicitly.
-    """
+    """Python3 can't sort non-string types implicitly."""
 
     def __init__(self, value):
         if not isinstance(value, str):
@@ -209,10 +202,10 @@ class OrderableObj(object):
         self.value = value
 
     def __lt__(self, other):
-        return (self.value_str < other.value_str)
+        return self.value_str < other.value_str
 
     def __eq__(self, other):
-        return (self.value_str == other.value_str)
+        return self.value_str == other.value_str
 
     def __repr__(self):
         return self.value_str
@@ -221,18 +214,17 @@ class OrderableObj(object):
 # ==============================================================================
 @total_ordering
 class OrderableTuple(object):
-    """Python3 can't sort non-string types implicitly.
-    """
+    """Python3 can't sort non-string types implicitly."""
 
     def __init__(self, value, index=1):
         self.value = value
         self.index = index
 
     def __lt__(self, other):
-        return (self.value[self.index] < other.value[self.index])
+        return self.value[self.index] < other.value[self.index]
 
     def __eq__(self, other):
-        return (self.value[self.index] == other.value[self.index])
+        return self.value[self.index] == other.value[self.index]
 
     def __repr__(self):
         return self.value.__repr__()
@@ -247,8 +239,8 @@ class ValueSource(object):
         module_as_dotdict = DotDict()
         try:
             ignore_symbol_list = source.ignore_symbol_list
-            if 'ignore_symbol_list' not in ignore_symbol_list:
-                ignore_symbol_list.append('ignore_symbol_list')
+            if "ignore_symbol_list" not in ignore_symbol_list:
+                ignore_symbol_list.append("ignore_symbol_list")
         except AttributeError:
             ignore_symbol_list = []
         try:
@@ -256,7 +248,7 @@ class ValueSource(object):
         except AttributeError:
             pass  # don't need to do anything - mismatches will not be ignored
         for key, value in source.__dict__.items():
-            if key.startswith('__') and key != "__doc__":
+            if key.startswith("__") and key != "__doc__":
                 continue
             if key in ignore_symbol_list:
                 continue
@@ -279,8 +271,8 @@ class ValueSource(object):
         else:
             class_str = local_to_str(value)
         if is_identifier(class_str):
-            parts = [x.strip() for x in class_str.split('.') if x.strip()]
-            print('%s = %s' % (key, parts[-1]), file=output_stream)
+            parts = [x.strip() for x in class_str.split(".") if x.strip()]
+            print("%s = %s" % (key, parts[-1]), file=output_stream)
         else:
             print('%s = "%s"' % (key, class_str), file=output_stream)
 
@@ -294,39 +286,34 @@ class ValueSource(object):
             value = local_to_str(value)
         except CannotConvertError:
             value = repr(value)
-        if '\n' in value:
+        if "\n" in value:
             value = "'''%s'''" % str_quote_stripper(value)
-        print('%s = %s' % (key, value), file=output_stream)
+        print("%s = %s" % (key, value), file=output_stream)
 
     # --------------------------------------------------------------------------
     @staticmethod
     def write_option(key, an_option, alias_by_class, output_stream):
-        print('\n', end='', file=output_stream)
+        print("\n", end="", file=output_stream)
         if an_option.doc:
-            print('# %s' % an_option.doc, file=output_stream)
+            print("# %s" % an_option.doc, file=output_stream)
         if (
-            isclass(an_option.value) or
-            ismodule(an_option.value) or
-            isfunction(an_option.value)
+            isclass(an_option.value)
+            or ismodule(an_option.value)
+            or isfunction(an_option.value)
         ):
-            ValueSource.write_class(
-                key,
-                an_option.value,
-                alias_by_class,
-                output_stream
-            )
+            ValueSource.write_class(key, an_option.value, alias_by_class, output_stream)
             return
         else:
             value = local_to_str(an_option.value)
-            print('%s = %s' % (key, value), file=output_stream)
+            print("%s = %s" % (key, value), file=output_stream)
 
     # --------------------------------------------------------------------------
     @staticmethod
     def write_namespace(key, a_namespace, output_stream):
-        print('\n# Namespace:', key, file=output_stream)
-        if 'doc' in dir(a_namespace):
-            print('#', a_namespace.doc, file=output_stream)
-        print('%s = DotDict()' % key, file=output_stream)
+        print("\n# Namespace:", key, file=output_stream)
+        if "doc" in dir(a_namespace):
+            print("#", a_namespace.doc, file=output_stream)
+        print("%s = DotDict()" % key, file=output_stream)
 
     # --------------------------------------------------------------------------
     @staticmethod
@@ -354,7 +341,7 @@ class ValueSource(object):
                 # Aggregations don't get included, skip on
                 continue
 
-            if '.' in key:
+            if "." in key:
                 # this indicates that there are things in nested namespaces,
                 # we will use the DotDict class to represent namespaces
                 set_of_classes_needing_imports.add(DotDict)
@@ -406,13 +393,13 @@ class ValueSource(object):
         for (
             a_class,
             a_module_path,
-            class_name
+            class_name,
         ) in class_and_module_path_and_class_name:
             if class_name:
                 if class_name in previously_used_names:
                     new_class_name_alias = "%s_%s" % (
-                        a_module_path.replace('.', '_'),
-                        class_name
+                        a_module_path.replace(".", "_"),
+                        class_name,
                     )
                     alias_by_class[a_class] = new_class_name_alias
                     previously_used_names.add(new_class_name_alias)
@@ -432,8 +419,12 @@ class ValueSource(object):
         #         A,
         #         B,
         #     )
-        sorted_list = [x.value for x in sorted([OrderableObj(x) for x in
-                                                class_name_by_module_path_list.keys()])]
+        sorted_list = [
+            x.value
+            for x in sorted(
+                [OrderableObj(x) for x in class_name_by_module_path_list.keys()]
+            )
+        ]
         for a_module_path in sorted_list:
             print(a_module_path)
             # if there is no module path, then it is something that we don't
@@ -442,55 +433,50 @@ class ValueSource(object):
             # causes the output module to fail, it is up to the implementer
             # of the configmanners option to have created an approprate
             # "from_string" & "to_string" configmanners Option function references.
-            if a_module_path is None or a_module_path.startswith('_'):
+            if a_module_path is None or a_module_path.startswith("_"):
                 continue
-            list_of_class_names = \
-                class_name_by_module_path_list[a_module_path]
+            list_of_class_names = class_name_by_module_path_list[a_module_path]
             if len(list_of_class_names) > 1:
                 output_line = "from %s import (\n" % a_module_path
-                sorted_list = [x.value for x in sorted([OrderableTuple(x)
-                                                        for x in list_of_class_names])]
+                sorted_list = [
+                    x.value
+                    for x in sorted([OrderableTuple(x) for x in list_of_class_names])
+                ]
                 for a_class, a_class_name in sorted_list:
                     if a_class in alias_by_class:
                         output_line = "%s\n    %s as %s," % (
                             output_line,
                             a_class_name,
-                            alias_by_class[a_class]
+                            alias_by_class[a_class],
                         )
                         symbols_to_ignore.add(alias_by_class[a_class])
                     else:
-                        output_line = "%s    %s,\n" % (
-                            output_line,
-                            a_class_name
-                        )
+                        output_line = "%s    %s,\n" % (output_line, a_class_name)
                         symbols_to_ignore.add(a_class_name)
 
-                output_line = output_line + ')'
+                output_line = output_line + ")"
                 print(output_line.strip(), file=output_stream)
             else:
                 a_class, a_class_name = list_of_class_names[0]
-                output_line = "from %s import %s" % (
-                    a_module_path,
-                    a_class_name
-                )
+                output_line = "from %s import %s" % (a_module_path, a_class_name)
                 if a_class in alias_by_class:
-                    output_line = "%s as %s" % (
-                        output_line,
-                        alias_by_class[a_class]
-                    )
+                    output_line = "%s as %s" % (output_line, alias_by_class[a_class])
                     symbols_to_ignore.add(alias_by_class[a_class])
                 else:
                     symbols_to_ignore.add(a_class_name)
                 print(output_line.strip(), file=output_stream)
-        print('', file=output_stream)
+        print("", file=output_stream)
 
         # The next section to write will be the imports of the form:
         #     import X
-        sorted_list = [x.value for x in sorted([OrderableObj(x) for x in
-                                                class_name_by_module_path_list.keys()])]
+        sorted_list = [
+            x.value
+            for x in sorted(
+                [OrderableObj(x) for x in class_name_by_module_path_list.keys()]
+            )
+        ]
         for a_module_path in sorted_list:
-            list_of_class_names = \
-                class_name_by_module_path_list[a_module_path]
+            list_of_class_names = class_name_by_module_path_list[a_module_path]
             a_class, a_class_name = list_of_class_names[0]
             if a_module_path:
                 continue
@@ -506,29 +492,22 @@ class ValueSource(object):
                 "# this module is used as a value source.  This will\n"
                 "# suppress the mismatch warning since these symbols are\n"
                 "# values for options, not option names themselves.",
-                file=output_stream
+                file=output_stream,
             )
             print("ignore_symbol_list = [", file=output_stream)
             for a_symbol in sorted(symbols_to_ignore):
                 print('    "%s",' % a_symbol, file=output_stream)
-            print(']\n', file=output_stream)
+            print("]\n", file=output_stream)
 
         # finally, as the last step, we need to write out the keys and values
         # will be used by a future configmanners as Options and values.
-        sorted_keys = sorted(
-            source_mapping.keys_breadth_first(include_dicts=True)
-        )
+        sorted_keys = sorted(source_mapping.keys_breadth_first(include_dicts=True))
         for key in sorted_keys:
             value = source_mapping[key]
             if isinstance(value, Namespace):
                 ValueSource.write_namespace(key, value, output_stream)
             elif isinstance(value, Option):
-                ValueSource.write_option(
-                    key,
-                    value,
-                    alias_by_class,
-                    output_stream
-                )
+                ValueSource.write_option(key, value, alias_by_class, output_stream)
             elif isinstance(value, Aggregation):
                 # skip Aggregations
                 continue

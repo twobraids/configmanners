@@ -21,7 +21,8 @@ from configmanners.config_exceptions import CannotConvertError
 
 # replace with dynamic discovery and loading
 from configmanners.value_sources import for_argparse
-#from configmanners.value_sources import or_xml
+
+# from configmanners.value_sources import or_xml
 from configmanners.value_sources import for_getopt
 from configmanners.value_sources import for_json
 from configmanners.value_sources import for_conf
@@ -59,8 +60,7 @@ class DispatchByType(collections.defaultdict):
                 for a_handler in handler_list:
                     handlers_set.add(a_handler)
         if not handlers_set:
-            raise NoHandlerForType("no hander for %s is available" %
-                                   candidate)
+            raise NoHandlerForType("no hander for %s is available" % candidate)
         return handlers_set
 
     # --------------------------------------------------------------------------
@@ -78,15 +78,11 @@ for a_handler in for_handlers:
     try:
         for a_supported_value_source in a_handler.can_handle:
             try:
-                type_handler_dispatch[a_supported_value_source].append(
-                    a_handler
-                )
+                type_handler_dispatch[a_supported_value_source].append(a_handler)
             except TypeError:
                 # likely this is an instance of a handleable type that is not
                 # hashable. Replace it with its base type and try to continue.
-                type_handler_dispatch[type(a_supported_value_source)].append(
-                    a_handler
-                )
+                type_handler_dispatch[type(a_supported_value_source)].append(a_handler)
     except AttributeError:
         # this module has no can_handle attribute, therefore cannot really
         # be a handler and an error should be raised
@@ -97,9 +93,9 @@ for a_handler in for_handlers:
 file_extension_dispatch = {}
 for a_handler in for_handlers:
     try:
-        file_extension_dispatch[a_handler.file_name_extension] = (
-            a_handler.ValueSource.write
-        )
+        file_extension_dispatch[
+            a_handler.file_name_extension
+        ] = a_handler.ValueSource.write
     except AttributeError:
         # this handler doesn't have a 'file_name_extension' or ValueSource
         # therefore it is not eligible for the write file dispatcher
@@ -111,7 +107,7 @@ def wrap_with_value_source_api(value_source_list, a_config_manager):
     wrapped_sources = []
     for a_source in value_source_list:
         if a_source is ConfigFileFutureProxy:
-            a_source = a_config_manager._get_option('admin.conf').default
+            a_source = a_config_manager._get_option("admin.conf").default
             # raise hell if the config file doesn't exist
             if isinstance(a_source, (bytes, str)):
                 a_source = to_str(a_source)
@@ -135,8 +131,7 @@ def wrap_with_value_source_api(value_source_list, a_config_manager):
         error_history = []
         for a_handler in handlers:
             try:
-                wrapped_source = a_handler.ValueSource(a_source,
-                                                       a_config_manager)
+                wrapped_source = a_handler.ValueSource(a_source, a_config_manager)
                 break
             except (ValueException, CannotConvertError) as x:
                 # a failure is not necessarily fatal, we need to try all of
@@ -146,7 +141,7 @@ def wrap_with_value_source_api(value_source_list, a_config_manager):
                     error_history.append(str(x))
         if wrapped_source is None:
             if error_history:
-                errors = '; '.join(error_history)
+                errors = "; ".join(error_history)
                 raise AllHandlersFailedException(errors)
             else:
                 raise NoHandlerForType(type(a_source))
@@ -160,19 +155,14 @@ def has_registration_for(config_file_type):
 
 
 # ------------------------------------------------------------------------------
-def dispatch_request_to_write(
-    config_file_type,
-    options_mapping,
-    opener
-):
+def dispatch_request_to_write(config_file_type, options_mapping, opener):
     if isinstance(config_file_type, (bytes, str)):
         config_file_type = to_str(config_file_type)
         try:
             writer_fn = file_extension_dispatch[config_file_type]
         except KeyError:
             raise UnknownFileExtensionException(
-                "%s isn't a registered file name extension" %
-                config_file_type
+                "%s isn't a registered file name extension" % config_file_type
             )
         with opener() as output_stream:
             writer_fn(options_mapping, output_stream=output_stream)
@@ -181,23 +171,20 @@ def dispatch_request_to_write(
         # for_handler module.  Use the module's ValueSource's write method
         with opener() as output_stream:
             config_file_type.ValueSource.write(
-                options_mapping,
-                output_stream=output_stream
+                options_mapping, output_stream=output_stream
             )
 
 
 # ------------------------------------------------------------------------------
 def config_filename_from_commandline(config_manager):
     command_line_value_source = for_getopt.ValueSource(
-        for_getopt.getopt,
-        config_manager
+        for_getopt.getopt, config_manager
     )
     values = command_line_value_source.get_values(
-        config_manager,
-        ignore_mismatches=True
+        config_manager, ignore_mismatches=True
     )
     try:
-        config_file_name = values['admin.conf']
+        config_file_name = values["admin.conf"]
     except KeyError:
         return None
 

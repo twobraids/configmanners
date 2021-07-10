@@ -1,4 +1,3 @@
-
 import collections
 
 # This Source Code Form is subject to the terms of the Mozilla Public
@@ -23,8 +22,8 @@ definition_dispatch = {
 try:
     from configmanners.def_sources import for_argparse
     import argparse
-    definition_dispatch[argparse.ArgumentParser] = \
-        for_argparse.setup_definitions
+
+    definition_dispatch[argparse.ArgumentParser] = for_argparse.setup_definitions
 except ImportError:
     # silently ignore that argparse doesn't exist
     pass

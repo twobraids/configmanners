@@ -16,6 +16,3 @@ c = 13  # will be ignored by configmanners
 n = DotDict()
 n.x = datetime(1960, 5, 4, 15, 10)
 n.y = timedelta(1)
-
-
-

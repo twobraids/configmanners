@@ -9,7 +9,7 @@ from configmanners.dotdict import DotDict
 from configmanners import RequiredConfig
 from datetime import timedelta, date
 
-b = 'now is the time'
+b = "now is the time"
 
 n = DotDict()
 n.y = timedelta(1)
@@ -18,8 +18,8 @@ n.z = date(1960, 5, 4)
 
 class Alpha(RequiredConfig):
     required_config = {
-        'host': 'localhost',
-        'port': 5432,
+        "host": "localhost",
+        "port": 5432,
     }
 
 

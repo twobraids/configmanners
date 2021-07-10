@@ -2,7 +2,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-
 import collections
 import weakref
 from io import StringIO
@@ -25,7 +24,7 @@ def iteritems_breadth_first(a_mapping, include_dicts=False):
             yield key, value
     for key, a_map in subordinate_mappings:
         for sub_key, value in iteritems_breadth_first(a_map, include_dicts):
-            yield '%s.%s' % (key, sub_key), value
+            yield "%s.%s" % (key, sub_key), value
 
 
 # ------------------------------------------------------------------------------
@@ -44,8 +43,8 @@ def stylize_keys(a_mapping):
     """
     stylized_keys_dict = DotDict()
     for k, v in iteritems_breadth_first(a_mapping):
-        if '__' in k and k != k.upper():
-            k = k.replace('__', '.')
+        if "__" in k and k != k.upper():
+            k = k.replace("__", ".")
         stylized_keys_dict[k] = v
     return stylized_keys_dict
 
@@ -100,18 +99,15 @@ class DotDict(collections.abc.MutableMapping):
         parameters:
             initializer - a mapping of keys and values to be added to this
                           mapping."""
-        self.__dict__['_key_order'] = OrderedSet()
+        self.__dict__["_key_order"] = OrderedSet()
         if isinstance(initializer, collections.abc.Mapping):
-            for key, value in iteritems_breadth_first(
-                initializer,
-                include_dicts=True
-            ):
+            for key, value in iteritems_breadth_first(initializer, include_dicts=True):
                 if isinstance(value, collections.abc.Mapping):
                     self[key] = self.__class__(value)
                 else:
                     self[key] = value
         elif initializer is not None:
-            raise TypeError('can only initialize with a Mapping')
+            raise TypeError("can only initialize with a Mapping")
 
     # --------------------------------------------------------------------------
     def __setattr__(self, key, value):
@@ -129,7 +125,7 @@ class DotDict(collections.abc.MutableMapping):
         # a KeyError instead and copy.deepcopy can't handle it.  So we
         # make sure that any missing attribute that begins with '__'
         # raises an AttributeError instead of KeyError.
-        if key.startswith('__') and key.endswith('__'):
+        if key.startswith("__") and key.endswith("__"):
             raise AttributeError(key)
         raise KeyError(key)
 
@@ -148,7 +144,7 @@ class DotDict(collections.abc.MutableMapping):
         """define the square bracket operator to refer to the object's __dict__
         for fetching values.  It accepts keys in the form X.Y.Z"""
         try:
-            key_split = key.split('.')
+            key_split = key.split(".")
         except AttributeError:
             key_split = [key]
         current = self
@@ -160,7 +156,7 @@ class DotDict(collections.abc.MutableMapping):
     def __setitem__(self, key, value):
         """define the square bracket operator to refer to the object's __dict__
         for setting values."""
-        if '.' in key:
+        if "." in key:
             self.assign(key, value)
         else:
             setattr(self, key, value)
@@ -184,7 +180,7 @@ class DotDict(collections.abc.MutableMapping):
            del d.a
            assert 'a' not in d
         """
-        key_split = key.split('.')
+        key_split = key.split(".")
         current = self
         for k in key_split[:-1]:
             current = getattr(current, k)
@@ -217,21 +213,21 @@ class DotDict(collections.abc.MutableMapping):
                 yield key
         for a_namespace in namespaces:
             for key in self[a_namespace].keys_breadth_first(include_dicts):
-                yield '%s.%s' % (a_namespace, key)
+                yield "%s.%s" % (a_namespace, key)
 
     # --------------------------------------------------------------------------
     def assign(self, key, value):
         """an alternative method for assigning values to nested DotDict
         instances.  It accepts keys in the form of X.Y.Z.  If any nested
         DotDict instances don't yet exist, they will be created."""
-        key_split = key.split('.')
+        key_split = key.split(".")
         cur_dict = self
         for k in key_split[:-1]:
             try:
                 cur_dict = cur_dict[k]
             except KeyError:
                 cur_dict[k] = self.__class__()  # so that derived classes
-                                                # remain true to type
+                # remain true to type
                 cur_dict = cur_dict[k]
         cur_dict[key_split[-1]] = value
 
@@ -239,7 +235,7 @@ class DotDict(collections.abc.MutableMapping):
     def parent(self, key):
         """when given a key of the form X.Y.Z, this method will return the
         parent DotDict of the 'Z' key."""
-        parent_key = '.'.join(key.split('.')[:-1])
+        parent_key = ".".join(key.split(".")[:-1])
         if not parent_key:
             return None
         else:
@@ -249,10 +245,10 @@ class DotDict(collections.abc.MutableMapping):
         out = StringIO()
         for key in self.keys_breadth_first(False):
             value = self[key]
-            indent = '\t' * key.count('.')
+            indent = "\t" * key.count(".")
             if isinstance(value, collections.abc.Mapping):
                 value = str(value)  # recurse!
-            print('{0}{1}: {2}'.format(indent, key, repr(value)), file=out)
+            print("{0}{1}: {2}".format(indent, key, repr(value)), file=out)
         return out.getvalue().strip()
 
 
@@ -314,7 +310,7 @@ class DotDictWithAcquisition(DotDict):
     def __getitem__(self, key):
         """define the square bracket operator to refer to the object's __dict__
         for fetching values.  It accepts keys in the form 'x.y.z'"""
-        key_split = key.split('.')
+        key_split = key.split(".")
         last_index = len(key_split) - 1
         current = self
         for i, k in enumerate(key_split):
@@ -324,7 +320,7 @@ class DotDictWithAcquisition(DotDict):
                 if i == last_index:
                     raise
                 temp_dict = DotDictWithAcquisition()
-                temp_dict.__dict__['_parent'] = weakref.proxy(current)
+                temp_dict.__dict__["_parent"] = weakref.proxy(current)
                 current = temp_dict
         return current
 
@@ -334,8 +330,8 @@ class DotDictWithAcquisition(DotDict):
         item being added is another instance of DotDict, it makes a weakref
         proxy object of itself and assigns it to '_parent' in the incoming
         DotDict."""
-        if isinstance(value, DotDict) and key != '_parent':
-            value.__dict__['_parent'] = weakref.proxy(self)
+        if isinstance(value, DotDict) and key != "_parent":
+            value.__dict__["_parent"] = weakref.proxy(self)
         super(DotDictWithAcquisition, self).__setattr__(key, value)
 
     # --------------------------------------------------------------------------
@@ -343,10 +339,10 @@ class DotDictWithAcquisition(DotDict):
         """if a key is not found in the __dict__ using the regular python
         attribute reference algorithm, this function will try to get it from
         parent class."""
-        if key == '_parent':
-            raise AttributeError('_parent')
+        if key == "_parent":
+            raise AttributeError("_parent")
         try:
-            _parent = object.__getattribute__(self, '_parent')
+            _parent = object.__getattribute__(self, "_parent")
             return getattr(_parent, key)
         except AttributeError:  # no parent attribute
             # the copy.deepcopy function will try to probe this class for an
@@ -355,16 +351,14 @@ class DotDictWithAcquisition(DotDict):
             # a KeyError instead and copy.deepcopy can't handle it.  So we
             # make sure that any missing attribute that begins with '__'
             # raises an AttributeError instead of KeyError.
-            if key.startswith('__'):
+            if key.startswith("__"):
                 raise
             raise KeyError(key)
 
 
 # ------------------------------------------------------------------------------
 def create_key_translating_dot_dict(
-    new_class_name,
-    translation_tuples,
-    base_class=DotDict
+    new_class_name, translation_tuples, base_class=DotDict
 ):
     """this function will generate a DotDict derivative class that has key
     translation built in.  If the key is not found, translations (as specified
@@ -380,9 +374,8 @@ def create_key_translating_dot_dict(
     """
     # ==========================================================================
     class DotDictWithKeyTranslations(base_class):
-
         def __init__(self, *args, **kwargs):
-            self.__dict__['_translation_tuples'] = translation_tuples
+            self.__dict__["_translation_tuples"] = translation_tuples
             super(DotDictWithKeyTranslations, self).__init__(*args, **kwargs)
 
         # ----------------------------------------------------------------------
@@ -395,15 +388,13 @@ def create_key_translating_dot_dict(
         # ----------------------------------------------------------------------
         def assign(self, key, value):
             super(DotDictWithKeyTranslations, self).assign(
-                self._translate_key(key),
-                value
+                self._translate_key(key), value
             )
 
         # ----------------------------------------------------------------------
         def __setattr__(self, key, value):
             super(DotDictWithKeyTranslations, self).__setattr__(
-                self._translate_key(key),
-                value
+                self._translate_key(key), value
             )
 
         # ----------------------------------------------------------------------

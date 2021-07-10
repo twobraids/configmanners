@@ -7,29 +7,22 @@ import json
 import collections
 import sys
 
-from configmanners.converters import (
-    to_string_converters,
-    to_str
-)
+from configmanners.converters import to_string_converters, to_str
 from configmanners.namespace import Namespace
 from configmanners.option import Option, Aggregation
 
 from configmanners.value_sources.source_exceptions import (
     ValueException,
     NotEnoughInformationException,
-    CantHandleTypeException
+    CantHandleTypeException,
 )
 
 from configmanners.dotdict import DotDict
 from configmanners.memoize import memoize
 
-can_handle = (
-    bytes,
-    str,
-    json
-)
+can_handle = (bytes, str, json)
 
-file_name_extension = 'json'
+file_name_extension = "json"
 
 
 # ==============================================================================
@@ -45,7 +38,7 @@ class ValueSource(object):
         self.values = None
         if source is json:
             try:
-                app = the_config_manager._get_option('admin.application')
+                app = the_config_manager._get_option("admin.application")
                 source = "%s.%s" % (app.value.app_name, file_name_extension)
             except (AttributeError, KeyError):
                 raise NotEnoughInformationException(
@@ -53,10 +46,7 @@ class ValueSource(object):
                 )
         if isinstance(source, (bytes, str)):
             source = to_str(source)
-        if (
-            isinstance(source, str) and
-            source.endswith(file_name_extension)
-        ):
+        if isinstance(source, str) and source.endswith(file_name_extension):
             try:
                 with open(source) as fp:
                     self.values = json.load(fp)
@@ -64,12 +54,11 @@ class ValueSource(object):
                 # The file doesn't exist.  That's ok, we'll give warning
                 # but this isn't a fatal error
                 import warnings
+
                 warnings.warn("%s doesn't exist" % source)
                 self.values = {}
             except ValueError as x:
-                raise LoadingJsonFileFailsException(
-                    "Cannot load json: %s" % str(x)
-                )
+                raise LoadingJsonFileFailsException("Cannot load json: %s" % str(x))
         else:
             raise CantHandleTypeException()
 
@@ -96,7 +85,7 @@ class ValueSource(object):
             if isinstance(val, Namespace):
                 continue
             d = json_dict
-            for x in qkey.split('.'):
+            for x in qkey.split("."):
                 d = d[x]
             if isinstance(val, Option):
                 for okey, oval in val.__dict__.items():
@@ -104,9 +93,9 @@ class ValueSource(object):
                         d[okey] = to_string_converters[type(oval)](oval)
                     except KeyError:
                         d[okey] = str(oval)
-                d['default'] = d['value']
+                d["default"] = d["value"]
             elif isinstance(val, Aggregation):
-                d['name'] = val.name
+                d["name"] = val.name
                 fn = val.function
-                d['function'] = to_string_converters[type(fn)](fn)
+                d["function"] = to_string_converters[type(fn)](fn)
         json.dump(json_dict, output_stream)

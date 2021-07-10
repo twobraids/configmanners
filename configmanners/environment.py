@@ -7,5 +7,5 @@ from os import environ
 from configmanners.dotdict import stylize_keys
 
 environment = stylize_keys(environ)
-environment["__identity"] = 'environment'
+environment["__identity"] = "environment"
 environment.always_ignore_mismatches = True

@@ -17,14 +17,14 @@ from configmanners.config_file_future_proxy import ConfigFileFutureProxy
 from configmanners.dotdict import (
     DotDict,
     iteritems_breadth_first,
-    create_key_translating_dot_dict
+    create_key_translating_dot_dict,
 )
 from configmanners.converters import (
     str_to_instance_of_type_converters,
     str_to_list,
     boolean_converter,
     to_str,
-    CannotConvertError
+    CannotConvertError,
 )
 
 
@@ -43,10 +43,10 @@ def find_action_name_by_value(registry, target_action_instance):
     which it was registered.
     """
     target_type = type(target_action_instance)
-    for key, value in registry['action'].items():
+    for key, value in registry["action"].items():
         if value is target_type:
             if key is None:
-                return 'store'
+                return "store"
             return key
     return None
 
@@ -60,20 +60,17 @@ def get_args_and_values(parser, an_action):
         (an_attr, getattr(an_action, an_attr))
         for an_attr in args
         if (
-            an_attr not in ('self', 'required') and
-            getattr(an_action, an_attr) is not None
+            an_attr not in ("self", "required")
+            and getattr(an_action, an_attr) is not None
         )
     )
-    action_name = find_action_name_by_value(
-        parser._optionals._registries,
-        an_action
-    )
-    if 'required' in kwargs:
-        del kwargs['required']
-    kwargs['action'] = action_name
-    if 'option_strings' in kwargs:
-        args = tuple(kwargs['option_strings'])
-        del kwargs['option_strings']
+    action_name = find_action_name_by_value(parser._optionals._registries, an_action)
+    if "required" in kwargs:
+        del kwargs["required"]
+    kwargs["action"] = action_name
+    if "option_strings" in kwargs:
+        args = tuple(kwargs["option_strings"])
+        del kwargs["option_strings"]
     else:
         args = ()
     return args, kwargs
@@ -89,6 +86,7 @@ class SubparserFromStringConverter(object):
     for the subparser configmanners option.  A deriviative of a string, this class
     also contains the configmanners required config corresponding to the actions
     of the subparsers."""
+
     # --------------------------------------------------------------------------
 
     def __init__(self):
@@ -107,7 +105,7 @@ class SubparserFromStringConverter(object):
             an_option = a_namespace[k]
             if not an_option.foreign_data:
                 an_option.foreign_data = DotDict()
-            an_option.foreign_data['argparse.owning_subparser_name'] = name
+            an_option.foreign_data["argparse.owning_subparser_name"] = name
 
     # --------------------------------------------------------------------------
     def __call__(self, subparser_name):
@@ -122,6 +120,7 @@ class SubparserFromStringConverter(object):
             the arguments defined in the subparser in the local namespace.
             The mechanism works in the same manner that configmanners normally does
             expansion of dynamically loaded classes."""
+
             required_config = Namespace()
             try:
                 # define the class dynamically, giving it the required_config
@@ -130,7 +129,7 @@ class SubparserFromStringConverter(object):
                 required_config = self.namespaces[subparser_name]
             except KeyError:
                 raise CannotConvertError(
-                    '%s is not a known sub-command' % subparser_name
+                    "%s is not a known sub-command" % subparser_name
                 )
 
             # ------------------------------------------------------------------
@@ -149,6 +148,7 @@ class SubparserFromStringConverter(object):
             # ------------------------------------------------------------------
             def to_str(self):
                 return subparser_name
+
         # instantiate the class and return it.  It will be assigned as the
         # value for the configmanners option corresponding with the subparser
         return SubparserValue()
@@ -161,6 +161,7 @@ class configmannersSubParsersAction(argparse._SubParsersAction):
     preserve the original args & kwargs that created it.  They will be used
     in a later phase of configmanners to perfectly reproduce the object without
     having to resort to a copy."""
+
     # --------------------------------------------------------------------------
 
     def __init__(self, *args, **kwargs):
@@ -178,18 +179,15 @@ class configmannersSubParsersAction(argparse._SubParsersAction):
         action."""
         command_name = args[0]
         new_kwargs = kwargs.copy()
-        new_kwargs['configmanners_subparsers_option'] = self._configmanners_option
-        new_kwargs['subparser_name'] = command_name
+        new_kwargs["configmanners_subparsers_option"] = self._configmanners_option
+        new_kwargs["subparser_name"] = command_name
         subparsers = self._configmanners_option.foreign_data.argparse.subparsers
         a_subparser = super(configmannersSubParsersAction, self).add_parser(
-            *args,
-            **new_kwargs
+            *args, **new_kwargs
         )
-        subparsers[command_name] = DotDict({
-            "args": args,
-            "kwargs": new_kwargs,
-            "subparser": a_subparser
-        })
+        subparsers[command_name] = DotDict(
+            {"args": args, "kwargs": new_kwargs, "subparser": a_subparser}
+        )
         return a_subparser
 
     # --------------------------------------------------------------------------
@@ -208,17 +206,17 @@ class ArgumentParser(argparse.ArgumentParser):
     is functionlly equivalent to the argparse Namespace with the additional
     benefit of being compliant with the collections.abc.Mapping abstract base
     class."""
+
     # --------------------------------------------------------------------------
 
     def __init__(self, *args, **kwargs):
         self.original_args = args
         self.original_kwargs = kwargs.copy()
         self.version = kwargs.get("version")  # py3 argparse doesn't define
-        kwargs['add_help'] = False  # stop help, reintroduce it later
-        self.subparser_name = kwargs.pop('subparser_name', None)
+        kwargs["add_help"] = False  # stop help, reintroduce it later
+        self.subparser_name = kwargs.pop("subparser_name", None)
         self.configmanners_subparsers_option = kwargs.pop(
-            'configmanners_subparsers_option',
-            None
+            "configmanners_subparsers_option", None
         )
         super(ArgumentParser, self).__init__(*args, **kwargs)
         self.value_source_list = [environ, ConfigFileFutureProxy, argparse]
@@ -237,12 +235,10 @@ class ArgumentParser(argparse.ArgumentParser):
         # get any option found in any subparsers
         try:
             subparser_namespaces = (
-                self.configmanners_subparsers_option.foreign_data
-                .argparse.subprocessor_from_string_converter
+                self.configmanners_subparsers_option.foreign_data.argparse.subprocessor_from_string_converter
             )
             subparsers = (
-                self._argparse_subparsers._configmanners_option.foreign_data
-                .argparse.subparsers
+                self._argparse_subparsers._configmanners_option.foreign_data.argparse.subparsers
             )
             # each subparser needs to have its configmanners options set up
             # in the subparser's configmanners option.  This routine copies
@@ -250,8 +246,7 @@ class ArgumentParser(argparse.ArgumentParser):
             # SubparserFromStringConverter defined above.
             for subparser_name, subparser_data in subparsers.items():
                 subparser_namespaces.add_namespace(
-                    subparser_name,
-                    subparser_data.subparser.get_required_config()
+                    subparser_name, subparser_data.subparser.get_required_config()
                 )
         except AttributeError:
             # there is no subparser
@@ -272,26 +267,26 @@ class ArgumentParser(argparse.ArgumentParser):
         # In this section, variables beginning with the prefix "argparse" are
         # values that define Action object.  Variables that begin with
         # "configmanners" are the arguments to create configmanners Options.
-        argparse_action_name = kwargs.get('action', None)
-        argparse_dest = kwargs.get('dest', None)
-        argparse_const = kwargs.get('const', None)
-        argparse_default = kwargs.get('default', None)
+        argparse_action_name = kwargs.get("action", None)
+        argparse_dest = kwargs.get("dest", None)
+        argparse_const = kwargs.get("const", None)
+        argparse_default = kwargs.get("default", None)
         if argparse_default is argparse.SUPPRESS:
             # we'll be forcing all options to have the attribute of
             # argparse.SUPPRESS later.  It's our way of making sure that
             # argparse returns only values that the user explicitly added to
             # the command line.
             argparse_default = None
-        argparse_nargs = kwargs.get('nargs', None)
-        argparse_type = kwargs.get('type', None)
-        argparse_suppress_help = kwargs.pop('suppress_help', False)
+        argparse_nargs = kwargs.get("nargs", None)
+        argparse_type = kwargs.get("type", None)
+        argparse_suppress_help = kwargs.pop("suppress_help", False)
         if argparse_suppress_help:
-            configmanners_doc = kwargs.get('help', '')
-            kwargs['help'] = argparse.SUPPRESS
+            configmanners_doc = kwargs.get("help", "")
+            kwargs["help"] = argparse.SUPPRESS
         else:
-            argparse_help = kwargs.get('help', '')
+            argparse_help = kwargs.get("help", "")
             if argparse_help == argparse.SUPPRESS:
-                configmanners_doc = ''
+                configmanners_doc = ""
             else:
                 configmanners_doc = argparse_help
 
@@ -301,21 +296,17 @@ class ArgumentParser(argparse.ArgumentParser):
         # will not return values that the user did not mention on the command
         # line.  The defaults that otherwise would have been returned will be
         # handled by configmanners.
-        kwargs['default'] = argparse.SUPPRESS
+        kwargs["default"] = argparse.SUPPRESS
         # forward all parameters to the underlying base class to create a
         # normal argparse action object.
-        an_action = super(ArgumentParser, self).add_argument(
-            *args,
-            **kwargs
-        )
+        an_action = super(ArgumentParser, self).add_argument(*args, **kwargs)
         argparse_option_strings = an_action.option_strings
 
         # get a human readable string that identifies the type of the argparse
         # action class that was created
         if argparse_action_name is None:
             argparse_action_name = find_action_name_by_value(
-                self._optionals._registries,
-                an_action
+                self._optionals._registries, an_action
             )
 
         configmanners_is_argument = False
@@ -323,7 +314,7 @@ class ArgumentParser(argparse.ArgumentParser):
         # each of argparse's Action types must be handled separately.
         # --------------------------------------------------------------------
         # STORE
-        if argparse_action_name == 'store':
+        if argparse_action_name == "store":
             if argparse_dest is None:
                 configmanners_name, configmanners_is_argument = self._get_option_name(
                     args
@@ -338,11 +329,8 @@ class ArgumentParser(argparse.ArgumentParser):
                 if argparse_type:
                     configmanners_from_string = argparse_type
                 elif argparse_default:
-                    configmanners_from_string = (
-                        str_to_instance_of_type_converters.get(
-                            type(argparse_default),
-                            str
-                        )
+                    configmanners_from_string = str_to_instance_of_type_converters.get(
+                        type(argparse_default), str
                     )
                 else:
                     configmanners_from_string = str
@@ -350,29 +338,27 @@ class ArgumentParser(argparse.ArgumentParser):
                 configmanners_from_string = partial(
                     str_to_list,
                     item_converter=argparse_type,
-                    item_separator=' ',
+                    item_separator=" ",
                 )
             elif argparse_nargs and argparse_default:
                 configmanners_from_string = partial(
                     str_to_list,
                     item_converter=str_to_instance_of_type_converters.get(
-                        type(argparse_default),
-                        str
+                        type(argparse_default), str
                     ),
-                    item_separator=' ',
+                    item_separator=" ",
                 )
             elif argparse_nargs:
                 configmanners_from_string = partial(
                     str_to_list,
                     item_converter=str,
-                    item_separator=' ',
+                    item_separator=" ",
                 )
             elif argparse_type:
                 configmanners_from_string = argparse_type
             elif argparse_default:
                 configmanners_from_string = str_to_instance_of_type_converters.get(
-                    type(argparse_default),
-                    str
+                    type(argparse_default), str
                 )
             else:
                 configmanners_from_string = str
@@ -380,10 +366,7 @@ class ArgumentParser(argparse.ArgumentParser):
 
         # --------------------------------------------------------------------
         # STORE_CONST
-        elif (
-            argparse_action_name == 'store_const' or
-            argparse_action_name == 'count'
-        ):
+        elif argparse_action_name == "store_const" or argparse_action_name == "count":
             if argparse_dest is None:
                 configmanners_name, configmanners_is_argument = self._get_option_name(
                     args
@@ -397,16 +380,15 @@ class ArgumentParser(argparse.ArgumentParser):
                 configmanners_from_string = argparse_type
             else:
                 configmanners_from_string = str_to_instance_of_type_converters.get(
-                    type(argparse_const),
-                    str
+                    type(argparse_const), str
                 )
             configmanners_to_string = to_str
 
         # --------------------------------------------------------------------
         # STORE_TRUE /  STORE_FALSE
         elif (
-            argparse_action_name == 'store_true' or
-            argparse_action_name == 'store_false'
+            argparse_action_name == "store_true"
+            or argparse_action_name == "store_false"
         ):
             if argparse_dest is None:
                 configmanners_name, configmanners_is_argument = self._get_option_name(
@@ -422,7 +404,7 @@ class ArgumentParser(argparse.ArgumentParser):
 
         # --------------------------------------------------------------------
         # APPEND
-        elif argparse_action_name == 'append':
+        elif argparse_action_name == "append":
             if argparse_dest is None:
                 configmanners_name, configmanners_is_argument = self._get_option_name(
                     args
@@ -440,7 +422,7 @@ class ArgumentParser(argparse.ArgumentParser):
 
         # --------------------------------------------------------------------
         # APPEND_CONST
-        elif argparse_action_name == 'append_const':
+        elif argparse_action_name == "append_const":
             if argparse_dest is None:
                 configmanners_name, configmanners_is_argument = self._get_option_name(
                     args
@@ -454,14 +436,13 @@ class ArgumentParser(argparse.ArgumentParser):
                 configmanners_from_string = argparse_type
             else:
                 configmanners_from_string = str_to_instance_of_type_converters.get(
-                    type(argparse_const),
-                    str
+                    type(argparse_const), str
                 )
             configmanners_to_string = to_str
 
         # --------------------------------------------------------------------
         # VERSION
-        elif argparse_action_name == 'version':
+        elif argparse_action_name == "version":
             return an_action
 
         # --------------------------------------------------------------------
@@ -476,7 +457,7 @@ class ArgumentParser(argparse.ArgumentParser):
         # renames them by appending the '$' character.
         while configmanners_name in self.required_config:
             configmanners_name = "%s$" % configmanners_name
-        configmanners_not_for_definition = configmanners_name.endswith('$')
+        configmanners_not_for_definition = configmanners_name.endswith("$")
 
         # it's finally time to create the configmanners Option object and add it
         # to the required_config.
@@ -493,12 +474,14 @@ class ArgumentParser(argparse.ArgumentParser):
             # argparse Action.  This enables us to perfectly reproduce the
             # the original Action object later during the configmanners overlay
             # process.
-            foreign_data=DotDict({
-                'argparse.flags.subcommand': False,
-                'argparse.args': args,
-                'argparse.kwargs': kwargs,
-                'argparse.owning_subparser_name': self.subparser_name,
-            })
+            foreign_data=DotDict(
+                {
+                    "argparse.flags.subcommand": False,
+                    "argparse.args": args,
+                    "argparse.kwargs": kwargs,
+                    "argparse.owning_subparser_name": self.subparser_name,
+                }
+            ),
         )
         return an_action
 
@@ -509,20 +492,17 @@ class ArgumentParser(argparse.ArgumentParser):
         corresponding configmanners Option object for the subparser and pack it's
         foreign data section with the original args & kwargs."""
 
-        kwargs['parser_class'] = self.__class__
-        kwargs['action'] = configmannersSubParsersAction
+        kwargs["parser_class"] = self.__class__
+        kwargs["action"] = configmannersSubParsersAction
 
-        subparser_action = super(ArgumentParser, self).add_subparsers(
-            *args,
-            **kwargs
-        )
+        subparser_action = super(ArgumentParser, self).add_subparsers(*args, **kwargs)
         self._argparse_subparsers = subparser_action
 
-        if "dest" not in kwargs or kwargs['dest'] is None:
-            kwargs['dest'] = 'subcommand'
-        configmanners_name = kwargs['dest']
+        if "dest" not in kwargs or kwargs["dest"] is None:
+            kwargs["dest"] = "subcommand"
+        configmanners_name = kwargs["dest"]
         configmanners_default = None
-        configmanners_doc = kwargs.get('help', '')
+        configmanners_doc = kwargs.get("help", "")
         subprocessor_from_string_converter = SubparserFromStringConverter()
         configmanners_to_string = str
         configmanners_is_argument = True
@@ -542,14 +522,15 @@ class ArgumentParser(argparse.ArgumentParser):
             # argparse Action.  This enables us to perfectly reproduce the
             # the original Action object later during the configmanners overlay
             # process.
-            foreign_data=DotDict({
-                'argparse.flags.subcommand': subparser_action,
-                'argparse.args': args,
-                'argparse.kwargs': kwargs,
-                'argparse.subparsers': DotDict(),
-                'argparse.subprocessor_from_string_converter':
-                subprocessor_from_string_converter
-            })
+            foreign_data=DotDict(
+                {
+                    "argparse.flags.subcommand": subparser_action,
+                    "argparse.args": args,
+                    "argparse.kwargs": kwargs,
+                    "argparse.subparsers": DotDict(),
+                    "argparse.subprocessor_from_string_converter": subprocessor_from_string_converter,
+                }
+            ),
         )
 
         self.configmanners_subparsers_option = self.required_config[configmanners_name]
@@ -592,8 +573,7 @@ class ArgumentParser(argparse.ArgumentParser):
         # '_' instead.
         conf = configuration_manager.get_config(
             mapping_class=create_key_translating_dot_dict(
-                "HyphenUnderscoreDict",
-                (('-', '_'),)
+                "HyphenUnderscoreDict", (("-", "_"),)
             )
         )
 
@@ -603,15 +583,15 @@ class ArgumentParser(argparse.ArgumentParser):
             subparser_name = conf[self.configmanners_subparsers_option.name]
             try:
                 conf.update(
-                    self.configmanners_subparsers_option.foreign_data.argparse
-                    .subparsers[subparser_name].subparser
-                    .extra_defaults
+                    self.configmanners_subparsers_option.foreign_data.argparse.subparsers[
+                        subparser_name
+                    ].subparser.extra_defaults
                 )
             except (AttributeError, KeyError):
                 # no extra_defaults skip on
                 pass
 
-        if hasattr(self, 'extra_defaults'):
+        if hasattr(self, "extra_defaults"):
             conf.update(self.extra_defaults)
 
         return conf
@@ -624,6 +604,7 @@ class ArgumentParser(argparse.ArgumentParser):
         # load the config_manager within the scope of the method that uses it
         # so that we avoid circular references in the outer scope
         from configmanners.config_manager import ConfigurationManager
+
         configuration_manager = ConfigurationManager(
             definition_source=[self.get_required_config()],
             values_source_list=self.value_source_list,
@@ -635,8 +616,7 @@ class ArgumentParser(argparse.ArgumentParser):
         )
         conf = configuration_manager.get_config(
             mapping_class=create_key_translating_dot_dict(
-                "HyphenUnderscoreDict",
-                (('-', '_'),)
+                "HyphenUnderscoreDict", (("-", "_"),)
             )
         )
         return conf
@@ -674,8 +654,8 @@ def setup_definitions(source, destination):
         our_parser = ArgumentParser()
         for i, an_action in enumerate(source._actions):
             args, kwargs = get_args_and_values(source, an_action)
-            dest = kwargs.get('dest', '')
-            if dest in ('help', 'version'):
+            dest = kwargs.get("dest", "")
+            if dest in ("help", "version"):
                 continue
             our_parser.add_argument(*args, **kwargs)
         destination.update(our_parser.get_required_config())

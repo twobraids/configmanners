@@ -15,7 +15,7 @@ from configmanners.converters import (
 from configmanners.value_sources.source_exceptions import (
     CantHandleTypeException,
     ValueException,
-    NotEnoughInformationException
+    NotEnoughInformationException,
 )
 from configmanners.namespace import Namespace
 from configmanners.option import Option
@@ -23,7 +23,7 @@ from configmanners.option import Option
 from configmanners.dotdict import DotDict
 from configmanners.memoize import memoize
 
-file_name_extension = 'ini'
+file_name_extension = "ini"
 
 can_handle = (
     configobj,
@@ -66,7 +66,8 @@ class ConfigObjWithIncludes(configobj.ConfigObj):
         dbuser=dwight
         dbpassword=secrets
     """
-    _include_re = re.compile(r'^(\s*)\+include\s+(.*?)\s*$')
+
+    _include_re = re.compile(r"^(\s*)\+include\s+(.*?)\s*$")
 
     # --------------------------------------------------------------------------
     def _expand_files(self, file_name, original_path, indent=""):
@@ -82,14 +83,11 @@ class ConfigObjWithIncludes(configobj.ConfigObj):
                 match = ConfigObjWithIncludes._include_re.match(a_line)
                 if match:
                     include_file = match.group(2)
-                    include_file = os.path.join(
-                        original_path,
-                        include_file
-                    )
+                    include_file = os.path.join(original_path, include_file)
                     new_lines = self._expand_files(
                         include_file,
                         os.path.dirname(include_file),
-                        indent + match.group(1)
+                        indent + match.group(1),
                     )
                     expanded_file_contents.extend(new_lines)
                 else:
@@ -107,10 +105,7 @@ class ConfigObjWithIncludes(configobj.ConfigObj):
             infile = to_str(infile)
             original_path = os.path.dirname(infile)
             expanded_file_contents = self._expand_files(infile, original_path)
-            super(ConfigObjWithIncludes, self)._load(
-                expanded_file_contents,
-                configspec
-            )
+            super(ConfigObjWithIncludes, self)._load(expanded_file_contents, configspec)
         else:
             super(ConfigObjWithIncludes, self)._load(infile, configspec)
 
@@ -124,16 +119,12 @@ class LoadingIniFileFailsException(ValueException):
 class ValueSource(object):
 
     # --------------------------------------------------------------------------
-    def __init__(
-        self, source,
-        config_manager=None,
-        top_level_section_name=''
-    ):
+    def __init__(self, source, config_manager=None, top_level_section_name=""):
         self.delayed_parser_instantiation = False
         self.top_level_section_name = top_level_section_name
         if source is configobj.ConfigObj:
             try:
-                app = config_manager._get_option('admin.application')
+                app = config_manager._get_option("admin.application")
                 source = "%s.%s" % (app.value.app_name, file_name_extension)
             except AttributeError:
                 # we likely don't have the admin.application object set up yet.
@@ -149,10 +140,7 @@ class ValueSource(object):
                 return
         if isinstance(source, (bytes, str)):
             source = to_str(source)
-        if (
-            isinstance(source, str)
-            and source.endswith(file_name_extension)
-        ):
+        if isinstance(source, str) and source.endswith(file_name_extension):
             try:
                 self.config_obj = ConfigObjWithIncludes(source)
             except Exception as x:
@@ -174,7 +162,7 @@ class ValueSource(object):
         dummies."""
         if self.delayed_parser_instantiation:
             try:
-                app = config_manager._get_option('admin.application')
+                app = config_manager._get_option("admin.application")
                 source = "%s%s" % (app.value.app_name, file_name_extension)
                 self.config_obj = configobj.ConfigObj(source)
                 self.delayed_parser_instantiation = False
@@ -196,52 +184,49 @@ class ValueSource(object):
     def _namespace_reference_value_from_sort(key_value_tuple):
         key, value = key_value_tuple
         if value._reference_value_from:
-            return 'aaaaaa' + key
+            return "aaaaaa" + key
         else:
             return key
 
     # --------------------------------------------------------------------------
     @staticmethod
-    def _write_ini(source_dict, namespace_name=None, level=0, indent_size=4,
-                   output_stream=sys.stdout):
+    def _write_ini(
+        source_dict,
+        namespace_name=None,
+        level=0,
+        indent_size=4,
+        output_stream=sys.stdout,
+    ):
         """this function prints the components of a configobj ini file.  It is
         recursive for outputing the nested sections of the ini file."""
-        options = [
-            value
-            for value in source_dict.values()
-            if isinstance(value, Option)
-        ]
+        options = [value for value in source_dict.values() if isinstance(value, Option)]
         options.sort(key=lambda x: x.name)
         indent_spacer = " " * (level * indent_size)
         for an_option in options:
-            print("%s# %s" % (indent_spacer, an_option.doc),
-                  file=output_stream)
+            print("%s# %s" % (indent_spacer, an_option.doc), file=output_stream)
             option_value = to_str(an_option)
 
             if an_option.reference_value_from:
                 print(
-                    '%s# see "%s.%s" for the default or override it here' % (
-                        indent_spacer,
-                        an_option.reference_value_from,
-                        an_option.name
-                    ),
-                    file=output_stream
+                    '%s# see "%s.%s" for the default or override it here'
+                    % (indent_spacer, an_option.reference_value_from, an_option.name),
+                    file=output_stream,
                 )
 
             if an_option.likely_to_be_changed or an_option.has_changed:
-                option_format = '%s%s=%s\n'
+                option_format = "%s%s=%s\n"
             else:
-                option_format = '%s#%s=%s\n'
+                option_format = "%s#%s=%s\n"
 
-            if isinstance(option_value, str) and \
-                    ',' in option_value:
+            if isinstance(option_value, str) and "," in option_value:
                 # quote lists unless they're already quoted
-                if option_value[0] not in '\'"':
+                if option_value[0] not in "'\"":
                     option_value = '"%s"' % option_value
 
-            print(option_format % (indent_spacer, an_option.name,
-                                   option_value),
-                  file=output_stream)
+            print(
+                option_format % (indent_spacer, an_option.name, option_value),
+                file=output_stream,
+            )
         next_level = level + 1
         namespaces = [
             (key, value)
@@ -251,15 +236,17 @@ class ValueSource(object):
         namespaces.sort(key=ValueSource._namespace_reference_value_from_sort)
         for key, namespace in namespaces:
             next_level_spacer = " " * next_level * indent_size
-            print("%s%s%s%s\n" % (indent_spacer, "[" * next_level, key,
-                                  "]" * next_level),
-                  file=output_stream)
+            print(
+                "%s%s%s%s\n" % (indent_spacer, "[" * next_level, key, "]" * next_level),
+                file=output_stream,
+            )
             if namespace._doc:
-                print("%s%s" % (next_level_spacer, namespace._doc),
-                      file=output_stream)
+                print("%s%s" % (next_level_spacer, namespace._doc), file=output_stream)
             if namespace._reference_value_from:
-                print("%s#+include ./common_%s.ini\n"
-                      % (next_level_spacer, key), file=output_stream)
+                print(
+                    "%s#+include ./common_%s.ini\n" % (next_level_spacer, key),
+                    file=output_stream,
+                )
 
             if namespace_name:
                 ValueSource._write_ini(
@@ -267,7 +254,7 @@ class ValueSource(object):
                     namespace_name="%s.%s" % (namespace_name, key),
                     level=level + 1,
                     indent_size=indent_size,
-                    output_stream=output_stream
+                    output_stream=output_stream,
                 )
             else:
                 ValueSource._write_ini(
@@ -275,5 +262,5 @@ class ValueSource(object):
                     namespace_name=key,
                     level=level + 1,
                     indent_size=indent_size,
-                    output_stream=output_stream
+                    output_stream=output_stream,
                 )

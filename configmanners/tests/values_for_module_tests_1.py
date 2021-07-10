@@ -15,13 +15,13 @@ b.append(3)
 c = set(b)
 
 d = {
-    'a': a,
-    'b': b,
-    'c': c,
-    'd': {
-        1: 'one',
-        2: 'two',
-    }
+    "a": a,
+    "b": b,
+    "c": c,
+    "d": {
+        1: "one",
+        2: "two",
+    },
 }
 
 
@@ -30,6 +30,7 @@ def foo(a=None, b=None, c=None):
 
 
 from functools import partial
+
 bar = partial(foo, a=a)
 
 
@@ -44,6 +45,6 @@ class Alpha(object):
 
 
 x = 23
-y = 'this is private'
+y = "this is private"
 
-ignore_symbol_list = ['x', 'y', 'os', 'partial']
+ignore_symbol_list = ["x", "y", "os", "partial"]

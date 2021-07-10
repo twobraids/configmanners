@@ -73,11 +73,7 @@ def str_dict_keys(a_dict):
 def str_quote_stripper(input_str):
     if not isinstance(input_str, str):
         raise ValueError(input_str)
-    while (
-        input_str and
-        input_str[0] == input_str[-1] and
-        input_str[0] in ("'", '"')
-    ):
+    while input_str and input_str[0] == input_str[-1] and input_str[0] in ("'", '"'):
         input_str = input_str.strip(input_str[0])
     return input_str
 
@@ -92,8 +88,10 @@ def str_quote_stripper(input_str):
 # ------------------------------------------------------------------------------
 # a bunch of known mappings of builtin items to strings
 import builtins
+
 known_mapping_str_to_type = dict(
-    (key, val) for key, val in sorted(builtins.__dict__.items())
+    (key, val)
+    for key, val in sorted(builtins.__dict__.items())
     if val not in (True, False)
 )
 
@@ -108,14 +106,13 @@ timedelta_converter = str_to_timedelta  # for backward compatiblity
 
 # ------------------------------------------------------------------------------
 def py3_to_bytes(input_str):
-    input_str = input_str.encode('utf-8')
+    input_str = input_str.encode("utf-8")
     return input_str
 
 
 # ------------------------------------------------------------------------------
 def str_to_boolean(input_str):
-    """ a conversion function for boolean
-    """
+    """a conversion function for boolean"""
     if not isinstance(input_str, str):
         raise ValueError(input_str)
     input_str = str_quote_stripper(input_str)
@@ -127,8 +124,7 @@ boolean_converter = str_to_boolean  # for backward compatiblity
 
 # ------------------------------------------------------------------------------
 def str_to_python_object(input_str):
-    """ a conversion that will import a module and class name
-    """
+    """a conversion that will import a module and class name"""
     if not input_str:
         return None
     if isinstance(input_str, bytes):
@@ -139,9 +135,9 @@ def str_to_python_object(input_str):
         # as the output
         return input_str
     input_str = str_quote_stripper(input_str)
-    if '.' not in input_str and input_str in known_mapping_str_to_type:
+    if "." not in input_str and input_str in known_mapping_str_to_type:
         return known_mapping_str_to_type[input_str]
-    parts = [x.strip() for x in input_str.split('.') if x.strip()]
+    parts = [x.strip() for x in input_str.split(".") if x.strip()]
     try:
         try:
             # first try as a complete module
@@ -150,8 +146,8 @@ def str_to_python_object(input_str):
             # it must be a class from a module
             if len(parts) == 1:
                 # since it has only one part, it must be a class from __main__
-                parts = ('__main__', input_str)
-            package = __import__('.'.join(parts[:-1]), globals(), locals(), [])
+                parts = ("__main__", input_str)
+            package = __import__(".".join(parts[:-1]), globals(), locals(), [])
         obj = package
         for name in parts[1:]:
             obj = getattr(obj, name)
@@ -168,8 +164,8 @@ class_converter = str_to_python_object  # for backward compatibility
 # ------------------------------------------------------------------------------
 def str_to_classes_in_namespaces(
     template_for_namespace="cls%d",
-    name_of_class_option='cls',
-    instantiate_classes=False
+    name_of_class_option="cls",
+    instantiate_classes=False,
 ):
     """take a comma delimited  list of class names, convert each class name
     into an actual class as an option within a numbered namespace.  This
@@ -220,7 +216,7 @@ def str_to_classes_in_namespaces(
                               Namespace will contain elements for the class, as
                               well as an aggregator that will instantiate the
                               class.
-                              """
+    """
 
     # these are only used within this method.  No need to pollute the module
     # scope with them and avoid potential circular imports
@@ -235,11 +231,11 @@ def str_to_classes_in_namespaces(
         class stuffed with its own 'required_config' that's dynamically
         generated."""
         if isinstance(class_list_str, str):
-            class_list = [x.strip() for x in class_list_str.split(',')]
-            if class_list == ['']:
+            class_list = [x.strip() for x in class_list_str.split(",")]
+            if class_list == [""]:
                 class_list = []
         else:
-            raise TypeError('must be derivative of %s' % str)
+            raise TypeError("must be derivative of %s" % str)
 
         # ======================================================================
         class InnerClassList(RequiredConfig):
@@ -247,15 +243,16 @@ def str_to_classes_in_namespaces(
             all the config requirements for the listed classes and places them
             each into their own Namespace.
             """
+
             # we're dynamically creating a class here.  The following block of
             # code is actually adding class level attributes to this new class
             required_config = Namespace()  # 1st requirement for configmanners
             subordinate_namespace_names = []  # to help the programmer know
-                                              # what Namespaces we added
+            # what Namespaces we added
             namespace_template = template_for_namespace  # save the template
-                                                         # for future reference
+            # for future reference
             class_option_name = name_of_class_option  # save the class's option
-                                                      # name for the future
+            # name for the future
             # for each class in the class list
             for namespace_index, a_class in enumerate(class_list):
                 # figure out the Namespace name
@@ -268,13 +265,13 @@ def str_to_classes_in_namespaces(
                     name_of_class_option,
                     # doc=a_class.__doc__  # not helpful if too verbose
                     default=a_class,
-                    from_string_converter=class_converter
+                    from_string_converter=class_converter,
                 )
                 if instantiate_classes:
                     # add an aggregator to instantiate the class
                     required_config[namespace_name].add_aggregation(
                         "%s_instance" % name_of_class_option,
-                        lambda c, lc, a: lc[name_of_class_option](lc)
+                        lambda c, lc, a: lc[name_of_class_option](lc),
                     )
 
             @classmethod
@@ -282,13 +279,14 @@ def str_to_classes_in_namespaces(
                 """this method takes this inner class object and turns it back
                 into the original string of classnames.  This is used
                 primarily as for the output of the 'help' option"""
-                return ', '.join(
+                return ", ".join(
                     py_obj_to_str(v[name_of_class_option].value)
                     for v in cls.get_required_config().values()
                     if isinstance(v, Namespace)
                 )
 
         return InnerClassList  # result of class_list_converter
+
     return class_list_converter  # result of classes_in_namespaces_converter
 
 
@@ -303,24 +301,22 @@ def str_to_regular_expression(input_str):
 
 regex_converter = str_to_regular_expression  # for backward compatibility
 
-compiled_regexp_type = type(re.compile(r'x'))
+compiled_regexp_type = type(re.compile(r"x"))
 
 
 # ------------------------------------------------------------------------------
 def str_to_list(
     input_str,
     item_converter=lambda x: x,
-    item_separator=',',
+    item_separator=",",
     list_to_collection_converter=None,
 ):
-    """ a conversion function for list
-    """
+    """a conversion function for list"""
     if not isinstance(input_str, str):
         raise ValueError(input_str)
     input_str = str_quote_stripper(input_str)
     result = [
-        item_converter(x.strip())
-        for x in input_str.split(item_separator) if x.strip()
+        item_converter(x.strip()) for x in input_str.split(item_separator) if x.strip()
     ]
     if list_to_collection_converter is not None:
         return list_to_collection_converter(result)
@@ -353,7 +349,7 @@ str_to_instance_of_type_converters = {
 }
 str_to_instance_of_type_converters[bytes] = py3_to_bytes
 
- # backward compatibility
+# backward compatibility
 from_string_converters = str_to_instance_of_type_converters
 
 
@@ -364,13 +360,13 @@ def arbitrary_object_to_string(a_thing):
     into "subject_key, function -> function_key, etc."""
     # is it None?
     if a_thing is None:
-        return ''
+        return ""
     # is it already a string?
     if isinstance(a_thing, str):
         return a_thing
     if isinstance(a_thing, bytes):
         try:
-            return a_thing.decode('utf-8')
+            return a_thing.decode("utf-8")
         except UnicodeDecodeError:
             pass
     # does it have a to_str function?
@@ -397,13 +393,10 @@ def arbitrary_object_to_string(a_thing):
         pass
     # is it something from a loaded module?
     try:
-        if a_thing.__module__ not in ('__builtin__', 'builtins', 'exceptions'):
+        if a_thing.__module__ not in ("__builtin__", "builtins", "exceptions"):
             if a_thing.__module__ == "__main__":
                 module_name = (
-                    sys.modules['__main__']
-                    .__file__[:-3]
-                    .replace('/', '.')
-                    .strip('.')
+                    sys.modules["__main__"].__file__[:-3].replace("/", ".").strip(".")
                 )
             else:
                 module_name = a_thing.__module__
@@ -425,7 +418,7 @@ py_obj_to_str = arbitrary_object_to_string  # for backwards compatibility
 
 
 # ------------------------------------------------------------------------------
-def list_to_str(a_list, delimiter=', '):
+def list_to_str(a_list, delimiter=", "):
     return delimiter.join(to_str(x) for x in a_list)
 
 
@@ -435,7 +428,7 @@ def py2_to_str(a_unicode):
 
 
 def py3_to_str(a_bytes):
-    return a_bytes.decode('utf-8')
+    return a_bytes.decode("utf-8")
 
 
 # ------------------------------------------------------------------------------
@@ -455,7 +448,7 @@ to_string_converters = {
     str: str,
     list: list_to_str,
     tuple: list_to_str,
-    bool: lambda x: 'True' if x else 'False',
+    bool: lambda x: "True" if x else "False",
     dict: json.dumps,
     datetime.datetime: datetime_to_ISO_string,
     datetime.date: date_to_ISO_string,

@@ -15,6 +15,7 @@ def memoize(max_cache_size=1000):
     Parameters:
       max_cache_size - the size to which a cache can grow
     """
+
     def wrapper(f):
         @wraps(f)
         def fn(*args, **kwargs):
@@ -34,7 +35,9 @@ def memoize(max_cache_size=1000):
                 return result
             except TypeError:
                 return f(*args, **kwargs)
+
         fn.cache = {}
         fn.count = 0
         return fn
+
     return wrapper

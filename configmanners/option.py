@@ -8,12 +8,9 @@ import collections
 from configmanners.converters import (
     str_to_python_object,
     from_string_converters,
-    to_str
+    to_str,
 )
-from configmanners.config_exceptions import (
-    CannotConvertError,
-    OptionError
-)
+from configmanners.config_exceptions import CannotConvertError, OptionError
 
 
 # ==============================================================================
@@ -37,7 +34,7 @@ class Option(object):
         secret=False,
         has_changed=False,
         foreign_data=None,
-        sourced_from='default value',
+        sourced_from="default value",
     ):
         self.name = name
         self.short_form = short_form
@@ -96,20 +93,20 @@ class Option(object):
     # --------------------------------------------------------------------------
     def __repr__(self):  # pragma: no cover
         if self.default is None:
-            return '<Option: %r>' % self.name
+            return "<Option: %r>" % self.name
         else:
-            return '<Option: %r, default=%r, value=%r, is_argument=%r>' % (
-                self.name, self.default, self.value, self.is_argument
+            return "<Option: %r, default=%r, value=%r, is_argument=%r>" % (
+                self.name,
+                self.default,
+                self.value,
+                self.is_argument,
             )
 
     # --------------------------------------------------------------------------
     def _deduce_converter(self, default):
         default_type = type(default)
 
-        return from_string_converters.get(
-            default_type,
-            default_type
-        )
+        return from_string_converters.get(default_type, default_type)
 
     # --------------------------------------------------------------------------
     def set_value(self, val=None):
@@ -128,13 +125,13 @@ class Option(object):
                 error_message = "In '%s', '%s' fails to convert '%s'" % (
                     self.name,
                     self.from_string_converter,
-                    val
+                    val,
                 )
                 raise CannotConvertError(error_message)
         elif isinstance(val, Option):
             self.has_changed = val.default != self.value
             self.value = val.default
-        elif isinstance(val, collections.abc.Mapping) and 'default' in val:
+        elif isinstance(val, collections.abc.Mapping) and "default" in val:
             self.set_value(val["default"])
         else:
             self.has_changed = val != self.value
@@ -172,8 +169,7 @@ class Option(object):
             self.has_changed = True
         else:
             raise OptionError(
-                "cannot override existing default without using the 'force' "
-                "option"
+                "cannot override existing default without using the 'force' " "option"
             )
 
     # --------------------------------------------------------------------------
@@ -225,10 +221,7 @@ class Aggregation(object):
     # --------------------------------------------------------------------------
     def __eq__(self, other):
         if isinstance(other, Aggregation):
-            return (
-                self.name == other.name
-                and self.function == other.function
-            )
+            return self.name == other.name and self.function == other.function
 
     # --------------------------------------------------------------------------
     def sourced_from(self):

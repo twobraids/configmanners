@@ -11,10 +11,10 @@ from configmanners.option import Option, Aggregation
 class Namespace(DotDict):
 
     # --------------------------------------------------------------------------
-    def __init__(self, doc='', initializer=None):
+    def __init__(self, doc="", initializer=None):
         super(Namespace, self).__init__(initializer=initializer)
-        object.__setattr__(self, '_doc', doc)  # force into attributes
-        object.__setattr__(self, '_reference_value_from', False)
+        object.__setattr__(self, "_doc", doc)  # force into attributes
+        object.__setattr__(self, "_reference_value_from", False)
 
     # --------------------------------------------------------------------------
     def __setattr__(self, name, value):
@@ -28,9 +28,9 @@ class Namespace(DotDict):
     # --------------------------------------------------------------------------
     def add_option(self, name, *args, **kwargs):
         """add an option to the namespace.   This can take two forms:
-              'name' is a string representing the name of an option and the
-              kwargs are its parameters, or 'name' is an instance of an Option
-              object
+        'name' is a string representing the name of an option and the
+        kwargs are its parameters, or 'name' is an instance of an Option
+        object
         """
         if isinstance(name, Option):
             an_option = name
@@ -39,7 +39,7 @@ class Namespace(DotDict):
             an_option = Option(name, *args, **kwargs)
 
         current_namespace = self
-        name_parts = name.split('.')
+        name_parts = name.split(".")
         for a_path_component in name_parts[:-1]:
             if a_path_component not in current_namespace:
                 current_namespace[a_path_component] = Namespace()
@@ -56,7 +56,7 @@ class Namespace(DotDict):
         return an_aggregation
 
     # --------------------------------------------------------------------------
-    def namespace(self, name, doc=''):
+    def namespace(self, name, doc=""):
         # ensure that all new sub-namespaces are of the same type as the parent
         a_namespace = self.__class__(doc=doc)
         setattr(self, name, a_namespace)
@@ -64,7 +64,7 @@ class Namespace(DotDict):
 
     # --------------------------------------------------------------------------
     def set_value(self, name, value, strict=True):
-        name_parts = name.split('.', 1)
+        name_parts = name.split(".", 1)
         prefix = name_parts[0]
         try:
             candidate = getattr(self, prefix)
@@ -89,13 +89,9 @@ class Namespace(DotDict):
                 new_namespace[key] = opt.copy()
                 # assign a new reference_value if one has not been defined
                 if not new_namespace[key].reference_value_from:
-                    new_namespace[key].reference_value_from = \
-                        reference_value_from
+                    new_namespace[key].reference_value_from = reference_value_from
             elif isinstance(opt, Aggregation):
-                new_namespace.add_aggregation(
-                    opt.name,
-                    opt.function
-                )
+                new_namespace.add_aggregation(opt.name, opt.function)
             elif isinstance(opt, Namespace):
                 new_namespace[key] = opt.safe_copy()
         return new_namespace
@@ -107,4 +103,4 @@ class Namespace(DotDict):
         # awkward syntax - because the base class DotDict hijacks the
         # the __setattr__ method, this is the only way to actually force a
         # value to become an attribute rather than member of the dict
-        object.__setattr__(self, '_reference_value_from', True)
+        object.__setattr__(self, "_reference_value_from", True)

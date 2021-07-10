@@ -13,11 +13,11 @@ class TestCase(unittest.TestCase):
 
     # --------------------------------------------------------------------------
     def test_memoize_function(self):
-
         @memoize()
         def foo(a, b, c):
             foo.counter += 1
             return (a, b, c)
+
         foo.counter = 0
 
         for i in range(5):
@@ -29,7 +29,6 @@ class TestCase(unittest.TestCase):
 
     # --------------------------------------------------------------------------
     def test_memoize_instance_method(self):
-
         class A(object):
             def __init__(self):
                 self.counter = 0
@@ -56,7 +55,6 @@ class TestCase(unittest.TestCase):
 
     # --------------------------------------------------------------------------
     def test_memoize_class_method(self):
-
         class A(object):
             counter = 0
 
@@ -75,7 +73,6 @@ class TestCase(unittest.TestCase):
 
     # --------------------------------------------------------------------------
     def test_memoize_static_method(self):
-
         class A(object):
             counter = 0
 

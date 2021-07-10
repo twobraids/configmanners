@@ -17,19 +17,12 @@ from functools import reduce
 # for convenience define some external symbols here - some client modules may
 # import these symbols from here rather than their origin definition location.
 # PyFlakes may erroneously flag some of these as unused
-from configmanners.commandline import (
-    command_line
-)
-from configmanners.converters import (
-    to_string_converters,
-    to_str
-)
+from configmanners.commandline import command_line
+from configmanners.converters import to_string_converters, to_str
 from configmanners.config_exceptions import (
     NotAnOptionError,
 )
-from configmanners.config_file_future_proxy import (
-    ConfigFileFutureProxy
-)
+from configmanners.config_file_future_proxy import ConfigFileFutureProxy
 from configmanners.def_sources import (
     setup_definitions,
 )
@@ -37,28 +30,19 @@ from configmanners.dotdict import (
     DotDict,
     DotDictWithAcquisition,
 )
-from configmanners.environment import (
-    environment
-)
-from configmanners.namespace import (
-    Namespace
-)
-from configmanners.option import (
-    Option,
-    Aggregation
-)
+from configmanners.environment import environment
+from configmanners.namespace import Namespace
+from configmanners.option import Option, Aggregation
 
 # RequiredConfig is not used directly in this file, but made available as
 # a type to be imported from this module
-from configmanners.required_config import (
-    RequiredConfig
-)
+from configmanners.required_config import RequiredConfig
 from configmanners.value_sources import (
     config_filename_from_commandline,
     wrap_with_value_source_api,
     dispatch_request_to_write,
     file_extension_dispatch,
-    type_handler_dispatch
+    type_handler_dispatch,
 )
 
 
@@ -76,10 +60,10 @@ class ConfigurationManager(object):
         use_admin_controls=True,
         quit_after_admin=True,
         options_banned_from_help=None,
-        app_name='',
-        app_version='',
-        app_description='',
-        config_pathname='.',
+        app_name="",
+        app_version="",
+        app_description="",
+        config_pathname=".",
         config_optional=True,
         value_source_object_hook=DotDict,
     ):
@@ -129,14 +113,13 @@ class ConfigurationManager(object):
                                      representation of a value source.
                                      This is used to enable any special
                                      processing, like key translations.
-                            """
+        """
 
         # instead of allowing mutables as default keyword argument values...
         if definition_source is None:
             definition_source_list = []
-        elif (
-            isinstance(definition_source, collections.abc.Sequence)
-            and not isinstance(definition_source, (bytes, str))
+        elif isinstance(definition_source, collections.abc.Sequence) and not isinstance(
+            definition_source, (bytes, str)
         ):
             definition_source_list = list(definition_source)
         else:
@@ -151,7 +134,7 @@ class ConfigurationManager(object):
             self.argv_source = argv_source
             self.app_invocation_name = app_name
         if options_banned_from_help is None:
-            options_banned_from_help = ['application']
+            options_banned_from_help = ["application"]
         self.config_pathname = config_pathname
         self.config_optional = config_optional
         self.use_auto_help = use_auto_help
@@ -163,7 +146,7 @@ class ConfigurationManager(object):
         self.app_description = app_description
 
         self.args = []  # extra commandline arguments that are not switches
-                        # will be stored here.
+        # will be stored here.
 
         self._config = None  # eventual container for DOM-like config object
 
@@ -177,21 +160,17 @@ class ConfigurationManager(object):
                 values_source_list = (
                     ConfigFileFutureProxy,
                     environment,
-                    command_line_value_source
+                    command_line_value_source,
                 )
             else:
-                values_source_list = (
-                    environment,
-                    command_line_value_source
-                )
+                values_source_list = (environment, command_line_value_source)
         # determine which command_line facility to use for help
         if self.use_auto_help:
             # we need to iterate through all of our value sources looking for
             # one that can interact with the user on the commandline.
             for a_value_source in values_source_list:
                 if inspect.ismodule(a_value_source):
-                    handler = \
-                        type_handler_dispatch[a_value_source][0].ValueSource
+                    handler = type_handler_dispatch[a_value_source][0].ValueSource
                     try:
                         # if a value source is able to handle the command line
                         # it will have defined 'command_line_value_source' as
@@ -215,13 +194,13 @@ class ConfigurationManager(object):
 
         admin_tasks_done = False
         self.keys_blocked_from_output = [
-            'help',
-            'admin.conf',
-            'admin.dump_conf',
-            'admin.print_conf',
-            'admin.strict',
-            'admin.expose_secrets',
-            'admin.why',
+            "help",
+            "admin.conf",
+            "admin.dump_conf",
+            "admin.print_conf",
+            "admin.strict",
+            "admin.expose_secrets",
+            "admin.why",
         ]
         self.options_banned_from_help = options_banned_from_help
 
@@ -244,25 +223,16 @@ class ConfigurationManager(object):
                 # The only action we can take is to trust and continue with the
                 # original copy of the definition source.
                 safe_copy_of_def_source = a_definition_source
-            setup_definitions(
-                safe_copy_of_def_source,
-                self.option_definitions
-            )
+            setup_definitions(safe_copy_of_def_source, self.option_definitions)
 
         if use_admin_controls:
             # the name of the config file needs to be loaded from the command
             # line prior to processing the rest of the command line options.
             config_filename = config_filename_from_commandline(self)
-            if (
-                config_filename and
-                ConfigFileFutureProxy in values_source_list
-            ):
+            if config_filename and ConfigFileFutureProxy in values_source_list:
                 self.option_definitions.admin.conf.default = config_filename
 
-        self.values_source_list = wrap_with_value_source_api(
-            values_source_list,
-            self
-        )
+        self.values_source_list = wrap_with_value_source_api(values_source_list, self)
 
         known_keys = self._overlay_expand()
         self._check_for_mismatches(known_keys)
@@ -272,21 +242,17 @@ class ConfigurationManager(object):
         # get the app_name,et al, from parameters passed into the constructor.
         # if those are empty, set app_name, et al, to empty strings
         try:
-            app_option = self._get_option('application')
-            self.app_name = getattr(app_option.value, 'app_name', '')
-            self.app_version = getattr(app_option.value, 'app_version', '')
-            self.app_description = getattr(
-                app_option.value,
-                'app_description',
-                ''
-            )
+            app_option = self._get_option("application")
+            self.app_name = getattr(app_option.value, "app_name", "")
+            self.app_version = getattr(app_option.value, "app_version", "")
+            self.app_description = getattr(app_option.value, "app_description", "")
         except NotAnOptionError:
             # there is no 'application' option, continue to use the
             # 'app_name' from the parameters passed in, if they exist.
             pass
 
         try:
-            if use_auto_help and self._get_option('help').value:
+            if use_auto_help and self._get_option("help").value:
                 self.output_summary()
                 admin_tasks_done = True
         except NotAnOptionError:
@@ -301,19 +267,19 @@ class ConfigurationManager(object):
         keys_blocked_by_suffix = [
             key
             for key in self.option_definitions.keys_breadth_first()
-            if key.endswith('$')
+            if key.endswith("$")
         ]
         self.keys_blocked_from_output.extend(keys_blocked_by_suffix)
 
-        if use_admin_controls and self._get_option('admin.print_conf').value:
+        if use_admin_controls and self._get_option("admin.print_conf").value:
             self.print_conf()
             admin_tasks_done = True
 
-        if use_admin_controls and self._get_option('admin.dump_conf').value:
+        if use_admin_controls and self._get_option("admin.dump_conf").value:
             self.dump_conf()
             admin_tasks_done = True
 
-        if use_admin_controls and self._get_option('admin.why').value:
+        if use_admin_controls and self._get_option("admin.why").value:
             self.log_config()
             admin_tasks_done = True
 
@@ -352,18 +318,19 @@ class ConfigurationManager(object):
                             target of a print function
         """
         if self.app_name or self.app_description:
-            print('Application: ', end='', file=output_stream)
+            print("Application: ", end="", file=output_stream)
         if self.app_name:
             print(self.app_name, self.app_version, file=output_stream)
         if self.app_description:
             print(self.app_description, file=output_stream)
         if self.app_name or self.app_description:
-            print('', file=output_stream)
+            print("", file=output_stream)
 
         names_list = self.get_option_names()
         print(
             "usage:\n%s [OPTIONS]... " % self.app_invocation_name,
-            end='', file=output_stream
+            end="",
+            file=output_stream,
         )
         bracket_count = 0
         # this section prints the non-switch command line arguments
@@ -372,44 +339,43 @@ class ConfigurationManager(object):
             if an_option.is_argument:
                 if an_option.default is None:
                     # there's no option, assume the user must set this
-                    print(an_option.name, end='', file=output_stream)
-                elif (
-                    inspect.isclass(an_option.value) or
-                    inspect.ismodule(an_option.value)
+                    print(an_option.name, end="", file=output_stream)
+                elif inspect.isclass(an_option.value) or inspect.ismodule(
+                    an_option.value
                 ):
                     # this is already set and it could have expanded, most
                     # likely this is a case where a sub-command has been
                     # loaded and we're looking to show the help for it.
                     # display show it as a constant already provided rather
                     # than as an option the user must provide
-                    print(an_option.default, end='', file=output_stream)
+                    print(an_option.default, end="", file=output_stream)
                 else:
                     # this is an argument that the user may alternatively
                     # provide
-                    print("[ %s" % an_option.name, end='', file=output_stream)
+                    print("[ %s" % an_option.name, end="", file=output_stream)
                     bracket_count += 1
-        print(']' * bracket_count, '\n', file=output_stream)
+        print("]" * bracket_count, "\n", file=output_stream)
 
         names_list.sort()
         if names_list:
-            print('OPTIONS:', file=output_stream)
+            print("OPTIONS:", file=output_stream)
 
-        pad = ' ' * 4
+        pad = " " * 4
 
         for name in names_list:
             if name in self.options_banned_from_help:
                 continue
             option = self._get_option(name)
 
-            line = ' ' * 2  # always start with 2 spaces
+            line = " " * 2  # always start with 2 spaces
             if option.short_form:
-                line += '-%s, ' % option.short_form
-            line += '--%s' % name
-            line += '\n'
+                line += "-%s, " % option.short_form
+            line += "--%s" % name
+            line += "\n"
 
-            doc = option.doc if option.doc is not None else ''
+            doc = option.doc if option.doc is not None else ""
             if doc:
-                line += '%s%s\n' % (pad, doc)
+                line += "%s%s\n" % (pad, doc)
             try:
                 value = option.value
                 type_of_value = type(value)
@@ -419,13 +385,12 @@ class ConfigurationManager(object):
                 default = option.value
             if default is not None:
                 if (
-                    (option.secret or 'password' in name.lower())
-                    and not self.option_definitions.admin.expose_secrets.default
-                ):
-                    default = '*********'
-                if name not in ('help',):
+                    option.secret or "password" in name.lower()
+                ) and not self.option_definitions.admin.expose_secrets.default:
+                    default = "*********"
+                if name not in ("help",):
                     # don't bother with certain dead obvious ones
-                    line += '%s(default: %s)\n' % (pad, default)
+                    line += "%s(default: %s)\n" % (pad, default)
 
             print(line, file=output_stream)
 
@@ -439,15 +404,15 @@ class ConfigurationManager(object):
             config_pathname - the full path and filename of the target config
                                file."""
 
-        config_file_type = self._get_option('admin.print_conf').value
+        config_file_type = self._get_option("admin.print_conf").value
 
         @contextlib.contextmanager
         def stdout_opener():
             yield sys.stdout
 
         skip_keys = [
-            k for (k, v)
-            in self.option_definitions.items()
+            k
+            for (k, v) in self.option_definitions.items()
             if isinstance(v, Option) and v.exclude_from_print_conf
         ]
         self.write_conf(config_file_type, stdout_opener, skip_keys=skip_keys)
@@ -463,14 +428,14 @@ class ConfigurationManager(object):
                                file."""
 
         if not config_pathname:
-            config_pathname = self._get_option('admin.dump_conf').value
+            config_pathname = self._get_option("admin.dump_conf").value
 
-        opener = functools.partial(open, config_pathname, 'w')
+        opener = functools.partial(open, config_pathname, "w")
         config_file_type = os.path.splitext(config_pathname)[1][1:]
 
         skip_keys = [
-            k for (k, v)
-            in self.option_definitions.items()
+            k
+            for (k, v) in self.option_definitions.items()
             if isinstance(v, Option) and v.exclude_from_dump_conf
         ]
 
@@ -501,11 +466,10 @@ class ConfigurationManager(object):
                     # okay that key isn't here
                     pass
             # remove empty namespaces
-            all_keys = [k for k in
-                        option_defs.keys_breadth_first(include_dicts=True)]
+            all_keys = [k for k in option_defs.keys_breadth_first(include_dicts=True)]
             for key in all_keys:
                 candidate = option_defs[key]
-                if (isinstance(candidate, Namespace) and not len(candidate)):
+                if isinstance(candidate, Namespace) and not len(candidate):
                     del option_defs[key]
         else:
             option_defs = self.option_definitions
@@ -516,12 +480,12 @@ class ConfigurationManager(object):
             for a_key in option_defs.keys_breadth_first():
                 an_option = option_defs[a_key]
                 if (
-                    (not a_key.startswith('admin')) and
-                    isinstance(an_option, Option) and
-                    an_option.secret
+                    (not a_key.startswith("admin"))
+                    and isinstance(an_option, Option)
+                    and an_option.secret
                 ):
                     # force the option to be a string of *
-                    option_defs[a_key].value = '*' * 16
+                    option_defs[a_key].value = "*" * 16
                     option_defs[a_key].from_string_converter = str
 
         dispatch_request_to_write(config_file_type, option_defs, opener)
@@ -535,31 +499,35 @@ class ConfigurationManager(object):
                      same semantics as the call to 'logger.info'"""
 
         if not logger:
+
             class FakeLogger:
                 def info(self, pattern, *args):
                     print(pattern % args)
+
             logger = FakeLogger()
 
         logger.info("app_name: %s", self.app_name)
         logger.info("app_version: %s", self.app_version)
         logger.info("current configuration:")
-        config = [(key, self.option_definitions[key].value, self.option_definitions[key].sourced_from)
-                  for key in self.option_definitions.keys_breadth_first()
-                  if key not in self.keys_blocked_from_output]
+        config = [
+            (
+                key,
+                self.option_definitions[key].value,
+                self.option_definitions[key].sourced_from,
+            )
+            for key in self.option_definitions.keys_breadth_first()
+            if key not in self.keys_blocked_from_output
+        ]
         config.sort()
         for key, val, source in config:
-            if (
-                self.option_definitions[key].secret or
-                'password' in key.lower()
-            ):
-                logger.info('%s: *********', key)
+            if self.option_definitions[key].secret or "password" in key.lower():
+                logger.info("%s: *********", key)
             else:
                 try:
-                    logger.info('%s: %s', key,
-                                to_string_converters[type(key)](val))
+                    logger.info("%s: %s", key, to_string_converters[type(key)](val))
                 except KeyError:
-                    logger.info('%s: %s', key, val)
-            logger.info('  source: %s', source)
+                    logger.info("%s: %s", key, val)
+            logger.info("  source: %s", source)
 
     # --------------------------------------------------------------------------
     def get_option_names(self):
@@ -570,8 +538,11 @@ class ConfigurationManager(object):
             list.  Each item will be fully qualified with dot delimited
             Namespace names.
         """
-        return [x for x in self.option_definitions.keys_breadth_first()
-                if isinstance(self.option_definitions[x], Option)]
+        return [
+            x
+            for x in self.option_definitions.keys_breadth_first()
+            if isinstance(self.option_definitions[x], Option)
+        ]
 
     # --------------------------------------------------------------------------
     def _create_reference_value_options(self, keys, finished_keys):
@@ -586,13 +557,12 @@ class ConfigurationManager(object):
             an_option = self.option_definitions[key]
             if an_option.reference_value_from:
 
-                fully_qualified_reference_name = '.'.join((
-                    an_option.reference_value_from,
-                    an_option.name
-                ))
+                fully_qualified_reference_name = ".".join(
+                    (an_option.reference_value_from, an_option.name)
+                )
                 if fully_qualified_reference_name in keys:
                     continue  # this referenced value has already been defined
-                              # no need to repeat it - skip on to the next key
+                    # no need to repeat it - skip on to the next key
                 reference_option = an_option.copy()
                 reference_option.reference_value_from = None
                 reference_option.name = fully_qualified_reference_name
@@ -601,15 +571,12 @@ class ConfigurationManager(object):
                 # full pathname and does the right thing with it to ensure
                 # that the reference_option is created within the
                 # correct namespace
-                set_of_reference_value_option_names.add(
-                    fully_qualified_reference_name
-                )
+                set_of_reference_value_option_names.add(fully_qualified_reference_name)
                 self.option_definitions.add_option(reference_option)
 
         for a_reference_value_option_name in set_of_reference_value_option_names:
-            for x in range(a_reference_value_option_name.count('.')):
-                namespace_path = \
-                    a_reference_value_option_name.rsplit('.', x + 1)[0]
+            for x in range(a_reference_value_option_name.count(".")):
+                namespace_path = a_reference_value_option_name.rsplit(".", x + 1)[0]
                 self.option_definitions[namespace_path].ref_value_namespace()
 
         return set_of_reference_value_option_names
@@ -640,25 +607,24 @@ class ConfigurationManager(object):
             # [ 'x', 'y', 'z', 'x.a', 'x.b', 'z.a', 'z.b', 'x.a.j', 'x.a.k',
             # 'x.b.h']
             names_of_all_exsting_options = [
-                x for x
-                in self.option_definitions.keys_breadth_first()
+                x
+                for x in self.option_definitions.keys_breadth_first()
                 if isinstance(self.option_definitions[x], Option)
             ]
             new_keys_have_been_discovered = False  # setup to break loop
 
             # create alternate paths options
-            set_of_reference_value_option_names = \
-                self._create_reference_value_options(
-                    names_of_all_exsting_options,
-                    finished_keys
-                )
+            set_of_reference_value_option_names = self._create_reference_value_options(
+                names_of_all_exsting_options, finished_keys
+            )
 
             for a_ref_option_name in set_of_reference_value_option_names:
                 if a_ref_option_name not in all_reference_values:
                     all_reference_values[a_ref_option_name] = []
 
-            all_keys = list(set_of_reference_value_option_names) \
-                + names_of_all_exsting_options
+            all_keys = (
+                list(set_of_reference_value_option_names) + names_of_all_exsting_options
+            )
 
             # previous versions of this method pulled the values from the
             # values sources deeper within the following nested loops.
@@ -669,13 +635,12 @@ class ConfigurationManager(object):
                 a_value_source.get_values(
                     self,  # pass in the config_manager itself
                     True,  # ignore mismatches
-                    self.value_source_object_hook  # build with this class
+                    self.value_source_object_hook,  # build with this class
                 )
                 for a_value_source in self.values_source_list
             ]
             value_source_identities = [
-                a_value_source.identity
-                for a_value_source in self.values_source_list
+                a_value_source.identity for a_value_source in self.values_source_list
             ]
 
             # overlay process:
@@ -690,48 +655,46 @@ class ConfigurationManager(object):
                 # loop through all the value sources looking for values
                 # that match this current key.
                 if self.option_definitions[key].reference_value_from:
-                    reference_value_from = (
-                        self.option_definitions[key].reference_value_from
+                    reference_value_from = self.option_definitions[
+                        key
+                    ].reference_value_from
+                    top_key = key.split(".")[-1]
+                    self.option_definitions[key].default = self.option_definitions[
+                        reference_value_from
+                    ][top_key].default
+                    self.option_definitions[
+                        key
+                    ].sourced_from = "reference_value - '%s.%s'" % (
+                        reference_value_from,
+                        top_key,
                     )
-                    top_key = key.split('.')[-1]
-                    self.option_definitions[key].default = (
-                        self.option_definitions[reference_value_from]
-                        [top_key].default
-                    )
-                    self.option_definitions[key].sourced_from = "reference_value - '%s.%s'" % (reference_value_from, top_key)
 
                     all_reference_values[
-                        '.'.join((reference_value_from, top_key))
-                    ].append(
-                        key
-                    )
+                        ".".join((reference_value_from, top_key))
+                    ].append(key)
 
                 an_option = self.option_definitions[key]
                 if key in all_reference_values:
                     # make sure that this value gets propagated to keys
                     # even if the keys have already been overlaid
-                    finished_keys -= set(
-                        all_reference_values[key]
-                    )
+                    finished_keys -= set(all_reference_values[key])
 
-                for val_src_dict, val_src_identity in zip(values_from_all_sources, value_source_identities):
+                for val_src_dict, val_src_identity in zip(
+                    values_from_all_sources, value_source_identities
+                ):
                     try:
 
                         # overlay the default with the new value from
                         # the value source.  This assignment may come
                         # via acquisition, so the key given may not have
                         # been an exact match for what was returned.
-                        an_option.has_changed = (
-                            an_option.default != val_src_dict[key]
-                        )
+                        an_option.has_changed = an_option.default != val_src_dict[key]
                         an_option.default = val_src_dict[key]
                         an_option.sourced_from = val_src_identity
                         if key in all_reference_values:
                             # make sure that this value gets propagated to keys
                             # even if the keys have already been overlaid
-                            finished_keys -= set(
-                                all_reference_values[key]
-                            )
+                            finished_keys -= set(all_reference_values[key])
                     except KeyError as x:
                         pass  # okay, that source doesn't have this value
 
@@ -753,13 +716,10 @@ class ConfigurationManager(object):
                 try:
                     try:
                         # try to fetch new requirements from this value
-                        new_requirements = \
-                            an_option.value.get_required_config()
+                        new_requirements = an_option.value.get_required_config()
                     except (AttributeError, KeyError):
                         new_requirements = getattr(
-                            an_option.value,
-                            'required_config',
-                            None
+                            an_option.value, "required_config", None
                         )
                     # make sure what we got as new_req is actually a
                     # Mapping of some sort
@@ -771,9 +731,7 @@ class ConfigurationManager(object):
                         # option further
                         continue
                     if not isinstance(new_requirements, Namespace):
-                        new_requirements = Namespace(
-                            initializer=new_requirements
-                        )
+                        new_requirements = Namespace(initializer=new_requirements)
                     # get the parent namespace
                     current_namespace = self.option_definitions.parent(key)
                     if current_namespace is None:
@@ -792,14 +750,14 @@ class ConfigurationManager(object):
                     # finished keys list.
                     # Before we can do that however, we need the fully
                     # qualified names for the new keys.
-                    qualified_parent_name_list = key.rsplit('.', 1)
+                    qualified_parent_name_list = key.rsplit(".", 1)
                     if len(qualified_parent_name_list) > 1:
                         qualified_parent_name = qualified_parent_name_list[0]
                     else:
-                        qualified_parent_name = ''
+                        qualified_parent_name = ""
 
                     finished_keys = finished_keys.difference(
-                        '.'.join((qualified_parent_name, ref_option_name))
+                        ".".join((qualified_parent_name, ref_option_name))
                         for ref_option_name in new_requirements
                     )
                     # add the new Options to the namespace
@@ -834,21 +792,18 @@ class ConfigurationManager(object):
             # can employ the command line's own mismatch detection.  The
             # boolean 'allow_mismatches' controls application of the tollerance
             # for mismatches.
-            if hasattr(a_value_source, 'command_line_value_source'):
+            if hasattr(a_value_source, "command_line_value_source"):
                 allow_mismatches = False
             else:
                 allow_mismatches = True
             # make a set of all the keys from a value source in the form
             # of strings like this: 'x.y.z'
             value_source_mapping = a_value_source.get_values(
-                self,
-                allow_mismatches,
-                self.value_source_object_hook
+                self, allow_mismatches, self.value_source_object_hook
             )
-            value_source_keys_set = set([
-                k for k in
-                DotDict(value_source_mapping).keys_breadth_first()
-            ])
+            value_source_keys_set = set(
+                [k for k in DotDict(value_source_mapping).keys_breadth_first()]
+            )
             # make a set of the keys that didn't match any of the known
             # keys in the requirements
             unmatched_keys = value_source_keys_set.difference(known_keys)
@@ -859,16 +814,16 @@ class ConfigurationManager(object):
             for key in unmatched_keys.copy():
                 key_is_okay = reduce(
                     lambda x, y: x or y,
-                    (known_key.endswith(key) for known_key in known_keys)
+                    (known_key.endswith(key) for known_key in known_keys),
                 )
                 if key_is_okay:
                     unmatched_keys.remove(key)
-                if '__identity' in unmatched_keys:
+                if "__identity" in unmatched_keys:
                     # we allow bare Mappings to use the key "__identity" to give
                     # the Mapping a name.  The helps in identifying the source
                     # of a value when echoing the log of the config.  We don't
                     # want it to contribute to warnings
-                    unmatched_keys.remove('__identity')
+                    unmatched_keys.remove("__identity")
             # anything left in the unmatched_key set is a badly formed key.
             # issue a warning
             if unmatched_keys:
@@ -884,7 +839,7 @@ class ConfigurationManager(object):
                         )
                 else:
                     warnings.warn(
-                        'Invalid options: %s' % ', '.join(sorted(unmatched_keys))
+                        "Invalid options: %s" % ", ".join(sorted(unmatched_keys))
                     )
 
     # --------------------------------------------------------------------------
@@ -894,7 +849,7 @@ class ConfigurationManager(object):
             if isinstance(val, collections.abc.Mapping):
                 ConfigurationManager._walk_and_close(val)
             try:
-                if hasattr(val, 'close') and not inspect.isclass(val):
+                if hasattr(val, "close") and not inspect.isclass(val):
                     val.close()
             except KeyError:
                 # py3 will sometimes hit KeyError from the hasattr()
@@ -904,17 +859,13 @@ class ConfigurationManager(object):
     def _generate_config(self, mapping_class):
         """This routine generates a copy of the DotDict based config"""
         config = mapping_class()
-        self._walk_config_copy_values(
-            self.option_definitions,
-            config,
-            mapping_class
-        )
+        self._walk_config_copy_values(self.option_definitions, config, mapping_class)
         return config
 
     # --------------------------------------------------------------------------
     def _setup_auto_help(self):
-        help_option = Option(name='help', doc='print this', default=False)
-        self.definition_source_list.append({'help': help_option})
+        help_option = Option(name="help", doc="print this", default=False)
+        self.definition_source_list.append({"help": help_option})
 
     # --------------------------------------------------------------------------
     def _get_config_pathname(self):
@@ -923,10 +874,7 @@ class ConfigurationManager(object):
             # use the appname as the file name and default to an 'ini'
             # config file type
             if self.app_name:
-                return os.path.join(
-                    self.config_pathname,
-                    '%s.ini' % self.app_name
-                )
+                return os.path.join(self.config_pathname, "%s.ini" % self.app_name)
             else:
                 # there is no app_name yet
                 # we'll decline to return anything
@@ -938,47 +886,46 @@ class ConfigurationManager(object):
         base_namespace = Namespace()
         base_namespace.admin = admin = Namespace()
         admin.add_option(
-            name='print_conf',
+            name="print_conf",
             default=None,
-            doc='write current config to stdout (%s)'
-                % ', '.join(file_extension_dispatch.keys())
+            doc="write current config to stdout (%s)"
+            % ", ".join(file_extension_dispatch.keys()),
         )
         admin.add_option(
-            name='dump_conf',
-            default='',
-            doc='a pathname to which to write the current config',
+            name="dump_conf",
+            default="",
+            doc="a pathname to which to write the current config",
         )
         admin.add_option(
-            name='strict',
+            name="strict",
             default=False,
-            doc='mismatched options generate exceptions rather'
-                ' than just warnings'
+            doc="mismatched options generate exceptions rather" " than just warnings",
         )
         admin.add_option(
-            name='expose_secrets',
+            name="expose_secrets",
             default=False,
-            doc='should options marked secret get written out or hidden?'
+            doc="should options marked secret get written out or hidden?",
         )
         admin.add_option(
-            name='why',
+            name="why",
             default=False,
-            doc="echo the configuration with annotations of each value's source"
+            doc="echo the configuration with annotations of each value's source",
         )
         # only offer the config file admin options if they've been requested in
         # the values source list
         if ConfigFileFutureProxy in values_source_list:
             default_config_pathname = self._get_config_pathname()
             admin.add_option(
-                name='conf',
+                name="conf",
                 default=default_config_pathname,
-                doc='the pathname of the config file (path/filename)',
+                doc="the pathname of the config file (path/filename)",
             )
         return base_namespace
 
     # --------------------------------------------------------------------------
     def _walk_config_copy_values(self, source, destination, mapping_class):
         for key, val in source.items():
-            if key.endswith('$'):
+            if key.endswith("$"):
                 continue
             value_type = type(val)
             if isinstance(val, Option) or isinstance(val, Aggregation):
@@ -993,9 +940,7 @@ class ConfigurationManager(object):
         for key, val in source.items():
             if isinstance(val, Namespace):
                 new_aggregates_found = self._aggregate(
-                    val,
-                    base_namespace,
-                    local_namespace[key]
+                    val, base_namespace, local_namespace[key]
                 )
                 aggregates_found = new_aggregates_found or aggregates_found
             elif isinstance(val, Aggregation):
@@ -1009,7 +954,7 @@ class ConfigurationManager(object):
     def _option_sort(x_tuple):
         key, val = x_tuple
         if isinstance(val, Namespace):
-            return 'zzzzzzzzzzz%s' % key
+            return "zzzzzzzzzzz%s" % key
         else:
             return key
 
@@ -1018,10 +963,10 @@ class ConfigurationManager(object):
         try:
             return self.option_definitions[name]
         except KeyError:
-            raise NotAnOptionError('%s is not a known option name' % name)
+            raise NotAnOptionError("%s is not a known option name" % name)
 
     # --------------------------------------------------------------------------
-    def _get_options(self, source=None, options=None, prefix=''):
+    def _get_options(self, source=None, options=None, prefix=""):
         return [
             (key, self.option_definitions[key])
             for key in self.option_definitions.keys_breadth_first()

@@ -16,7 +16,7 @@ from configmanners.option import (
 # ------------------------------------------------------------------------------
 def setup_definitions(source, destination):
     for key, val in source.items():
-        if key.startswith('__'):
+        if key.startswith("__"):
             continue  # ignore these
         if isinstance(val, Option):
             destination[key] = val
@@ -26,13 +26,13 @@ def setup_definitions(source, destination):
         elif isinstance(val, Aggregation):
             destination[key] = val
         elif isinstance(val, collections.abc.Mapping):
-            if 'name' in val and 'default' in val:
+            if "name" in val and "default" in val:
                 # this is an Option in the form of a dict, not a Namespace
-                if key == 'not_for_definition' and val is True:
+                if key == "not_for_definition" and val is True:
                     continue  # ignore this element
                 params = str_dict_keys(val)
                 destination[key] = Option(**params)
-            elif 'function' in val:  # this is an Aggregation
+            elif "function" in val:  # this is an Aggregation
                 params = str_dict_keys(val)
                 destination[key] = Aggregation(**params)
             else:
@@ -45,6 +45,4 @@ def setup_definitions(source, destination):
                 # recurse!
                 setup_definitions(val, destination[key])
         else:
-            destination[key] = Option(name=key,
-                                      doc=key,
-                                      default=val)
+            destination[key] = Option(name=key, doc=key, default=val)

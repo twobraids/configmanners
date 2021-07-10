@@ -23,25 +23,25 @@ from configmanners.option import (
 )
 from configmanners.value_sources.source_exceptions import (
     ValueException,
-    CantHandleTypeException
+    CantHandleTypeException,
 )
 from configmanners.dotdict import DotDict
 from configmanners.memoize import memoize
 
 function_type = type(lambda x: x)  # TODO: just how do you express the Fuction
-                                   # type as a constant?
-                                   # (peter: why not use inspect.isfunction()?)
+# type as a constant?
+# (peter: why not use inspect.isfunction()?)
 
 # the list of types that the contstuctor can handle.
 can_handle = (
     bytes,
     str,
     function_type  # this is to say that this ValueSource is willing
-                   # to try a function that will return a
-                   # context manager
+    # to try a function that will return a
+    # context manager
 )
 
-file_name_extension = 'conf'
+file_name_extension = "conf"
 
 
 # ==============================================================================
@@ -56,10 +56,7 @@ class ValueSource(object):
     def __init__(self, candidate, the_config_manager=None):
         if isinstance(candidate, (bytes, str)):
             candidate = to_str(candidate)
-        if (
-            isinstance(candidate, str)
-            and candidate.endswith(file_name_extension)
-        ):
+        if isinstance(candidate, str) and candidate.endswith(file_name_extension):
             # we're trusting the string represents a filename
             opener = functools.partial(open, candidate)
         elif isinstance(candidate, function_type):
@@ -74,12 +71,13 @@ class ValueSource(object):
                 previous_key = None
                 for line in f:
                     line = to_str(line)
-                    if line.strip().startswith('#') or not line.strip():
+                    if line.strip().startswith("#") or not line.strip():
                         continue
-                    if line[0] in ' \t' and previous_key:
+                    if line[0] in " \t" and previous_key:
                         line = line[1:]
-                        self.values[previous_key] = (
-                            '%s%s' % (self.values[previous_key], line.rstrip())
+                        self.values[previous_key] = "%s%s" % (
+                            self.values[previous_key],
+                            line.rstrip(),
                         )
                         continue
                     try:
@@ -87,11 +85,10 @@ class ValueSource(object):
                         self.values[key.strip()] = value.strip()
                         previous_key = key
                     except ValueError:
-                        self.values[line] = ''
+                        self.values[line] = ""
         except Exception as x:
             raise NotAConfigFileError(
-                "Conf couldn't interpret %s as a config file: %s"
-                % (candidate, str(x))
+                "Conf couldn't interpret %s as a config file: %s" % (candidate, str(x))
             )
 
         self.identity = to_str(candidate)
@@ -108,11 +105,7 @@ class ValueSource(object):
     # --------------------------------------------------------------------------
     @staticmethod
     def write(source_dict, namespace_name=None, output_stream=sys.stdout):
-        options = [
-            value
-            for value in source_dict.values()
-            if isinstance(value, Option)
-        ]
+        options = [value for value in source_dict.values() if isinstance(value, Option)]
         options.sort(key=lambda x: x.name)
         namespaces = [
             (key, value)
@@ -128,24 +121,22 @@ class ValueSource(object):
             print("# doc: %s" % an_option.doc, file=output_stream)
             option_value = str(an_option)
             if isinstance(option_value, str):
-                option_value = option_value.encode('utf8')
+                option_value = option_value.encode("utf8")
 
             if an_option.likely_to_be_changed:
-                option_format = '%s=%r\n'
+                option_format = "%s=%r\n"
             else:
-                option_format = '# %s=%r\n'
-            print(option_format % (option_name, option_value),
-                  file=output_stream)
+                option_format = "# %s=%r\n"
+            print(option_format % (option_name, option_value), file=output_stream)
         for key, a_namespace in namespaces:
             if namespace_name:
-                namespace_label = ''.join((namespace_name, '.', key))
+                namespace_label = "".join((namespace_name, ".", key))
             else:
                 namespace_label = key
-            print('#%s' % ('-' * 79), file=output_stream)
-            print('# %s - %s\n' % (namespace_label, a_namespace._doc),
-                  file=output_stream)
+            print("#%s" % ("-" * 79), file=output_stream)
+            print(
+                "# %s - %s\n" % (namespace_label, a_namespace._doc), file=output_stream
+            )
             ValueSource.write(
-                a_namespace,
-                namespace_name=namespace_label,
-                output_stream=output_stream
+                a_namespace, namespace_name=namespace_label, output_stream=output_stream
             )
