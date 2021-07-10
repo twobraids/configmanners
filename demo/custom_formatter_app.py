@@ -26,7 +26,7 @@ Change one of the defaults for `option1` or `option2`. Then run::
 
 Expect the values to change.
 """
-from __future__ import absolute_import, division, print_function
+
 from configmanners import RequiredConfig, Namespace
 
 

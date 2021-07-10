@@ -2,7 +2,7 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
-from __future__ import absolute_import, division, print_function
+
 
 """This sample application demonstrates configuration as context."""
 # this is an advanced demo that demonstrates using contextmanager with the

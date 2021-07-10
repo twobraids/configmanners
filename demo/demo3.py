@@ -21,7 +21,7 @@
 #      of configuration values.
 #   5) the app class defines a parameterless 'main' function that executes the
 #      business logic of the application
-from __future__ import absolute_import, division, print_function
+
 from configmanners import RequiredConfig, Namespace
 
 

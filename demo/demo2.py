@@ -12,7 +12,7 @@
 # In this case, there is no need for a 'main' function.  The action done by the
 # application is specified in configuration.  The last line of the file invokes
 # the action.
-from __future__ import absolute_import, division, print_function
+
 from configmanners import ConfigurationManager, Namespace
 from configmanners import environment, command_line
 from configmanners.converters import class_converter

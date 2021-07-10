@@ -1,6 +1,5 @@
 # This is just a hack to simulate the minimal api of psycopg2 for the purposes
 # of a demo.  There is nothing of any real interest here, please move along.
-from __future__ import absolute_import, division, print_function
 
 
 class FakeDatabaseObjects(object):

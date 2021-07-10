@@ -9,7 +9,7 @@
 # embody the business logic of the application.  We setup configuration
 # parameters that will control the command line and config file forms.  Then
 # we run the application.
-from __future__ import absolute_import, division, print_function
+
 import sys
 from configmanners import ConfigurationManager, Namespace
 

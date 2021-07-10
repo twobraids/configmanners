@@ -7,7 +7,7 @@
 This sample app uses .ini files with `+include` directives
 to prove that it's possible to use relative paths.
 """
-from __future__ import absolute_import, division, print_function
+
 from configmanners import RequiredConfig, Namespace
 
 

@@ -1,4 +1,4 @@
-from __future__ import absolute_import, division, print_function
+
 # Can't import unicode_literals in setup.py currently
 # http://stackoverflow.com/a/23175131
 import codecs

@@ -11,7 +11,7 @@
 # this app simulates passing a group of records from one datasource to
 # another.  It offers fake versions of Postgres, MySQL and HBase as the
 # data sources and sinks.
-from __future__ import absolute_import, division, print_function
+
 from configmanners import RequiredConfig, Namespace
 from configmanners.converters import class_converter
 

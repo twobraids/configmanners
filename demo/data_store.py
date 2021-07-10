@@ -4,7 +4,7 @@
 
 """This file is the source of the simulated database classes used in the
 dyn_app example."""
-from __future__ import absolute_import, division, print_function
+
 import sys
 import datetime as dt
 

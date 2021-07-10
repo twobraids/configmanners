@@ -1,4 +1,4 @@
-from __future__ import absolute_import, division, print_function
+
 import collections
 
 # This Source Code Form is subject to the terms of the Mozilla Public

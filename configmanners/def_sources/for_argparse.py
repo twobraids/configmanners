@@ -5,7 +5,7 @@
 """this module introduces support for argparse as a data definition source
 for configmanners.  Rather than write using configmanners's data definition language,
 programs can instead use the familiar argparse method."""
-from __future__ import absolute_import, division, print_function
+
 
 import argparse
 import inspect

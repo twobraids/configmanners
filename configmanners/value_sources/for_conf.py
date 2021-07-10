@@ -9,7 +9,7 @@ like files or database results.  If supplied with a simple string rather than
 a ContextManager, the value source will assume it is a file pathname and try
 to open it.
 """
-from __future__ import absolute_import, division, print_function
+
 
 import functools
 import sys

@@ -1,11 +1,11 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
-from __future__ import absolute_import, division, print_function
+
 from functools import wraps
 
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 def memoize(max_cache_size=1000):
     """Python 2.4 compatible memoize decorator.
     It creates a cache that has a maximum size.  If the cache exceeds the max,
