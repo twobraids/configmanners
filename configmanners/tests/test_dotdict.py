@@ -9,7 +9,7 @@ from configmanners.dotdict import (
     DotDict,
     DotDictWithAcquisition,
     iteritems_breadth_first,
-    configmanners_keys,
+    stylize_keys,
     create_key_translating_dot_dict
 )
 from configmanners.orderedset import OrderedSet
@@ -380,14 +380,14 @@ class TestCase(unittest.TestCase):
         self.assertEqual(len(keys), 1)
 
     # --------------------------------------------------------------------------
-    def test_configmannersize_dict(self):
+    def test_stylize_keys(self):
         d = {
             "HELLO": "howdy",
             "JELL__O": "gelatin",
             "database_hostname": 'localhost',
             "resources__postgres__database_hostname": 'more-localhost',
         }
-        r = configmanners_keys(d)
+        r = stylize_keys(d)
         self.assertTrue("HELLO" in r)
         self.assertTrue("JELL__O" in r)
         self.assertTrue("database_hostname" in r)

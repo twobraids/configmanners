@@ -29,7 +29,7 @@ def iteritems_breadth_first(a_mapping, include_dicts=False):
 
 
 # ------------------------------------------------------------------------------
-def configmanners_keys(a_mapping):
+def stylize_keys(a_mapping):
     """return a DotDict that is a copy of the provided mapping with keys
     transformed into a configmanners compatible form:
      if the key is not all uppercase then
@@ -42,12 +42,12 @@ def configmanners_keys(a_mapping):
     through this function, then doubled underscores will be interpretted as if
     they were the dot character.
     """
-    configmannersized_keys_dict = DotDict()
+    stylized_keys_dict = DotDict()
     for k, v in iteritems_breadth_first(a_mapping):
         if '__' in k and k != k.upper():
             k = k.replace('__', '.')
-        configmannersized_keys_dict[k] = v
-    return configmannersized_keys_dict
+        stylized_keys_dict[k] = v
+    return stylized_keys_dict
 
 
 # ==============================================================================
