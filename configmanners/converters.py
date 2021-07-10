@@ -95,7 +95,7 @@ def str_quote_stripper(input_str):
 
 # ------------------------------------------------------------------------------
 # a bunch of known mappings of builtin items to strings
-import six.moves.builtins as builtins
+import builtins
 known_mapping_str_to_type = dict(
     (key, val) for key, val in sorted(builtins.__dict__.items())
     if val not in (True, False)
