@@ -289,7 +289,7 @@ class TestCase(unittest.TestCase):
 
     # --------------------------------------------------------------------------
     def test_regexp_converter_inOption(self):
-        regex_str = '\w+'
+        regex_str = r'\w+'
         sample_regex = re.compile(regex_str)
         opt = Option('name', default=sample_regex)
         self.assertEqual(opt.default, sample_regex)
