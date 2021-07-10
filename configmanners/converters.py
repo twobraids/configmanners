@@ -8,7 +8,6 @@ import re
 import datetime
 import types
 import json
-import six
 
 from configmanners.datetime_util import (
     datetime_from_ISO_string,

@@ -9,7 +9,6 @@ import unittest
 from contextlib import contextmanager
 import io
 import getopt
-import six
 from io import StringIO
 
 import mock

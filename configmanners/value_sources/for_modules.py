@@ -13,7 +13,6 @@ import datetime
 import json
 import keyword
 import re
-import six
 
 from inspect import isclass, ismodule, isfunction
 from collections import defaultdict

@@ -5,7 +5,6 @@
 
 import unittest
 import datetime
-import six
 
 from configmanners import converters
 from configmanners import RequiredConfig, Namespace, ConfigurationManager

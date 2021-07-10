@@ -5,7 +5,6 @@ from __future__ import absolute_import, division, print_function
 
 import collections
 import weakref
-import six
 from io import StringIO
 
 from configmanners.orderedset import OrderedSet

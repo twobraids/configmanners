@@ -11,7 +11,6 @@ import argparse
 import inspect
 from os import environ
 from functools import partial
-import six
 
 from configmanners.namespace import Namespace
 from configmanners.config_file_future_proxy import ConfigFileFutureProxy

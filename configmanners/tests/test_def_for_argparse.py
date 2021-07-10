@@ -6,7 +6,6 @@ from __future__ import absolute_import, division, print_function
 from unittest import TestCase
 from mock import patch
 
-import six
 from io import StringIO
 
 try:

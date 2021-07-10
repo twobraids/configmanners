@@ -6,7 +6,6 @@ from __future__ import absolute_import, division, print_function
 import getopt
 import os.path
 import inspect
-import six
 
 import configmanners as cm
 from configmanners import ConfigurationManager, Namespace

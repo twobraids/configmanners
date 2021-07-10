@@ -12,7 +12,6 @@ to open it.
 from __future__ import absolute_import, division, print_function
 
 import functools
-import six
 import sys
 
 from configmanners import namespace

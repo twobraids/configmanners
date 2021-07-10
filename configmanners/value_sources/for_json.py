@@ -5,7 +5,6 @@ from __future__ import absolute_import, division, print_function
 
 import json
 import collections
-import six
 import sys
 
 from configmanners.converters import (

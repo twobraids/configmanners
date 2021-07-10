@@ -32,7 +32,6 @@ classes so that we can use class identity as a differention mechanism.
 from __future__ import absolute_import, division, print_function
 import argparse
 import copy
-import six
 
 import collections
 

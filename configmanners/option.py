@@ -4,7 +4,6 @@
 from __future__ import absolute_import, division, print_function
 
 import collections
-import six
 
 from configmanners.converters import (
     str_to_python_object,

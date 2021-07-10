@@ -6,7 +6,6 @@ from __future__ import absolute_import, division, print_function
 import unittest
 import contextlib
 import re
-import six
 
 from io import StringIO
 from datetime import datetime, timedelta, date

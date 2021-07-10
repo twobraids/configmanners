@@ -7,7 +7,6 @@ from decimal import Decimal
 import datetime
 import unittest
 import re
-import six
 
 from configmanners.converters import (
     boolean_converter,
