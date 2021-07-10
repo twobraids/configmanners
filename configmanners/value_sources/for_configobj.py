@@ -151,7 +151,7 @@ class ValueSource(object):
         if isinstance(source, (bytes, str)):
             source = to_str(source)
         if (
-            isinstance(source, six.string_types)
+            isinstance(source, str)
             and source.endswith(file_name_extension)
         ):
             try:
@@ -234,7 +234,7 @@ class ValueSource(object):
             else:
                 option_format = '%s#%s=%s\n'
 
-            if isinstance(option_value, six.string_types) and \
+            if isinstance(option_value, str) and \
                     ',' in option_value:
                 # quote lists unless they're already quoted
                 if option_value[0] not in '\'"':

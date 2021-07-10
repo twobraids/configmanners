@@ -250,7 +250,7 @@ def str_to_classes_in_namespaces(
             if class_list == ['']:
                 class_list = []
         else:
-            raise TypeError('must be derivative of %s' % six.string_types)
+            raise TypeError('must be derivative of %s' % str)
 
         # ======================================================================
         class InnerClassList(RequiredConfig):
@@ -326,7 +326,7 @@ def str_to_list(
 ):
     """ a conversion function for list
     """
-    if not isinstance(input_str, six.string_types):
+    if not isinstance(input_str, str):
         raise ValueError(input_str)
     input_str = str_quote_stripper(input_str)
     result = [
@@ -380,7 +380,7 @@ def arbitrary_object_to_string(a_thing):
     if a_thing is None:
         return ''
     # is it already a string?
-    if isinstance(a_thing, six.string_types):
+    if isinstance(a_thing, str):
         return a_thing
     if six.PY3 and isinstance(a_thing, bytes):
         try:

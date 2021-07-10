@@ -55,7 +55,7 @@ class ValueSource(object):
         if isinstance(source, (bytes, str)):
             source = to_str(source)
         if (
-            isinstance(source, six.string_types) and
+            isinstance(source, str) and
             source.endswith(file_name_extension)
         ):
             try:

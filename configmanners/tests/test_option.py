@@ -278,7 +278,7 @@ class TestCase(unittest.TestCase):
 
         two_days = datetime.timedelta(days=2)
         timedelta_as_string = timedelta_to_str(two_days)
-        assert isinstance(timedelta_as_string, six.string_types)
+        assert isinstance(timedelta_as_string, str)
         opt.set_value(timedelta_as_string)
         self.assertEqual(opt.value, two_days)
 

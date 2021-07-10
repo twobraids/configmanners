@@ -17,7 +17,7 @@ from configmanners.converters import class_converter
 # This main function will load an application object, initialize it and then
 # call its 'main' function
 def main(app_object=None):
-    if isinstance(app_object, six.string_types):
+    if isinstance(app_object, str):
         app_object = class_converter(app_object)
 
     # the only config parameter is a special one that refers to a class or

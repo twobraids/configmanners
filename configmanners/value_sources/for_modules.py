@@ -206,7 +206,7 @@ class OrderableObj(object):
     """
 
     def __init__(self, value):
-        if not isinstance(value, six.string_types):
+        if not isinstance(value, str):
             value_str = to_str(value)
         else:
             value_str = value
