@@ -12,6 +12,7 @@ import os.path
 import contextlib
 import functools
 import warnings
+from functools import reduce
 
 # ==============================================================================
 # for convenience define some external symbols here - some client modules may
@@ -857,7 +858,7 @@ class ConfigurationManager(object):
             # remove keys of the form 'y.z' if they match a known key of the
             # form 'x.y.z'
             for key in unmatched_keys.copy():
-                key_is_okay = six.moves.reduce(
+                key_is_okay = reduce(
                     lambda x, y: x or y,
                     (known_key.endswith(key) for known_key in known_keys)
                 )
