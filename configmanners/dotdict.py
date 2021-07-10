@@ -347,10 +347,7 @@ class DotDictWithAcquisition(DotDict):
         if key == '_parent':
             raise AttributeError('_parent')
         try:
-            if six.PY2:
-                _parent = self._parent
-            else:
-                _parent = object.__getattribute__(self, '_parent')
+            _parent = object.__getattribute__(self, '_parent')
             return getattr(_parent, key)
         except AttributeError:  # no parent attribute
             # the copy.deepcopy function will try to probe this class for an
@@ -426,7 +423,5 @@ def create_key_translating_dot_dict(
                 self._translate_key(key)
             )
 
-    if six.PY2:
-        new_class_name = bytes(new_class_name)
     DotDictWithKeyTranslations.__name__ = new_class_name
     return DotDictWithKeyTranslations

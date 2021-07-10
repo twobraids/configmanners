@@ -66,16 +66,13 @@ def str_dict_keys(a_dict):
     """
     new_dict = {}
     for key in a_dict:
-        if six.PY2 and isinstance(key, str):
-            new_dict[str(key)] = a_dict[key]
-        else:
-            new_dict[key] = a_dict[key]
+        new_dict[key] = a_dict[key]
     return new_dict
 
 
 # ------------------------------------------------------------------------------
 def str_quote_stripper(input_str):
-    if not isinstance(input_str, six.string_types):
+    if not isinstance(input_str, str):
         raise ValueError(input_str)
     while (
         input_str and
@@ -127,7 +124,7 @@ def py3_to_bytes(input_str):
 def str_to_boolean(input_str):
     """ a conversion function for boolean
     """
-    if not isinstance(input_str, six.string_types):
+    if not isinstance(input_str, str):
         raise ValueError(input_str)
     input_str = str_quote_stripper(input_str)
     return input_str.lower() in ("true", "t", "1", "y", "yes")
@@ -144,7 +141,7 @@ def str_to_python_object(input_str):
         return None
     if six.PY3 and isinstance(input_str, bytes):
         input_str = to_str(input_str)
-    if not isinstance(input_str, six.string_types):
+    if not isinstance(input_str, str):
         # gosh, we didn't get a string, we can't convert anything but strings
         # we're going to assume that what we got is actually what was wanted
         # as the output
@@ -245,7 +242,7 @@ def str_to_classes_in_namespaces(
         one for each class in the list.  It does this by creating a proxy
         class stuffed with its own 'required_config' that's dynamically
         generated."""
-        if isinstance(class_list_str, six.string_types):
+        if isinstance(class_list_str, str):
             class_list = [x.strip() for x in class_list_str.split(',')]
             if class_list == ['']:
                 class_list = []

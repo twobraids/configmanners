@@ -182,11 +182,6 @@ class TestCase(unittest.TestCase):
         self.assertEqual(opt.default, 100)
         self.assertEqual(opt.from_string_converter, int)
 
-        if six.PY2:
-            opt = Option('name', default=long(100))
-            self.assertEqual(opt.default, long(100))
-            self.assertEqual(opt.from_string_converter, long)
-
         opt = Option('name', default=100.0)
         self.assertEqual(opt.default, 100.0)
         self.assertEqual(opt.from_string_converter, float)

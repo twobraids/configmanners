@@ -97,8 +97,6 @@ class TestCase(unittest.TestCase):
 
         for key in result.keys():
             if key in ('name', 'age'):
-                if six.PY2:
-                    self.assertTrue(not isinstance(key, str))
                 self.assertTrue(isinstance(key, str))
             else:
                 self.assertTrue(isinstance(key, int))
@@ -314,12 +312,8 @@ class TestCase(unittest.TestCase):
         to_str = converters.to_str
         self.assertEqual(to_str(int), 'int')
         self.assertEqual(to_str(float), 'float')
-        if six.PY2:
-            self.assertEqual(to_str(bytes), 'str')
-            self.assertEqual(to_str(str), 'unicode')
-        else:
-            self.assertEqual(to_str(bytes), 'bytes')
-            self.assertEqual(to_str(str), 'str')
+        self.assertEqual(to_str(bytes), 'bytes')
+        self.assertEqual(to_str(str), 'str')
         self.assertEqual(to_str(bool), 'bool')
         self.assertEqual(to_str(dict), 'dict')
         self.assertEqual(to_str(list), 'list')

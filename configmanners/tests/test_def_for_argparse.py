@@ -426,14 +426,6 @@ class TestCaseForDefSourceArgparse(TestCase):
             parser.parse_args,
             args
         )
-        # Skip in py3 because of random argparse --help sorting
-        if six.PY2:
-            x = mock_stdout.getvalue()
-            self.assertEqual(
-                sorted(expected),
-                sorted(x),
-                'case: %s failed - %s != %s' % (args, expected, x)
-            )
 
     # --------------------------------------------------------------------------
     @patch('sys.stdout', new_callable=StringIO)
@@ -456,14 +448,6 @@ class TestCaseForDefSourceArgparse(TestCase):
             parser.parse_args,
             args
         )
-        # Skip in py3 because of random argparse --help sorting
-        if six.PY2:
-            x = mock_stderr.getvalue()
-            self.assertEqual(
-                sorted(expected),
-                sorted(x),
-                'case: %s failed - %s != %s' % (args, expected, x)
-            )
 
     # --------------------------------------------------------------------------
     @patch('sys.stderr', new_callable=StringIO)

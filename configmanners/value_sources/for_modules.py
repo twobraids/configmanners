@@ -172,12 +172,8 @@ local_to_string_converters = {
     type(None): lambda x: "None",
     compiled_regexp_type: lambda x: string_to_string(x.pattern)
 }
-if six.PY2:
-    local_to_string_converters[str] = unicode_to_unicode
-    local_to_string_converters[bytes] = string_to_string
-elif six.PY3:
-    local_to_string_converters[str] = string_to_string
-    local_to_string_converters[bytes] = string_to_string
+local_to_string_converters[str] = string_to_string
+local_to_string_converters[bytes] = string_to_string
 
 
 # ------------------------------------------------------------------------------
