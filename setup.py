@@ -25,26 +25,9 @@ def read(fname):
         return f.read().strip()
 
 
-def find_install_requires():
-    reqs = [x.strip() for x in
-            read('requirements.txt').splitlines()
-            if x.strip() and not x.startswith('#')]
-    try:
-        from functools import total_ordering
-    except ImportError:
-        reqs.append('total-ordering==0.1')
-    return reqs
-
-
-def find_tests_require():
-    return [x.strip() for x in
-            read('test-requirements.txt').splitlines()
-            if x.strip() and not x.startswith('#')]
-
-
 setup(
     name='configmanners',
-    version=read('configmanners/version.txt'),
+    version="3.0",
     description=(
         'Flexible reading and writing of namespaced configuration options'
     ),
@@ -65,8 +48,12 @@ setup(
     ],
     packages=['configmanners'],
     package_data={'configmanners': ['*/*', 'version.txt']},
-    install_requires=find_install_requires(),
-    tests_require=find_tests_require(),
+    install_requires=[
+        'configobj',
+    ],
+    tests_require=[
+        'mock'
+    ],
     test_suite='',
     zip_safe=False,
 ),
