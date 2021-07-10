@@ -7,6 +7,7 @@ import sys
 import re
 import datetime
 import types
+from functools import partial
 import json
 
 from configmanners.datetime_util import (
@@ -321,6 +322,9 @@ def str_to_list(
     if list_to_collection_converter is not None:
         return list_to_collection_converter(result)
     return result
+
+
+str_to_list_of_ints = partial(str_to_list, item_converter=int)
 
 
 list_converter = str_to_list  # for backward compatibility

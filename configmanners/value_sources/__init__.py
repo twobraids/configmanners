@@ -25,6 +25,7 @@ from configmanners.value_sources import for_argparse
 # from configmanners.value_sources import or_xml
 from configmanners.value_sources import for_getopt
 from configmanners.value_sources import for_json
+from configmanners.value_sources import for_yaml
 from configmanners.value_sources import for_conf
 from configmanners.value_sources import for_mapping
 from configmanners.value_sources import for_configobj
@@ -36,6 +37,7 @@ for_handlers = [
     for_mapping,
     for_getopt,
     for_json,
+    for_yaml,
     for_conf,
     for_configobj,
     for_modules,
