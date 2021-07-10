@@ -2,7 +2,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 from __future__ import absolute_import, division, print_function
-from os import path
 __version__ = "3.0"
 
 # Having these here makes it possible to easily import once configmanners is
