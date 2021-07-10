@@ -66,7 +66,7 @@ class ValueSource(object):
                 import warnings
                 warnings.warn("%s doesn't exist" % source)
                 self.values = {}
-            except ValueError:
+            except ValueError as x:
                 raise LoadingJsonFileFailsException(
                     "Cannot load json: %s" % str(x)
                 )
