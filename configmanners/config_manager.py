@@ -890,7 +890,7 @@ class ConfigurationManager(object):
     # --------------------------------------------------------------------------
     @staticmethod
     def _walk_and_close(a_dict):
-        for val in six.itervalues(a_dict):
+        for val in a_dict.values():
             if isinstance(val, collections.abc.Mapping):
                 ConfigurationManager._walk_and_close(val)
             try:
