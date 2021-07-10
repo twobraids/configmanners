@@ -44,7 +44,7 @@ def find_action_name_by_value(registry, target_action_instance):
     which it was registered.
     """
     target_type = type(target_action_instance)
-    for key, value in six.iteritems(registry['action']):
+    for key, value in registry['action'].items():
         if value is target_type:
             if key is None:
                 return 'store'

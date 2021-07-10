@@ -260,7 +260,7 @@ class ValueSource(object):
             self.always_ignore_mismatches = source.always_ignore_mismatches
         except AttributeError:
             pass  # don't need to do anything - mismatches will not be ignored
-        for key, value in six.iteritems(source.__dict__):
+        for key, value in source.__dict__.items():
             if key.startswith('__') and key != "__doc__":
                 continue
             if key in ignore_symbol_list:

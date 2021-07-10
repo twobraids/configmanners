@@ -86,7 +86,7 @@ class Namespace(DotDict):
         new_namespace = Namespace()
         if self._reference_value_from:
             new_namespace.ref_value_namespace()
-        for key, opt in six.iteritems(self):
+        for key, opt in self.items():
             if isinstance(opt, Option):
                 new_namespace[key] = opt.copy()
                 # assign a new reference_value if one has not been defined

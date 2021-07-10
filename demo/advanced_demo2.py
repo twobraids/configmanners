@@ -186,7 +186,7 @@ class PGPooledTransaction(PGTransaction):
     def close(self):
         """close all pooled connections"""
         print("PGPooledTransaction - shutting down connection pool")
-        for name, conn in self.pool.iteritems():
+        for name, conn in self.pool.items():
             conn.close()
             print("PGPooledTransaction - connection %s closed" % name)
 

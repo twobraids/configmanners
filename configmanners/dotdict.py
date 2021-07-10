@@ -16,7 +16,7 @@ def iteritems_breadth_first(a_mapping, include_dicts=False):
     """a generator that returns all the keys in a set of nested
     Mapping instances.  The keys take the form X.Y.Z"""
     subordinate_mappings = []
-    for key, value in six.iteritems(a_mapping):
+    for key, value in a_mapping.items():
         if isinstance(value, collections.abc.Mapping):
             subordinate_mappings.append((key, value))
             if include_dicts:

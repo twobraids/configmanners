@@ -122,7 +122,7 @@ class IntermediateconfigmannersParser(argparse.ArgumentParser):
         if object_hook is None:
             object_hook = DotDict
         config = object_hook()
-        for key, value in six.iteritems(proposed_config.__dict__):
+        for key, value in proposed_config.__dict__.items():
             config[key] = value
         return config
 

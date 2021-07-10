@@ -271,7 +271,7 @@ class PostgresPooled(Postgres):
                                                              force)
             except self.operational_exceptions:
                 print('PostgresPooled - failed closing')
-            for name, conn in self.pool.iteritems():
+            for name, conn in self.pool.items():
                 if conn is connection:
                     break
             del self.pool[name]
@@ -282,7 +282,7 @@ class PostgresPooled(Postgres):
     def close(self):
         """close all pooled connections"""
         print("PostgresPooled - shutting down connection pool")
-        for name, conn in self.pool.iteritems():
+        for name, conn in self.pool.items():
             conn.close()
             print("PostgresPooled - connection %s closed" % name)
 
