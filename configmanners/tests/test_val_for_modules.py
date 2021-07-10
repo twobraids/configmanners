@@ -8,7 +8,7 @@ import contextlib
 import re
 import six
 
-from six.moves import cStringIO as StringIO
+from io import StringIO
 from datetime import datetime, timedelta, date
 
 from mock import Mock

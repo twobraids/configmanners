@@ -100,7 +100,7 @@ class ValueSource(object):
             for x in qkey.split('.'):
                 d = d[x]
             if isinstance(val, Option):
-                for okey, oval in six.iteritems(val.__dict__):
+                for okey, oval in val.__dict__.items():
                     try:
                         d[okey] = to_string_converters[type(oval)](oval)
                     except KeyError:

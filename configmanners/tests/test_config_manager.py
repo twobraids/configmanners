@@ -8,9 +8,9 @@ import os.path
 import unittest
 from contextlib import contextmanager
 import io
-from six.moves import cStringIO as StringIO
 import getopt
 import six
+from io import StringIO
 
 import mock
 

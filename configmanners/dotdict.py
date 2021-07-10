@@ -6,6 +6,7 @@ from __future__ import absolute_import, division, print_function
 import collections
 import weakref
 import six
+from io import StringIO
 
 from configmanners.orderedset import OrderedSet
 from configmanners.memoize import memoize
@@ -246,7 +247,7 @@ class DotDict(collections.abc.MutableMapping):
             return self[parent_key]
 
     def __str__(self):
-        out = six.StringIO()
+        out = StringIO()
         for key in self.keys_breadth_first(False):
             value = self[key]
             indent = '\t' * key.count('.')

@@ -8,7 +8,7 @@ import os
 import json
 import tempfile
 import contextlib
-from six.moves import cStringIO as StringIO
+from io import StringIO
 
 from configmanners.namespace import Namespace
 from configmanners.config_manager import ConfigurationManager

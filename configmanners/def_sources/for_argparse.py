@@ -249,7 +249,7 @@ class ArgumentParser(argparse.ArgumentParser):
             # in the subparser's configmanners option.  This routine copies
             # the required_config of each subparser into the
             # SubparserFromStringConverter defined above.
-            for subparser_name, subparser_data in six.iteritems(subparsers):
+            for subparser_name, subparser_data in subparsers.items():
                 subparser_namespaces.add_namespace(
                     subparser_name,
                     subparser_data.subparser.get_required_config()

@@ -7,7 +7,7 @@ import unittest
 import os
 import tempfile
 import contextlib
-from six.moves import cStringIO as StringIO
+from io import StringIO
 
 from configmanners.datetime_util import datetime_from_ISO_string
 

@@ -7,7 +7,7 @@ import unittest
 import os
 import six
 
-from six.moves import cStringIO as StringIO
+from io import StringIO
 import contextlib
 from configmanners import Namespace, ConfigurationManager
 from configmanners.datetime_util import datetime_from_ISO_string
