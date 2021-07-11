@@ -75,15 +75,9 @@ class TestCase(unittest.TestCase):
         jrec = json.loads(received)
 
         expect_to_find = {
-            "short_form": "a",
-            "default": "2011-05-04T15:10:00",
-            "doc": "the a",
-            "value": "2011-05-04T15:10:00",
-            "from_string_converter": "configmanners.datetime_util.datetime_from_ISO_string",
-            "name": "aaa",
+            "aaa": "2011-05-04T15:10:00",
         }
-        for key, value in expect_to_find.items():
-            self.assertEqual(jrec["aaa"][key], value)
+        self.assertEqual(jrec, expect_to_find)
 
     # --------------------------------------------------------------------------
     def test_json_round_trip(self):
@@ -91,12 +85,12 @@ class TestCase(unittest.TestCase):
         n.add_option(
             "aaa",
             "2011-05-04T15:10:00",
-            "the a",
+            "the aaa",
             short_form="a",
             from_string_converter=datetime_from_ISO_string,
         )
         expected_date = datetime_from_ISO_string("2011-05-04T15:10:00")
-        n.add_option("bbb", "37", "the a", short_form="a", from_string_converter=int)
+        n.add_option("bbb", "37", "the bbb", short_form="b", from_string_converter=int)
         n.add_option("write", "json")
         n.add_aggregation("bbb_minus_one", bbb_minus_one)
         name = "/tmp/test.json"
@@ -120,7 +114,7 @@ class TestCase(unittest.TestCase):
             with open(name) as jfp:
                 j = json.load(jfp)
             c2 = ConfigurationManager(
-                (j,),
+                (n,),
                 (d1, d2),
                 use_admin_controls=True,
                 use_auto_help=False,

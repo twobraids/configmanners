@@ -24,6 +24,8 @@ can_handle = (bytes, str, json)
 
 file_name_extension = "json"
 
+types_not_needing_string_conversion = (int, float, str, bool)
+
 
 # ==============================================================================
 class LoadingJsonFileFailsException(ValueException):
@@ -73,29 +75,29 @@ class ValueSource(object):
 
     # --------------------------------------------------------------------------
     @staticmethod
-    def recursive_default_dict():
-        return collections.defaultdict(ValueSource.recursive_default_dict)
+    def namespace_to_value_dict(a_mapping):
+        result_dict = dict()
+        for a_key, a_value in a_mapping.items():
+            if isinstance(a_value, (Namespace, collections.abc.Mapping)):
+                result_dict[a_key] = ValueSource.namespace_to_value_dict(a_value)
+            elif isinstance(a_value, Aggregation):
+                continue
+            elif isinstance(a_value, Option):
+                if isinstance(a_value.value, types_not_needing_string_conversion):
+                    result_dict[a_key] = a_value.value
+                else:
+                    try:
+                        result_dict[a_key] = a_value.to_string_converter(a_value.value)
+                    except TypeError:
+                        result_dict[a_key] = to_str(a_value.value)
 
-    # --------------------------------------------------------------------------
+            elif isinstance(a_value, types_not_needing_string_conversion):
+                result_dict[a_key] = a_value
+            else:
+                result_dict[a_key] = to_str(a_value)
+        return result_dict
+
     @staticmethod
     def write(source_dict, output_stream=sys.stdout):
-        json_dict = ValueSource.recursive_default_dict()
-        for qkey in source_dict.keys_breadth_first(include_dicts=True):
-            val = source_dict[qkey]
-            if isinstance(val, Namespace):
-                continue
-            d = json_dict
-            for x in qkey.split("."):
-                d = d[x]
-            if isinstance(val, Option):
-                for okey, oval in val.__dict__.items():
-                    try:
-                        d[okey] = to_string_converters[type(oval)](oval)
-                    except KeyError:
-                        d[okey] = str(oval)
-                d["default"] = d["value"]
-            elif isinstance(val, Aggregation):
-                d["name"] = val.name
-                fn = val.function
-                d["function"] = to_string_converters[type(fn)](fn)
+        json_dict = ValueSource.namespace_to_value_dict(source_dict)
         json.dump(json_dict, output_stream)
