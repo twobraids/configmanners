@@ -76,11 +76,6 @@ class ValueSource(object):
 
     # --------------------------------------------------------------------------
     @staticmethod
-    def recursive_default_dict():
-        return collections.defaultdict(ValueSource.recursive_default_dict)
-
-    # --------------------------------------------------------------------------
-    @staticmethod
     def namespace_to_value_dict(a_mapping):
         result_dict = dict()
         for a_key, a_value in a_mapping.items():
