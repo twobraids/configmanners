@@ -254,14 +254,14 @@ class ValueSource(object):
                 continue
             module_as_dotdict[key] = value
         self.module = source
-        self.source = module_as_dotdict
+        self.values = module_as_dotdict
         self.identity = to_str(source)
 
     # --------------------------------------------------------------------------
     def get_values(self, config_manager, ignore_mismatches, obj_hook=DotDict):
-        if isinstance(self.source, obj_hook):
-            return self.source
-        return obj_hook(initializer=self.source)
+        if isinstance(self.values, obj_hook):
+            return self.values
+        return obj_hook(initializer=self.values)
 
     # --------------------------------------------------------------------------
     @staticmethod

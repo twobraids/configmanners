@@ -142,7 +142,7 @@ class ValueSource(object):
             source = to_str(source)
         if isinstance(source, str) and source.endswith(file_name_extension):
             try:
-                self.config_obj = ConfigObjWithIncludes(source)
+                self.values = ConfigObjWithIncludes(source)
             except Exception as x:
                 raise LoadingIniFileFailsException(
                     "ConfigObj cannot load ini: %s" % str(x)
@@ -164,15 +164,15 @@ class ValueSource(object):
             try:
                 app = config_manager._get_option("admin.application")
                 source = "%s%s" % (app.value.app_name, file_name_extension)
-                self.config_obj = configobj.ConfigObj(source)
+                self.values = configobj.ConfigObj(source)
                 self.delayed_parser_instantiation = False
             except AttributeError:
                 # we don't have enough information to get the ini file
                 # yet.  we'll ignore the error for now
                 return obj_hook()  # return empty dict of the obj_hook type
-        if isinstance(self.config_obj, obj_hook):
-            return self.config_obj
-        return obj_hook(initializer=self.config_obj)
+        if isinstance(self.values, obj_hook):
+            return self.values
+        return obj_hook(initializer=self.values)
 
     # --------------------------------------------------------------------------
     @staticmethod
