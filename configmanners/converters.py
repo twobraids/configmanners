@@ -296,6 +296,95 @@ classes_in_namespaces_converter = str_to_classes_in_namespaces
 
 
 # ------------------------------------------------------------------------------
+def take_two(a_list):
+    for a_pair in zip(a_list[::2], a_list[1::2]):
+        yield a_pair
+
+
+# ------------------------------------------------------------------------------
+def str_to_namespaces_and_classes(
+    name_of_class_option="klass",
+):
+    """take a comma delimited list of alternating namespaces and class names,
+    convert each class name into an actual class as an option within a namespace
+    bearing the specified name.  This function creates a closure over a new function.
+    That new function, in turn creates a class derived from RequiredConfig.
+    The inner function, 'class_list_converter', populates the InnerClassList with
+    a Namespace for each of the classes in the class list.  In addition, it puts
+    each class itself into the subordinate Namespace.  The requirement discovery
+    mechanism of configmanners then reads the InnerClassList's requried config,
+    pulling in any namespaces and associated classes within.
+
+    For example, if we have a class list like this: "alpha_ns, Alpha, beta_ns, Beta",
+    then this converter will add the following Namespaces and options to the
+    configuration:
+
+        "alpha_ns" - the subordinate Namespace for Alpha
+        "alpha_ns.cls" - the option containing the class Alpha itself
+        "beta_ns" - the subordinate Namespace for Beta
+        "beta_ns.cls" - the option containing the class Beta itself
+
+    parameters:
+        class_option_name - the name to be used for the class option within
+                            the nested namespace.  By default, it will choose:
+                            "alpha_ns.klass", "beta_ns.cls", klass.
+    """
+
+    # these are only used within this method.  No need to pollute the module
+    # scope with them and avoid potential circular imports
+    from configmanners import Namespace, RequiredConfig
+
+    # --------------------------------------------------------------------------
+    def class_list_converter(class_list_str):
+        """This function becomes the actual converter used by configmanners to
+        take a string and convert it into the nested sequence of Namespaces,
+        one for each class in the list.  It does this by creating a proxy
+        class stuffed with its own 'required_config' that's dynamically
+        generated."""
+        if isinstance(class_list_str, str):
+            list_of_entries = [x.strip() for x in class_list_str.split(",")]
+            if list_of_entries == [""]:
+                list_of_entries = []
+        else:
+            raise TypeError("must be derivative of %s" % str)
+
+        # ======================================================================
+        class InnerClassList(RequiredConfig):
+            """This nested class is a proxy list for the classes.  It collects
+            all the config requirements for the listed classes and places them
+            each into their own Namespace.
+            """
+
+            # we're dynamically creating a class here.  The following block of
+            # code is actually adding class level attributes to this new class
+            required_config = Namespace()  # 1st requirement for configmanners
+            subordinate_namespace_names = []  # to help the programmer know
+            # what Namespaces we added
+            class_option_name = name_of_class_option  # save the class's option
+            # name for the future
+            # for each class in the class list
+            for namespace_name, a_class_name in take_two(list_of_entries):
+                subordinate_namespace_names.append(namespace_name)
+                # create the new Namespace
+                required_config[namespace_name] = Namespace()
+                # add the option for the class itself
+                required_config[namespace_name].add_option(
+                    name_of_class_option,
+                    # doc=a_class.__doc__  # not helpful if too verbose
+                    default=a_class_name,
+                    from_string_converter=class_converter,
+                )
+
+            @classmethod
+            def to_str(cls):
+                return ", ".join(list_of_entries)
+
+        return InnerClassList  # result of class_list_converter
+
+    return class_list_converter  # result of classes_in_namespaces_converter
+
+
+# ------------------------------------------------------------------------------
 def str_to_regular_expression(input_str):
     return re.compile(input_str)
 
@@ -468,9 +557,12 @@ to_string_converters[bytes] = py3_to_str
 # ------------------------------------------------------------------------------
 def to_str(a_thing):
     try:
-        return to_string_converters[type(a_thing)](a_thing)
-    except KeyError:
-        return arbitrary_object_to_string(a_thing)
+        return a_thing.to_str()
+    except AttributeError:
+        try:
+            return to_string_converters[type(a_thing)](a_thing)
+        except KeyError:
+            return arbitrary_object_to_string(a_thing)
 
 
 # ------------------------------------------------------------------------------
