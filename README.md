@@ -18,12 +18,14 @@ environment variables, and configuration files. It provides a method for declara
 configuration requirements within a program and a hierarchical system to resolve
 conflicts. It can dynamically load modules creating a "poor man's" dependency
 injection system. In addition to its own API, it mimics the argparse API, so in many
-(not all) cases, it substitute for argparse.
+(not all) cases, it can substitute for argparse.
 
 _This is the K Lars Lohn fork of configman. Since I am no longer associated with Mozilla,
 I have no ownership/control/privileges on the moribund Mozilla repo. I don't think Mozilla
 uses it anywhere anymore. As it it critical to my personal software work, I intend
-to continue to maintain and modify it for my own purposes._
+to continue to maintain and modify it for my own purposes as this fork.  This implementation 
+is likely full of problems, can't-get-there-from-here situations, or other such troubles. 
+There is no warranty, no guarantee, and the author is absentee._
 
 It is highly unlikely that I will publish it as a 'pip' installable module.
 
